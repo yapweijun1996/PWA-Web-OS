@@ -1,16 +1,25 @@
 # PWA Web OS
 
-PWA Web OS is a planned personal workspace that runs in the browser and can be installed as a Progressive Web App. A shared launcher opens tools such as Notes, and the workspace adapts from a focused mobile view to a larger desktop layout.
+PWA Web OS is a browser workspace for local notes. Open Notes from the launcher or Dock, edit in the desktop window or phone editor, and export a JSON backup to move your work to another device.
 
 The long-term design goal is to let people keep working across devices, browser changes, and software updates while retaining control of their files. See the [product specification](docs/PRODUCT_SPEC.md) for the first release and its acceptance criteria.
 
 ## Project status
 
-The repository contains a runnable TypeScript and Vite PWA deployed to GitHub Pages at <https://yapweijun1996.github.io/PWA-Web-OS/>. Notes, offline support, safe updates, and backup are implemented but not yet fully verified. Verification covers Windows Chrome and Firefox only, so this is a **Windows demo**, not a full production release. macOS, iOS, and Android are `BLOCKED` for lack of devices. See [M0 decisions](docs/M0_DECISIONS.md) and the [production readiness checklist](docs/PRODUCTION_READINESS.md).
+[Open the public demo](https://yapweijun1996.github.io/PWA-Web-OS/). The current target is the **Windows demo**. The full release remains on hold until the required Windows, macOS, iOS and Android launch modes pass with a specific build. See the [platform matrix](docs/PRODUCT_SPEC.md#platform-support) and [release evidence](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md).
 
-The first release targets Windows, macOS, iOS, and Android. Chrome and Firefox are required for browser use on all four platforms. See the [platform matrix](docs/PRODUCT_SPEC.md#platform-support) for install modes.
+## Install and use Notes offline
 
-The first development milestone is a reliable Notes workflow in [Windows Chrome and Firefox tabs](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs).
+Open the demo online in the browser or installed app you plan to use. Wait for **Available offline**, then create a note and wait for **Saved on this device** before closing. The first status confirms the app files are ready. The second confirms the note was written. Use **Workspace → Backup and restore** before changing devices, switching browser profiles, or clearing site data.
+
+| Platform | How to launch |
+| --- | --- |
+| Chrome on Windows or macOS | Use the install icon in the address bar when offered, or open the Chrome menu, then **Cast, save, and share → Install page as app**. [Chrome desktop help](https://support.google.com/chrome/answer/9658361?co=GENIE.Platform%3DDesktop&hl=en) |
+| Firefox on Windows | Use the web app button in the address bar to pin the site and reopen it from the taskbar. Mozilla documents this feature from Firefox 143, or 150 for the Microsoft Store edition. [Firefox Windows help](https://support.mozilla.org/en-US/kb/web-apps-firefox-windows) |
+| iPhone | In Safari, open **Share → Add to Home Screen**, enable **Open as Web App** when offered, and tap **Add**. Open the new icon online once. [Safari help](https://support.apple.com/guide/iphone/open-as-web-app-iphea86e5236/ios) |
+| Android | In Chrome, open the browser menu and choose the installation or shortcut option, then **Install**. In Firefox, open the menu and choose **Install**, then confirm the Home Screen icon. [Chrome Android help](https://support.google.com/chrome/answer/9658361?co=GENIE.Platform%3DAndroid&hl=en) · [Firefox Android help](https://support.mozilla.org/en-US/kb/use-web-apps-firefox-android) |
+
+If an install action is unavailable, keep using the browser tab. The macOS Firefox target is a tab. Installation options depend on browser version and distribution. The table describes the vendor's installation paths. Project verification is tracked separately in the [production checklist](docs/PRODUCTION_READINESS.md).
 
 ## Local development
 
@@ -47,4 +56,4 @@ See the [Aurora workspace exploration](docs/AURORA_WORKSPACE_PLAN.md) for the se
 
 See the [upstream reuse plan](docs/UPSTREAM_REUSE.md) for reusable icons, the update loader, the Public-API candidate, and lessons from Blender 3D Gallery.
 
-Start with the [first-release acceptance criteria](docs/PRODUCT_SPEC.md#acceptance-criteria). The first implementation should prove a complete Notes workflow from offline editing through update and data transfer. Add local setup, build, and test commands to the repository once those commands have been verified.
+Use the [first-release acceptance criteria](docs/PRODUCT_SPEC.md#acceptance-criteria) to verify the complete Notes workflow from offline editing through update and data transfer.
