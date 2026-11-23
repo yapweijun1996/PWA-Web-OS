@@ -6,11 +6,28 @@ The long-term design goal is to let people keep working across devices, browser 
 
 ## Project status
 
-The repository is at the specification stage. There is no runnable PWA, build command, or deployment yet.
+The repository contains a runnable TypeScript and Vite PWA deployed to GitHub Pages at <https://yapweijun1996.github.io/PWA-Web-OS/>. Notes, offline support, safe updates, and backup are implemented but not yet fully verified. Verification covers Windows Chrome and Firefox only, so this is a **Windows demo**, not a full production release. macOS, iOS, and Android are `BLOCKED` for lack of devices. See [M0 decisions](docs/M0_DECISIONS.md) and the [production readiness checklist](docs/PRODUCTION_READINESS.md).
 
 The first release targets Windows, macOS, iOS, and Android. Chrome and Firefox are required for browser use on all four platforms. See the [platform matrix](docs/PRODUCT_SPEC.md#platform-support) for install modes.
 
 The first development milestone is a reliable Notes workflow in [Windows Chrome and Firefox tabs](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs).
+
+## Local development
+
+Requires Node 24 (see `.nvmrc`); Vitest 5 does not support Node 25. These commands were verified from a clean install on Windows with Node 24.22.3:
+
+```text
+npm ci
+npm run dev         # Vite dev server at /PWA-Web-OS/ (no service worker)
+npm run typecheck
+npm test            # Vitest unit tests
+npm run build       # production build and service worker in dist/
+npm run preview     # serve the production build
+npx playwright install chromium firefox
+npm run e2e         # Playwright in Chromium and Firefox (set PW_PORT to change the port)
+```
+
+Pushing to `main` deploys `dist/` to GitHub Pages through `.github/workflows/pages.yml`. Notes stay in the visitor's browser and are never uploaded.
 
 ## Development
 

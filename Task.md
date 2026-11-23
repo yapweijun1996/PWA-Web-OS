@@ -13,8 +13,8 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 - [ ] Assign [UI foundation workstream owners](docs/UI_FOUNDATION.md#module-ownership-and-parallel-delivery) and agree on message, token, preference, and app-entry contracts before parallel implementation.
 
 - [ ] Record minimum Windows, macOS, iOS, and Android versions and required browser versions using the [platform matrix](docs/PRODUCT_SPEC.md#platform-support).
-- [ ] Define the IndexedDB schema and migrations, the localStorage preference keys and defaults, and the versioned JSON backup format and conflict policy.
-- [ ] Set up the application and record verified local start, build, and test commands.
+- [x] Define the IndexedDB schema and migrations, the localStorage preference keys and defaults, and the versioned JSON backup format and conflict policy.
+- [x] Set up the application and record verified local start, build, and test commands. See [Local development](README.md#local-development).
 
 ## M1: Local Notes
 
