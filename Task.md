@@ -10,7 +10,7 @@
 | 2 | Complete Windows client support qualification. | Windows 11 Enterprise 25H2 Arm64 passed all four launch modes, same-host backup, both languages and all three appearance settings. Both tab updates recovered from a failed write and both original app shortcuts reopened the upgraded build with the saved note. A hosted x64 Hyper-V guest preflight passed. Run the four launch modes on a licensed 25H2 x64 client. [Candidate evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) · [Hyper-V preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45240881415) |
 | 3 | Complete the iPhone and Android launch matrix. | The Android 16 emulator passed the Chrome tab save and offline cold-launch journey. Qualify iOS 18 and Android 10 on physical phones, including each required launch mode, native keyboard, safe areas and rotation. [Qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) · [Android emulator evidence](docs/evidence/android16-emulator-b9dcafa.json) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
-| 5 | Verify iPhone VoiceOver and complete the reader acceptance. | NVDA passed nine speech checks. macOS VoiceOver passed ten checks, including the editor region, both field labels, save states and update prompts. Record iPhone VoiceOver reading labels, save results and update states. [Reader evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
+| 5 | Verify iPhone VoiceOver and complete the reader acceptance. | NVDA passed nine speech checks on `37ad1b4`. macOS VoiceOver passed ten checks on `b9dcafa`. Record iPhone VoiceOver reading labels, save results and update states. [NVDA report](docs/evidence/nvda-37ad1b4.json) · [Prior desktop reader evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
 | 6 | Complete candidate performance and recovery acceptance. | The declared physical Mac and hosted Windows 11 Arm64 desktop profiles passed on `b9dcafa`. Recheck them on `37ad1b4`, measure the two physical phone profiles and apply the field-data policy. The current demo passed HTTPS staging rollback in Chromium and Firefox. [Lab baselines](docs/PERFORMANCE.md#release-lab-baselines) · [Mobile procedure](docs/PERFORMANCE.md#physical-mobile-lab) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md#rehearsal-for-the-startup-theme-build) |
 | 7 | Update the release decision after the device and reader checks. | Reconcile the remaining [case outcomes](docs/DEMO_ACCEPTANCE_37AD1B4.md) and decide whether all full-release gates are met. The current demo passed live SHA-256 verification and the synthetic offline note smoke check. |
 
@@ -108,7 +108,7 @@ Run the Windows tab checks first. Run installed-mode and other platform checks a
 - [ ] Complete the [production readiness checklist](docs/PRODUCTION_READINESS.md) for the intended release track and record the go/hold decision.
 - [ ] Run the complete Notes workflow against the supported device and browser matrix.
 - [ ] Record the tested build, devices, results, and any exceptions to `pwa:product-standard` v1.1.0.
-- [ ] Confirm that README and development commands match the tested implementation.
+- [x] Confirm that README and development commands match the tested implementation. [Candidate checks](docs/DEMO_ACCEPTANCE_37AD1B4.md#candidate-checks)
 
 ## Post-release candidates
 

@@ -1,0 +1,56 @@
+{
+  "startedAt": "2026-11-23T19:40:34.101Z",
+  "finishedAt": "2026-11-23T19:40:48.140Z",
+  "os": "10.0.26100",
+  "browser": "157.0.8103.79",
+  "reader": "NVDA 2026.3.1, Speech Viewer",
+  "a": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+  },
+  "b": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "checks": [
+    {
+      "id": "launcher-notes",
+      "phrase": "Notes"
+    },
+    {
+      "id": "editor-body",
+      "phrase": "Body"
+    },
+    {
+      "id": "editor-title",
+      "phrase": "Title"
+    },
+    {
+      "id": "note-saving",
+      "phrase": "Saving"
+    },
+    {
+      "id": "note-saved",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "note-failed",
+      "phrase": "Save failed. Your changes are not saved"
+    },
+    {
+      "id": "note-retried",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "update-available",
+      "phrase": "Update available"
+    },
+    {
+      "id": "update-saving",
+      "phrase": "Saving changes before update"
+    }
+  ],
+  "outcome": "PASS"
+}

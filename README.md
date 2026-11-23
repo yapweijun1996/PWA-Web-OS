@@ -23,7 +23,7 @@ If an install action is unavailable, keep using the browser tab. The macOS Firef
 
 ## Local development
 
-Requires Node 24 (see `.nvmrc`); Vitest 5 does not support Node 25. These commands were verified from a clean install on Windows with Node 24.22.3:
+Use the Node 24 version in `.nvmrc`. The release workflow runs the checks from a clean install, and the dev URL was exercised on macOS. Run `dev` or `preview` in a separate terminal for manual use. The browser tests start their own preview server.
 
 ```text
 npm ci
