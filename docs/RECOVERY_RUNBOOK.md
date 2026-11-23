@@ -73,3 +73,7 @@ The mixed-release rehearsal served B with one JavaScript response from A on each
 ## Rehearsal for the Firefox quota recovery build
 
 On November 23, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 ran the same procedure with `54e9662` as A and `d620665` as B. Both accepted the healthy B after rejecting a mixed response, retained the committed synthetic note through rollback, and saved again on A. The retained B manifest SHA-256 was `7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130`. A still has the reproduced Firefox quota retry defect recorded in its acceptance record. [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417) · [Candidate B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45207524392) · [Baseline failure](DEMO_ACCEPTANCE_54E9662.md)
+
+## Rehearsal for the update focus build
+
+On November 24 in Singapore, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 verified the HTTPS rehearsal with `d620665` as A and `b9dcafa` as B. Both rejected the mixed response and preserved the committed synthetic note through accepting healthy B and rolling back. The test saved again on A. The B manifest digest matches the Pages deployment. A has the recorded desktop announcement defect. [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45207524392) · [Release B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979) · [Baseline announcement failure](DEMO_ACCEPTANCE_D620665.md)

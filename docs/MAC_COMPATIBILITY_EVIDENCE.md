@@ -42,3 +42,7 @@ On November 23, macOS 26.6.2 (25G83) repeated all three launch modes against the
 ## VoiceOver update progress
 
 On November 24 in Singapore, the same macOS VM ran VoiceOver with Chrome 158.0.8127.36 against two verified release pairs on loopback. With `d620665` active, the Caption Panel omitted the waiting-save update message. With the retained `b9dcafa` candidate active, the panel captured **Update available** and **Saving changes before update**. The update finished with the synthetic edit intact. Focus stayed on the progress message while the pending write completed. Some editor labels and ordinary save states were missed in the macOS capture. [Paired observations](evidence/voiceover-update-b9dcafa.json)
+
+## Update focus demo launches
+
+On November 24 in Singapore, macOS 26.6.2 repeated the three required launch modes for the deployed `b9dcafa` release. Chrome 158.0.8127.36 and Firefox 160.0.1 passed headed tab sessions. Chrome also installed the app through its native Install control and launched the actual app shortcut across three browser processes. Each reported standalone mode. The online request returned 404 and a fresh uncached request failed in both offline installed sessions. Each mode saved a synthetic note online, saved an offline edit and read it after another offline restart. The disposable profiles and shortcut were removed. [Release identity and evidence](DEMO_ACCEPTANCE_B9DCAFA.md)
