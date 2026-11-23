@@ -21,6 +21,7 @@ export interface Note {
   title: string;
   body: string;
   revision: number; // positive safe integer, starts at 1
+  updatedAt: number; // epoch milliseconds (Date.now()) of the last committed write; set on create and update
 }
 export interface NoteDraft {
   title: string;
@@ -49,7 +50,7 @@ export class StorageError extends Error {
 
 /** Every method resolves only after the IndexedDB transaction has committed. */
 export interface NoteRepository {
-  /** Sorted by title (case-insensitive), then id. */
+  /** Sorted by updatedAt descending (most recently changed first), then id ascending. */
   list(): Promise<Note[]>;
   get(id: string): Promise<Note | undefined>;
   /** Generates the id, stores revision 1. */
@@ -85,7 +86,7 @@ export interface ImportPreview {
 }
 
 export interface BackupService {
-  /** Compact JSON of committed notes only, ascending id, no revisions. */
+  /** Compact JSON of committed notes only ({id,title,body,updatedAt}), ascending id, no revisions. */
   exportBackup(): Promise<string>;
   /** Validates only; never writes. Throws BackupError. */
   previewImport(bytes: Uint8Array): Promise<ImportPreview>;
