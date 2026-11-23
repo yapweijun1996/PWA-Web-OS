@@ -18,12 +18,10 @@ declare global {
 
 const test = base.extend<{ notice: Locator }>({
   notice: async ({ page }, use, info) => {
-    const port = Number(process.env.PW_PORT);
-    expect(port, 'set PW_PORT to the configured preview port').toBeGreaterThan(0);
     const distA = info.outputPath('dist-a');
     const distB = info.outputPath('dist-b');
     await Promise.all([build(distA, 'a11y-release-a'), build(distB, 'a11y-release-b')]);
-    const server = await serveReleases(distA, port);
+    const server = await serveReleases(distA);
     try {
       await page.goto(server.url);
       await expect(page.locator('.connection').getByText('Available offline', { exact: true })).toBeVisible();
