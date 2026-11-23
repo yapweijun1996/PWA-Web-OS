@@ -17,6 +17,16 @@ test('a native upgrade blocks the next save only for a bounded wait; Retry prese
   const tabB = await openIdbFixturePage(context, page.url());
   const before = await readNotesDatabase(tabB);
   expect(before).toMatchObject({ version: DB_VERSION, stores: ['notes'], notes: [original] });
+  // Release the editor's existing connection before installing the sole blocker.
+  // Otherwise two versionchange listeners race in Firefox: one closes its connection
+  // while the other stays open, and the upgrade may omit its blocked notification.
+  const aborted = await tabB.evaluate(({ name, version }) => new Promise<string>((resolve, reject) => {
+    const open = indexedDB.open(name, version + 1);
+    open.onupgradeneeded = () => open.transaction!.abort();
+    open.onerror = () => resolve(open.error!.name);
+    open.onsuccess = () => { open.result.close(); reject(new Error('Expected an aborted fixture upgrade')); };
+  }), { name: DB_NAME, version: DB_VERSION });
+  expect(aborted).toBe('AbortError');
   const blocker = await tabB.evaluateHandle(({ name, version }) => new Promise<IDBDatabase>((resolve, reject) => {
     const open = indexedDB.open(name, version);
     open.onupgradeneeded = () => open.transaction!.abort();
