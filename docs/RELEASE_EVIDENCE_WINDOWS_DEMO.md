@@ -14,6 +14,8 @@ The `d620665` quota recovery build passed all six headed tab sessions and repeat
 
 The `b9dcafa` update-focus build passed the same six headed tab sessions and repeated import on the same Windows Server and browser versions. A dedicated NVDA 2026.3.1 run captured the expected editor and update announcements in Chrome on that build. [Tab run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45217407898) · [Reader run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45217411153) · [Candidate record](DEMO_ACCEPTANCE_B9DCAFA.md)
 
+The same build passed six tab sessions and same-host transfer on a hosted Windows 11 Enterprise 25H2 Arm64 client. The report identifies build 26200.9974, Chrome 157.0.8103.79, Firefox 160.0 and the same manifest digest as the Pages release. [Client tab run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45218767300) · [Client tab report](evidence/windows11-tabs-b9dcafa.json)
+
 ## Earlier Windows candidate
 
 Status at the time of testing: **Provisional.** This records what was run for the Windows demo track defined in [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). It does not clear the full production release, which needs every row of the [platform matrix](PRODUCT_SPEC.md#platform-support). The visual redesign decided in [M0_DECISIONS.md](M0_DECISIONS.md) (Aurora look) has not been implemented, so the current interface does not yet match the Aurora anchor images.

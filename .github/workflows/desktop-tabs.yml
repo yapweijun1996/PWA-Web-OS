@@ -7,6 +7,13 @@ on:
         description: Completed Pages run ID with a retained release or candidate
         required: true
         type: string
+      windows_image:
+        description: Windows environment for headed browser verification
+        type: choice
+        default: windows-2025
+        options:
+          - windows-2025
+          - windows-11-arm
 
 permissions:
   contents: read
@@ -14,7 +21,7 @@ permissions:
 
 jobs:
   tabs:
-    runs-on: windows-2025
+    runs-on: ${{ inputs.windows_image }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
@@ -45,6 +52,20 @@ jobs:
           New-Item -ItemType Directory -Path desktop-evidence
           Copy-Item retained/manifest.json desktop-evidence
           @{ pagesRun = $run.html_url; pagesConclusion = $run.conclusion; archive = $artifact.name; archiveDigest = $artifact.digest } | ConvertTo-Json | Set-Content desktop-evidence/source.json
+      - name: Record Windows version and architecture
+        shell: pwsh
+        run: |
+          $os = Get-CimInstance Win32_OperatingSystem
+          $version = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+          @{
+            caption = $os.Caption
+            version = $os.Version
+            architecture = $os.OSArchitecture
+            edition = $version.EditionID
+            displayVersion = $version.DisplayVersion
+            installationType = $version.InstallationType
+            updateBuildRevision = $version.UBR
+          } | ConvertTo-Json | Set-Content desktop-evidence/windows-environment.json
       - name: Install Selenium
         run: python -m pip install --disable-pip-version-check selenium==4.54.0
       - name: Test installed Chrome and Firefox in desktop tabs
