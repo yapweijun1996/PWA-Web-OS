@@ -10,7 +10,7 @@
 | 2 | Complete Windows client support qualification. | Windows 11 Enterprise 25H2 Arm64 passed all four launch modes, same-host backup, tab update deferral and recovery, both languages and all three appearance settings. Verify the declared support floors. Windows x64 client coverage remains unverified. [Candidate evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
 | 3 | Complete the iPhone and Android launch matrix. | All three macOS 26.6.2 launch modes passed on this build. Use physical phones for native keyboard, safe areas, rotation and offline relaunch. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md#update-focus-demo-launches) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
-| 5 | Verify iPhone VoiceOver and complete the reader acceptance. | NVDA captured all nine expected desktop phrases and macOS VoiceOver captured the fixed update progress. Some macOS editor captions were missed. Record iPhone VoiceOver reading labels, save results and update states. [Reader evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
+| 5 | Verify iPhone VoiceOver and complete the reader acceptance. | NVDA passed nine speech checks. macOS VoiceOver passed ten checks, including the editor region, both field labels, save states and update prompts. Record iPhone VoiceOver reading labels, save results and update states. [Reader evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
 | 6 | Complete candidate performance and recovery acceptance. | Physical Apple M4 and hosted Windows Server pass the desktop lab on the current demo. The same build passed HTTPS staging rollback in Chromium and Firefox. Declare desktop baselines and capture physical mobile timings under the recorded field-data policy. [Lab results](docs/PERFORMANCE.md) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
 | 7 | Update the release decision after the device and reader checks. | Reconcile the remaining [case outcomes](docs/DEMO_ACCEPTANCE_B9DCAFA.md) and decide whether all full-release gates are met. The current demo passed live SHA-256 verification and the synthetic offline note smoke check. |
 
@@ -19,7 +19,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 ### Current demo evidence from 2026-11-24
 
 - Source `b9dcafa`, build `b-mwth4sjcb9dcafa`. Pages passed 91 unit tests and 146 browser tests with zero skips, then verified the launch URL and 12 hosted files. Stable Chrome followed the live custom 404 link and reopened an offline edit. [Pages run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979)
-- The active release passed nine NVDA Speech Viewer checks. The macOS VoiceOver Caption Panel reproduced the old missing progress phrase and captured it on the fix. [Candidate record](docs/DEMO_ACCEPTANCE_B9DCAFA.md)
+- The active release passed nine NVDA Speech Viewer checks and ten macOS VoiceOver checks. Both readers captured the pending-save update progress and the synthetic edit survived activation. [Candidate record](docs/DEMO_ACCEPTANCE_B9DCAFA.md)
 - The same artifact passed all three macOS launch modes, six Windows Server tab sessions, HTTPS recovery, and the separate desktop lab batches on the physical Mac and hosted Windows. [Recovery](docs/RECOVERY_RUNBOOK.md#rehearsal-for-the-update-focus-build) · [Performance](docs/PERFORMANCE.md#recorded-desktop-run)
 
 ### Quota recovery demo evidence from 2026-11-23

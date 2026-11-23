@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-11-23T17:21:47.047Z",
+  "os": "25.6.0",
+  "reader": "macOS VoiceOver, last spoken phrase",
+  "capture": "Apple VO-Shift-C command in an isolated foreground Chrome window",
+  "a": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "b": {
+    "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+    "buildId": "b-mwtfl4bdd620665",
+    "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130"
+  },
+  "browser": "158.0.8127.36",
+  "checks": [
+    {
+      "id": "launcher-notes",
+      "outcome": "PASS",
+      "phrase": "Notes button"
+    },
+    {
+      "id": "editor-body",
+      "outcome": "PASS",
+      "phrase": "Body text entry area"
+    },
+    {
+      "id": "editor-title",
+      "outcome": "PASS",
+      "phrase": "Title Untitled note text entry area"
+    },
+    {
+      "id": "note-saving",
+      "outcome": "PASS",
+      "phrase": "Saving…"
+    },
+    {
+      "id": "note-saved",
+      "outcome": "PASS",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "note-failed",
+      "outcome": "PASS",
+      "phrase": "Save failed. Your changes are not saved. The last saved version is unchanged. Try again. If the problem continues, copy your draft before leaving the editor."
+    },
+    {
+      "id": "note-retried",
+      "outcome": "PASS",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "editor-region",
+      "outcome": "PASS",
+      "phrase": "Note editor region"
+    },
+    {
+      "id": "update-available",
+      "outcome": "PASS",
+      "phrase": "Update available"
+    },
+    {
+      "id": "update-saving",
+      "outcome": "PASS",
+      "phrase": "Updating Notes region Saving changes before update… empty group"
+    }
+  ],
+  "updateRecovery": "PASS",
+  "finishedAt": "2026-11-23T17:22:08.838Z"
+}
