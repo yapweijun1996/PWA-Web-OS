@@ -1,0 +1,33 @@
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --type-ui: system-ui, "Segoe UI", sans-serif;
+  --type-small: 0.875rem;
+  --radius: 0.75rem;
+  --progress-cycle: 900ms;
+
+  color-scheme: light;
+  --surface-canvas: light-dark(#edf2f7, #111923);
+  --surface-panel: light-dark(#ffffff, #1b2735);
+  --surface-raised: light-dark(#f5f8fc, #223244);
+  --surface-selected: light-dark(#e1ecfa, #304969);
+  --surface-danger: light-dark(#fff4f2, #3a252a);
+  --text-primary: light-dark(#172639, #edf4ff);
+  --text-muted: light-dark(#445974, #b7c7da);
+  --text-danger: light-dark(#8b2724, #ffb9b0);
+  --text-success: light-dark(#215639, #ace6bd);
+  --border-subtle: light-dark(#becbda, #3e536b);
+  --border-control: light-dark(#778aa3, #9bb0c9);
+  --action-primary: light-dark(#184a83, #9ac5fb);
+  --action-text: light-dark(#ffffff, #142437);
+  --focus-ring: light-dark(#0065ba, #acd5ff);
+}
+
+:root[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]), :root[data-theme="system"] { color-scheme: dark; }
+}

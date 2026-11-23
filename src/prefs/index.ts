@@ -1,13 +1,24 @@
-// STUB owned by the UI workstream: implement against localStorage per docs/M0_DECISIONS.md.
-import type { PreferenceStore, Theme } from '../contracts';
+import { THEME_KEY, type PreferenceStore, type Theme } from '../contracts';
 
 export function createPreferenceStore(): PreferenceStore {
   let theme: Theme = 'system';
+  try {
+    const stored = window.localStorage.getItem(THEME_KEY);
+    if (stored === 'system' || stored === 'light' || stored === 'dark') theme = stored;
+  } catch {
+    // Storage access itself can be denied, even when the API exists.
+  }
+
   return {
     getTheme: () => theme,
     setTheme(next) {
       theme = next;
-      return { persisted: false };
+      try {
+        window.localStorage.setItem(THEME_KEY, next);
+        return { persisted: true };
+      } catch {
+        return { persisted: false };
+      }
     },
   };
 }
