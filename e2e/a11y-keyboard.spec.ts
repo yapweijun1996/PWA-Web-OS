@@ -45,7 +45,7 @@ test('Escape dismisses the real restore preview without importing and returns fo
   await tabTo(page, page.getByRole('button', { name: 'Export backup' }));
   const restore = page.getByRole('button', { name: 'Restore backup' });
   await tabTo(page, restore);
-  const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.keyboard.press('Enter')]);
+  const [chooser] = await Promise.all([page.waitForEvent('filechooser'), restore.press('Enter')]);
   await chooser.setFiles({
     name: 'synthetic.json', mimeType: 'application/json',
     buffer: Buffer.from(JSON.stringify({ format: 'pwa-web-os.notes', version: 1, notes: [{
@@ -53,7 +53,23 @@ test('Escape dismisses the real restore preview without importing and returns fo
     }] })),
   });
   const dialog = page.getByRole('dialog', { name: 'Restore preview' });
-  await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused();
+  const cancel = dialog.getByRole('button', { name: 'Cancel' });
+  const confirm = dialog.getByRole('button', { name: 'Restore notes' });
+  await expect(cancel).toBeFocused();
+  await tabTo(page, confirm);
+  // Native dialogs may briefly give focus to browser chrome when Tab wraps.
+  // No page control outside the dialog may receive focus before it is dismissed.
+  await page.keyboard.press('Tab');
+  const focusInDialogOrBrowser = () => dialog.evaluate(node =>
+    node.contains(document.activeElement) || document.activeElement === document.body,
+  );
+  expect(await focusInDialogOrBrowser()).toBe(true);
+  await cancel.focus();
+  await page.keyboard.press('Shift+Tab');
+  expect(await focusInDialogOrBrowser()).toBe(true);
+  await confirm.focus();
+  await page.keyboard.press('Shift+Tab');
+  await focusedWithIndicator(cancel);
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   await focusedWithIndicator(restore);
