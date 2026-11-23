@@ -56,9 +56,17 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const tools = element('div', undefined, 'workspace-tools');
   tools.append(connection, backup.menu);
   grid.append(rail, launcher, notes.listPane, notes.editorPane);
-  app.append(header, demo, tools, update, notes.issue, grid, backup.dialog, polite, assertive);
+  app.append(header, demo, tools, update, notes.issue, grid, backup.dialog);
   setRoute('launcher');
   root.replaceChildren(app);
+  // The update controller makes #app inert while it switches builds. Keep the live
+  // regions outside that subtree so progress and failures are still announced.
+  document.querySelectorAll('[data-live-regions]').forEach((node) => node.remove());
+  const live = element('div');
+  live.dataset.liveRegions = '';
+  live.append(polite, assertive);
+  if (root.parentNode) root.after(live);
+  else app.append(live);
 
   let current: UpdateState | undefined;
   let requesting = false;
