@@ -1,15 +1,30 @@
 import { execFile } from 'node:child_process';
 import { resolve } from 'node:path';
 import { promisify } from 'node:util';
-import { test, type Page } from '@playwright/test';
+import { test, type Page, type TestInfo } from '@playwright/test';
 import { DB_NAME, type Note } from '../src/contracts';
+import { prepareRecoveryPair } from './recovery-artifacts';
 import { serveReleases } from './pwa-test-server';
 
 const exec = promisify(execFile);
 const releaseA = 'notes-update-a';
 const releaseB = 'notes-update-b';
 
-export const updateTest = test.extend<{ releases: {
+export interface RecoveryOptions { retainedArtifacts: boolean }
+
+async function buildFixturePair(testInfo: TestInfo) {
+  const build = async (buildId: string, name: string) => {
+    const dist = testInfo.outputPath(name);
+    await exec(process.execPath, [
+      resolve('node_modules/vite/bin/vite.js'), 'build', '--outDir', dist,
+    ], { env: { ...process.env, BUILD_ID: buildId } });
+    return { dist, buildId };
+  };
+  const [a, b] = await Promise.all([build(releaseA, 'dist-a'), build(releaseB, 'dist-b')]);
+  return { a, b };
+}
+
+export const updateTest = test.extend<RecoveryOptions & { releases: {
   url: string;
   a: string;
   b: string;
@@ -17,16 +32,26 @@ export const updateTest = test.extend<{ releases: {
   deployA(): void;
   deployB(): void;
 } }>({
-  releases: async ({}, use, testInfo) => {
-    const distA = testInfo.outputPath('dist-a');
-    const distB = testInfo.outputPath('dist-b');
-    const build = (outDir: string, id: string) => exec(process.execPath, [
-      resolve('node_modules/vite/bin/vite.js'), 'build', '--outDir', outDir,
-    ], { env: { ...process.env, BUILD_ID: id } });
-    await Promise.all([build(distA, releaseA), build(distB, releaseB)]);
-    const server = await serveReleases(distA);
+  retainedArtifacts: [false, { option: true }],
+  releases: async ({ retainedArtifacts }, use, testInfo) => {
+    const retained = retainedArtifacts
+      ? await prepareRecoveryPair(testInfo.outputPath('verified-artifacts'))
+      : undefined;
+    const { a, b } = retained ?? await buildFixturePair(testInfo);
+    const server = await serveReleases(a.dist);
     try {
-      await use({ url: server.url, a: releaseA, b: releaseB, distB, deployA: () => server.deploy(distA), deployB: () => server.deploy(distB) });
+      if (retained) {
+        const { dist: _a, ...identityA } = retained.a;
+        const { dist: _b, ...identityB } = retained.b;
+        await testInfo.attach('recovery-identities', {
+          contentType: 'application/json',
+          body: JSON.stringify({ a: identityA, b: identityB, origin: new URL(server.url).origin }),
+        });
+      }
+      await use({
+        url: server.url, a: a.buildId, b: b.buildId, distB: b.dist,
+        deployA: () => server.deploy(a.dist), deployB: () => server.deploy(b.dist),
+      });
     } finally {
       await server.close();
     }

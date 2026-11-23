@@ -10,6 +10,22 @@ The Pages workflow uses the existing short build ID and saves the exact `dist` s
 
 A local rehearsal is `PW_PORT=41876 npx playwright test e2e/update-notes.spec.ts -g 'rehearses A to B'`. It builds A and B from the **same checkout** with different IDs, uses a loopback HTTP origin and disposable browser storage, checks schema 1 and the committed synthetic record, and verifies another save on A. It does not prove cross-version migration compatibility, production hosting, durable storage, real devices, or the deploy/rollback procedure on GitHub Pages. Record test date, commit, browser versions, result and artifacts; repeat with actual release artifacts on staging.
 
+## Rehearse with downloaded release artifacts
+
+Choose the previous trusted release A and candidate B from successful Pages workflow runs in this repository. For each run, verify the workflow name, full commit SHA, run ID and attempt on GitHub. Download the matching `recovery-<full commit SHA>-<run ID>-<attempt>` artifact into a separate directory. Each directory must contain `dist/` and `manifest.json`. Use the SHAs from the selected workflow runs as the expected identities.
+
+With Node 24, the locked dependencies and Playwright browsers installed, run from this repository:
+
+```sh
+export RECOVERY_A_DIR=/absolute/path/to/extracted-A
+export RECOVERY_A_SHA='previous-full-commit-sha'
+export RECOVERY_B_DIR=/absolute/path/to/extracted-B
+export RECOVERY_B_SHA='candidate-full-commit-sha'
+PLAYWRIGHT_HTML_OPEN=never npx playwright test --config=playwright.recovery.config.ts --reporter=html
+```
+
+Set the four variables to actual values before running. The recovery configuration copies each artifact into the test output, verifies every distributed file against its manifest, checks its worker build ID and expected commit, and requires distinct commits and build IDs. Each browser uses an isolated loopback origin and disposable profile for the entire A → B → A sequence. The test asserts the schema, content and ability to save after returning to A. The HTML report includes a `recovery-identities` attachment with the actual build IDs, commits, manifest SHA-256 digests and origin. Keep that report with the two workflow run links and record the browser and OS versions. This rehearsal supplies evidence for the two downloaded builds in the tested browser modes. A staging or production hosting rehearsal is a separate check.
+
 ## During an incident
 
 Stop rollout and preserve current release artifacts and evidence. Verify the retained artifact against its manifest and establish schema compatibility before any rollback. Publish the exact retained artifact only under the approved incident and deployment procedure; do not rebuild it. Wait for the previous worker to be discovered and users to accept the update. Confirm build ID, launch, and synthetic-note persistence in the target environment. Existing tabs can continue to run the current build until updated; a server-side file replacement alone does not move every client. Record deployment identity, decisions and results. If old code cannot read the schema, prepare a forward fix instead; never delete or reset IndexedDB to force recovery.
