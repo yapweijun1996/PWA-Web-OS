@@ -36,7 +36,7 @@ npx playwright install chromium firefox
 npm run e2e         # Playwright in Chromium and Firefox (set PW_PORT to change the port)
 ```
 
-Pushing to `main` deploys `dist/` to GitHub Pages through `.github/workflows/pages.yml`. Notes stay in the visitor's browser and are never uploaded.
+Pushing to `main` tests and deploys `dist/` to GitHub Pages, then checks the live launch URL and files against the retained manifest. The [recovery runbook](docs/RECOVERY_RUNBOOK.md#check-the-live-release) describes the check and how to rerun it without deploying. Notes stay in the visitor's browser and are never uploaded.
 
 ## Development
 

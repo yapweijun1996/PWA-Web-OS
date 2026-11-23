@@ -94,7 +94,8 @@ export function createNotesTransactionRunner() {
     mode: 'readonly' | 'readwrite',
     work: (store: IDBObjectStore, after: AfterRequest, setResult: (value: T) => void) => void,
   ): Promise<T> {
-    const db = await connect();
+    const attempt = connect();
+    const db = await attempt;
     let tx: IDBTransaction;
     try {
       tx = db.transaction(STORE, mode);
@@ -109,7 +110,16 @@ export function createNotesTransactionRunner() {
         if (result) resolve(result.value);
         else reject(databaseError(undefined));
       };
-      tx.onabort = () => reject(failure ?? databaseError(tx.error));
+      tx.onabort = () => {
+        const error = failure ?? databaseError(tx.error);
+        // Firefox may keep a connection write-blocked after a quota abort.
+        // A user retry should reopen the database after space is freed.
+        if (mode === 'readwrite' && error instanceof StorageError && error.code === 'quota' && connection === attempt) {
+          connection = undefined;
+          db.close();
+        }
+        reject(error);
+      };
 
       function guard(action: () => void) {
         try {
