@@ -42,7 +42,9 @@ After a Pages deployment, the `verify-live` job downloads that run's retained ar
 
 For an existing release, open [Deploy to GitHub Pages](https://github.com/yapweijun1996/PWA-Web-OS/actions/workflows/pages.yml) and use **Run workflow** on `main`. Supply the successful push run ID as **release_run**. This runs the live check without deploying. A historical run that no longer matches the live site should fail. Review the job summary for the retained run and artifact and the log for the failing path.
 
-Repository owner `yapweijun1996` is the release contact. Review Actions for failed build, deploy, and live verification jobs. GitHub's personal Actions notification settings govern delivery to the account that triggered the run. Receipt in an owner's notification channel requires separate verification. [GitHub Actions notification delivery](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs)
+Repository owner `yapweijun1996` is the release contact. Review Actions for failed build, deploy, and live verification jobs. GitHub's personal Actions notification settings govern delivery to the account that triggered the run. [GitHub Actions notification delivery](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs)
+
+The check was dispatched from the owner's GitHub account on November 23. The live `54e9662` artifact passed and the earlier `4ef0b87` artifact produced a failed run with a missing asset in the log. Build and deploy were skipped in both runs. The owner's GitHub inbox contained a matching Pages failure notification at 15:36:35 UTC. It was the only new workflow failure notification for this repo in that test window. [Matching release](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45206862645) · [Deliberate mismatch](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45206868172)
 
 Use the live byte check alongside the synthetic browser launch and offline persistence check. The byte check fetches public release assets and uses no note content.
 

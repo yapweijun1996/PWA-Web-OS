@@ -1,6 +1,6 @@
 # Notes acceptance for the November 23 demo
 
-**Full production decision: HOLD.** This record freezes the evidence for the current public demo. The [product specification](PRODUCT_SPEC.md#platform-support) defines the launch matrix and the [case index](STANDARD_COVERAGE.md) defines the scope of the 60 standard cases.
+**Full production decision: HOLD.** This record tracks evidence for the `54e9662` demo. The [product specification](PRODUCT_SPEC.md#platform-support) defines the launch matrix and the [case index](STANDARD_COVERAGE.md) defines the scope of the 60 standard cases.
 
 | Release field | Verified value |
 | --- | --- |
@@ -17,7 +17,7 @@
 - **HTTPS staging evidence** covers Chromium and Firefox on macOS 27.2. Both phases of release replacement plus return to A used the same HTTPS origin within each run. [Staging record](RECOVERY_RUNBOOK.md#rehearsal-with-the-november-23-demo)
 - **Desktop lab evidence** covers the same build on a physical Apple M4 and Windows Server 2025. Both passed. Two macOS VM batches exceeded the editing ceiling. The launch policy records field results as `INSUFFICIENT_DATA` and requires the same build to pass the declared desktop and physical mobile labs. The physical mobile measurements and support floors remain open. [Performance](PERFORMANCE.md)
 
-PASS covers the observation stated in that row. BLOCKED records a required environment or device that is unavailable. NOT_RUN records an unfinished or skipped check. INSUFFICIENT_DATA is the field measurement outcome.
+PASS covers the observation stated in that row. FAIL records a check with a reproduced failure. BLOCKED records a required environment or device that is unavailable. NOT_RUN records an unfinished or skipped check. INSUFFICIENT_DATA is the field measurement outcome.
 
 | ID | Outcome | Observation or remaining evidence |
 | --- | --- | --- |
@@ -45,7 +45,7 @@ PASS covers the observation stated in that row. BLOCKED records a required envir
 | OFF-02 | PASS | CI simulated an unavailable origin with the browser still online, preserved edits and recovered the connection state. |
 | OFF-03 | NOT_APPLICABLE | Notes has zero queued server writes. |
 | OFF-04 | PASS | The same committed note survived offline restarts and the retained-artifact update and rollback. |
-| OFF-05 | NOT_RUN | Chromium hit native quota rejection and retried successfully. Firefox's native quota case was skipped. |
+| OFF-05 | FAIL | Chromium recovered from native quota rejection. The original CI result skipped Firefox. A later check against this retained build reproduced Firefox keeping the draft and last revision while Retry still failed after space was freed. [Quota regression](../e2e/robustness-quota.spec.ts) |
 | OFF-06 | PASS | CI preserved data during blocked and newer schema conditions. A real migration is required when the schema changes. |
 | OFF-07 | PASS | CI verified same-release cache repair and recovery when A's entry file was evicted after B was hosted. |
 | OFF-08 | PASS | CI compared release cache bytes and network traffic, with synthetic notes and backup content absent. |
@@ -79,7 +79,7 @@ PASS covers the observation stated in that row. BLOCKED records a required envir
 | REL-04 | PASS | Both retained manifest digests and all staging phases were verified. The note remained editable after rollback. |
 | REL-05 | PASS | This record binds all 60 cases to the selected build and identifies each required gap. |
 | REL-06 | BLOCKED | Consumer Windows and required installed sessions, physical phones and reader checks still lack full evidence. |
-| REL-07 | NOT_RUN | The pipeline retained failed-check diagnostics and succeeded on the verified demo. A named failure recipient and end-to-end notification check remain open. |
+| REL-07 | PASS | The live check accepted this release and reported an older manifest as a failed Actions run. The owner received the Pages failure in GitHub. Synthetic persistence and mixed-release rejection were verified separately. [Health runbook](RECOVERY_RUNBOOK.md#check-the-live-release) |
 | REL-08 | NOT_APPLICABLE | Notes sends no remote transactions. Local backup import is explicit and repeatable. |
 
 Proceed to a full release when the [release gates](PRODUCTION_READINESS.md) are met on one frozen build. Cross-device backup transfer still requires two physical devices.
