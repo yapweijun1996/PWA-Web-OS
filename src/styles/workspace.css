@@ -54,6 +54,15 @@ svg { flex: none; vertical-align: middle; }
 .muted, .empty-state { color: var(--text-muted); }
 .primary, .primary:hover { background: var(--action-gradient); color: #fff; font-weight: 650; }
 .primary:hover { text-decoration: underline; }
+
+@media (forced-colors: active) {
+  body { background-image: none; }
+  .primary, .primary:hover {
+    background: ButtonFace;
+    color: ButtonText;
+    border-color: ButtonText;
+  }
+}
 .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
 [data-live-regions] { position: absolute; }

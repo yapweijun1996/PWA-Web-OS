@@ -86,6 +86,39 @@ test('production HTML opts into viewport-fit and workspace CSS uses all four saf
   }
 });
 
+test('forced colors keep primary actions readable on hover in both themes', async ({ page }) => {
+  await page.emulateMedia({ forcedColors: 'active', colorScheme: 'dark' });
+  await page.goto('./');
+  expect(await page.evaluate(() => matchMedia('(forced-colors: active)').matches)).toBe(true);
+  const workspace = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+  await page.getByRole('region', { name: 'Workspace launcher' }).getByRole('button', { name: 'Notes' }).click();
+  const action = page.getByRole('button', { name: 'New note' });
+  const palette = await action.evaluate((button) => {
+    const sample = document.createElement('button');
+    sample.hidden = true;
+    sample.style.color = 'ButtonText';
+    sample.style.backgroundColor = 'ButtonFace';
+    button.after(sample);
+    const style = getComputedStyle(sample);
+    const colors = { text: style.color, surface: style.backgroundColor };
+    sample.remove();
+    return colors;
+  });
+  for (const theme of ['light', 'dark']) {
+    await workspace.click();
+    await page.locator(`input[name="theme"][value="${theme}"]`).check();
+    await workspace.click();
+    await expect(action).toHaveCSS('color', palette.text);
+    await expect(action).toHaveCSS('background-color', palette.surface);
+
+    await action.hover();
+    await expect(action).toHaveCSS('color', palette.text);
+    await expect(action).toHaveCSS('background-color', palette.surface);
+    await expect(action).toHaveCSS('text-decoration-line', 'underline');
+    await expect(page.locator('body')).toHaveCSS('background-image', 'none');
+  }
+});
+
 async function withinViewport(page: Page, ...controls: Locator[]): Promise<void> {
   const sizes = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   expect(sizes.scroll).toBe(sizes.client);

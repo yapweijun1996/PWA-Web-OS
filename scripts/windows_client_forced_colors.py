@@ -122,7 +122,8 @@ def exercise_forced_colors(name, profile, downloads, url, build, output):
             visible(".workspace-toggle").click()
             if theme == "light":
                 visible(".launcher-tile").click()
-            visible(".notes-list .primary").click()
+            action = visible(".notes-list .primary")
+            action.click()
             title = f"Synthetic {theme} contrast note"
             body = "Check focus, save and reflow. Sample text: \u4e2d\u6587\u7b14\u8bb0."
             visible("#note-title").send_keys(title)
@@ -140,6 +141,34 @@ def exercise_forced_colors(name, profile, downloads, url, build, output):
             """)
             if not is_forced() or not focus["visible"] or focus["style"] == "none" or focus["width"] <= 0:
                 raise AssertionError(f"Expected forced colors and a focus indicator on the editor: {focus}")
+            ActionChains(driver).move_to_element(action).perform()
+            hover = driver.execute_script("""
+                const action = arguments[0];
+                const sample = document.createElement('button');
+                sample.hidden = true;
+                sample.style.color = 'ButtonText';
+                sample.style.backgroundColor = 'ButtonFace';
+                action.after(sample);
+                const system = getComputedStyle(sample);
+                const style = getComputedStyle(action);
+                const label = [...action.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+                const range = new Range();
+                range.selectNode(label);
+                const bounds = range.getBoundingClientRect();
+                const result = {
+                  matchesSystemColors: style.color === system.color && style.backgroundColor === system.backgroundColor,
+                  isHovered: action.matches(':hover'),
+                  text: style.color,
+                  background: style.backgroundColor,
+                  wallpaperHidden: getComputedStyle(document.body).backgroundImage === 'none',
+                  label: {x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height},
+                  devicePixelRatio: window.devicePixelRatio,
+                };
+                sample.remove();
+                return result;
+            """, action)
+            if not hover["matchesSystemColors"] or not hover["isHovered"] or not hover["wallpaperHidden"]:
+                raise AssertionError(f"Expected a readable hovered primary action in forced colors: {hover}")
             screenshot = output / f"{name}-{theme}-forced-colors.png"
             if not driver.save_screenshot(str(screenshot)):
                 raise AssertionError(f"Failed to capture {screenshot.name}")
@@ -155,6 +184,7 @@ def exercise_forced_colors(name, profile, downloads, url, build, output):
             assert visible("#note-body").get_property("value") == body
             assert driver.execute_script("return document.documentElement.dataset.theme") == theme
             results.append({"theme": theme, "forcedColors": True, "editorFocus": focus,
-                            "savedAndReopenedExactNote": True, "screenshot": screenshot.name})
+                            "hoveredNewNote": hover, "savedAndReopenedExactNote": True,
+                            "screenshot": screenshot.name})
         return {"browser": name, "browserVersion": driver.capabilities["browserVersion"],
                 "buildId": build, "themes": results, "outcome": "PASS"}
