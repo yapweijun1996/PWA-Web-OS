@@ -43,7 +43,16 @@ export function createBackupMenu(
   const message = element('p', undefined, 'feedback');
   message.hidden = true;
   actions.append(exportButton, restoreButton, file);
-  menu.append(element('summary', 'Backup and restore'), actions, message);
+  const summary = element('summary', 'Backup and restore');
+  menu.append(summary, actions, message);
+  // Escape closes the open disclosure and returns focus to its summary. The restore
+  // dialog keeps its own native Escape handling.
+  menu.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !menu.open || dialog.open) return;
+    event.preventDefault();
+    menu.open = false;
+    summary.focus();
+  });
 
   const dialog = element('dialog');
   const heading = element('h2', 'Restore preview');

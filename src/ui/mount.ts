@@ -10,7 +10,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const { polite, assertive, feedback } = createFeedback();
   const theme = createThemeControl(deps.prefs, feedback);
   const app = element('div', undefined, 'workspace');
-  const header = element('header', undefined, 'app-header');
+  const header = element('div', undefined, 'app-header');
   const brand = element('div');
   brand.append(element('p', 'Local workspace', 'eyebrow'), element('h1', 'PWA Web OS'));
   header.append(brand, theme);
@@ -54,9 +54,14 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const notes = createNotes(deps.storage.repository, feedback, setRoute, openLauncher);
   const backup = createBackupMenu(deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback);
   const tools = element('div', undefined, 'workspace-tools');
+  tools.setAttribute('role', 'region');
+  tools.setAttribute('aria-label', 'Connection status and backup');
   tools.append(connection, backup.menu);
   grid.append(rail, launcher, notes.listPane, notes.editorPane);
-  app.append(header, demo, tools, update, notes.issue, grid, backup.dialog);
+  // The banner landmark holds the brand, theme control and the permanent demo notice.
+  const banner = element('header');
+  banner.append(header, demo);
+  app.append(banner, tools, update, notes.issue, grid, backup.dialog);
   setRoute('launcher');
   root.replaceChildren(app);
   // The update controller makes #app inert while it switches builds. Keep the live

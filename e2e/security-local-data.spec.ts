@@ -219,9 +219,12 @@ async function expectReleaseCache(page: Page, appUrl: URL, paths: string[]): Pro
       const entries = await Promise.all(requests.map(async (request) => {
         const response = await cache.match(request);
         if (!response) throw new Error('Missing cached response');
+        const copy = response.clone();
         const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', await response.arrayBuffer()));
         const digest = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
-        return { url: request.url, method: request.method, digest };
+        // The worker keeps one metadata record about retained releases. Read it so the test can inspect it.
+        const text = request.url.endsWith('/.pwa-previous-releases') ? await copy.text() : undefined;
+        return { url: request.url, method: request.method, digest, text };
       }));
       return { name, entries };
     })),
@@ -229,5 +232,15 @@ async function expectReleaseCache(page: Page, appUrl: URL, paths: string[]): Pro
   expect(inventory.build).toBeTruthy();
   expect(inventory.stores.map(({ name }) => name)).toEqual([`pwa-web-os:release:${inventory.build}`]);
   // Compare both keys and exact production bytes, so an asset URL cannot conceal cached note data.
-  expect(inventory.stores[0].entries.sort((a, b) => a.url.localeCompare(b.url))).toEqual(expected.sort((a, b) => a.url.localeCompare(b.url)));
+  const entries = inventory.stores[0].entries;
+  const metadata = entries.filter(({ url }) => url.endsWith('/.pwa-previous-releases'));
+  const assets = entries.filter(({ url }) => !url.endsWith('/.pwa-previous-releases'))
+    .map(({ url, method, digest }) => ({ url, method, digest }));
+  expect(assets.sort((a, b) => a.url.localeCompare(b.url))).toEqual(expected.sort((a, b) => a.url.localeCompare(b.url)));
+  // The retained-release metadata record is allowed, but it must stay small and free of note content.
+  expect(metadata.length).toBeLessThanOrEqual(1);
+  for (const record of metadata) {
+    expect(record.text?.length ?? 0, 'metadata record stays small').toBeLessThan(4096);
+    expect(containsNotes(record.text ?? ''), 'metadata record holds no note content').toBe(false);
+  }
 }
