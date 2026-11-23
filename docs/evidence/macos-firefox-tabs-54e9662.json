@@ -1,0 +1,36 @@
+{
+  "outcome": "PASS",
+  "startedAt": "2026-11-23T15:05:27.871476+00:00",
+  "finishedAt": "2026-11-23T15:05:41.119586+00:00",
+  "os": "26.6.2",
+  "mode": "Headed retail Mozilla Firefox ordinary tab",
+  "url": "https://yapweijun1996.github.io/PWA-Web-OS/",
+  "buildId": "b-mwtdek2h54e9662",
+  "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+  "distinctBrowserProcesses": 3,
+  "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05",
+  "offlineMethod": "Browser-only local rejecting proxy",
+  "sessions": [
+    {
+      "phase": 1,
+      "version": "160.0.1",
+      "probe": 404,
+      "build": "b-mwtdek2h54e9662",
+      "action": "Created online"
+    },
+    {
+      "phase": 2,
+      "version": "160.0.1",
+      "probe": 0,
+      "build": "b-mwtdek2h54e9662",
+      "action": "Edited offline"
+    },
+    {
+      "phase": 3,
+      "version": "160.0.1",
+      "probe": 0,
+      "build": "b-mwtdek2h54e9662",
+      "action": "Read exact offline edit"
+    }
+  ]
+}

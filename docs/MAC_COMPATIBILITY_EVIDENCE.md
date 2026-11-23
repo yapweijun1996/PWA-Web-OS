@@ -26,3 +26,7 @@ On 2026-11-23, a local production build from `95e8a40` (`b-mwtcz2g595e8a40`) ran
 ## Chrome installed app on the deployed demo
 
 On 2026-11-23, Chrome 158.0.8127.36 on macOS 26.6.2 installed the deployed `54e9662` demo through Chrome's address bar in a disposable profile. The install created a macOS app shortcut for that profile. All three launches used the actual installed app ID and reported `display-mode: standalone` with build `b-mwtdek2h54e9662`. The first process created and saved a synthetic note online. During two fresh browser processes, a local rejecting proxy was configured for the test Chrome instance. An uncached request returned 404 online and failed on each later launch. The app saved an edit during the first offline session and read its exact value in the second. The test profile and its shortcut were removed. [Session evidence](evidence/macos-chrome-installed-54e9662.json) · [Deployed artifact](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
+
+## Firefox regular tab on the deployed demo
+
+On the same macOS 26.6.2 VM, Mozilla-signed Firefox 160.0.1 opened the deployed `54e9662` demo in three distinct headed browser processes using one disposable test profile. The served worker digest matched the release manifest. An uncached request returned 404 during the online setup and failed in both later sessions under a browser-only rejecting proxy. Firefox saved the note, restarted offline, edited it, and compared its exact value after another offline restart. [Session evidence](evidence/macos-firefox-tabs-54e9662.json)
