@@ -6,6 +6,8 @@
 
 On 2026-11-23, a Windows Server 2025 runner (10.0.26100) served the retained `4ef0b87` build `b-mwtat7jh4ef0b87` on loopback. Headed Google Chrome 157.0.8103.79 and Mozilla Firefox 160.0 each started three times using dedicated persistent profiles. After online setup, each browser started offline twice. An uncached request returned HTTP 404 online and failed to reach the server offline. Each browser read back its previous offline edit. Firefox restored the backup downloaded by Chrome and a repeated import left one note with the expected title and body. [Browser sessions and digests](evidence/windows-tabs-4ef0b87.json) · [Windows run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45185428531) · [Source artifact](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45183715617)
 
+The same workflow passed all six sessions and the repeat import on the retained `54e9662` demo `b-mwtdek2h54e9662`. Its manifest SHA-256 matched the Pages browser suite, the online byte check and the measured performance build. The browsers were Chrome 157.0.8103.79 and Firefox 160.0. [Session evidence](evidence/windows-tabs-54e9662.json) · [Windows run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45197841120) · [Source artifact](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
+
 Consumer Windows minimum versions, installed windows, screen readers, the broader Windows workflow and transfer between physical devices remain open.
 
 ## Earlier Windows candidate

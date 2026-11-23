@@ -2,7 +2,7 @@
 
 ## Pending release tasks
 
-**Full production decision on 2026-11-23: HOLD.** The public Pages deployment serves the Notes demo. A checked implementation item below records the named behavior only. Use the [candidate checklist](docs/PRODUCTION_READINESS.md) for release sign-off.
+**Full production decision on 2026-11-23: HOLD.** GitHub Pages serves the verified Notes demo `b-mwtdek2h54e9662`. Use the [candidate checklist](docs/PRODUCTION_READINESS.md) for full release sign-off.
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
@@ -10,13 +10,21 @@
 | 2 | Run the Windows milestone in normal Chrome and Firefox tabs, followed by Chrome installed and the Firefox web app window. | On one candidate, verify offline cold launch, edit/save/reopen, update deferral and recovery, transfer between profiles, both languages and all three appearance settings. The [Windows report](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run) covers retail Chrome/Firefox restarts and same-machine backup transfer on Windows Server. Consumer Windows, installed modes and the remaining journey still require evidence. |
 | 3 | Complete macOS Chrome tab/installed and Firefox tab, the four iPhone contexts and the four Android contexts. | Record each browser and launch mode against the same build. Use physical phones for keyboard, safe areas and offline relaunch. Record desktop screen reader and iPhone VoiceOver announcements. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
-| 5 | Close the Firefox accessibility evidence gap. | Run the affected Firefox checks on a working configuration and review manual contrast findings. [Firefox accessibility evidence](docs/FIREFOX_AXE.md) |
+| 5 | Finish manual contrast and assistive-technology checks. | The automated Chromium and Firefox axe suites pass on the release runner. Review contrast findings and listen for the required announcements on the declared desktop and iPhone readers. [Firefox accessibility evidence](docs/FIREFOX_AXE.md) |
 | 6 | Run the candidate performance and recovery gates. | Capture cold launch, offline reopen and editor latency on the declared desktop and mobile baselines. Record the field-data decision. Rehearse retained release bytes on the intended staging host and verify note integrity after rollback. [Lab results](docs/PERFORMANCE.md) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
 | 7 | Close the release record and verify the deployed artifact. | Bind the [60-case coverage index](docs/STANDARD_COVERAGE.md) to dated results, record exceptions, and verify the live build identity and offline note smoke check after rollout. The owner has [authorized deployment](docs/M0_DECISIONS.md#direction-and-audience-owner-confirmed-2026-11-23). |
 
 The top bar checks the hosting origin when visible. A real Chromium and Firefox regression covers OFF-02: the server stops serving its release while the OS remains online, local editing and saving continue, and the next successful check restores the online status. [Origin outage test](e2e/pwa.spec.ts)
 
-### Candidate evidence from 2026-11-23
+### Current demo evidence from 2026-11-23
+
+- Source `54e9662`, build `b-mwtdek2h54e9662`. The Ubuntu x64 release runner passed 90 unit tests and 145 browser tests in Chromium 156.0.8078.4 and Firefox 157.0. The Firefox native quota fixture was the sole skip. The deployed files matched all 12 SHA-256 entries in the retained manifest. [Pages deployment and test report](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
+- Chrome 158.0.8127.36 on macOS 26.6.2 followed the live site's custom 404 link, prepared offline use and saved a synthetic note. It restarted offline, edited and saved, then restarted offline again and read the same edit. A controlled navigation opened that same unknown URL offline.
+- The retained release rehearsal passed in both engines on loopback. See the [recovery identities and results](docs/RECOVERY_RUNBOOK.md#rehearsal-with-the-november-23-demo).
+- The Windows Server 2025 lab passed all six Chrome and Firefox tab sessions and same-host backup transfer on the same artifact. [Windows browser results](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run)
+- The same retained build exceeded the 200 ms editor response p75 ceiling in two macOS VM batches. [Performance evidence](docs/PERFORMANCE.md)
+
+### Earlier candidate evidence from 2026-11-23
 
 - Source `a437c29`, public build `b-mwtadq5ya437c29`. All 11 deployed files matched the retained manifest by SHA-256. GitHub lists the recovery archive digest as `fe8ea5a274ed2bc96996c0cf41cccf896926f78e16dd8c503e4d85d281a78acf`. [Pages run 45181689339](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45181689339)
 - A clean macOS 26.6.2 checkout at that source passed type checking, the production build, 87 unit tests and 130 Playwright tests in Chromium 159.0.8154.6 and Firefox 159.0. The local build was `b-mwtadiora437c29`. Eight Firefox cases were skipped: seven [axe checks](docs/FIREFOX_AXE.md) and the Chromium-only quota fixture.

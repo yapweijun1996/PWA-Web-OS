@@ -18,6 +18,8 @@ At `9599c6e`, the Ubuntu Pages suite recorded 134 passes, the same seven Firefox
 
 On the same Ubuntu workstation, Playwright 1.64.0 with Firefox 157.0 completed the seven headed axe tests and the reduced-motion update test against the same application source. Both runs used axe-core 4.14.1 and the same four tags and page states. The test toolchain pin aligns the axe peer and Playwright runtime on one version. With that pin applied to `95e8a40`, the full two-engine suite passed 145 tests, including all 14 browser axe cases. The Firefox quota fixture was the sole skip. Before upgrading either tool, verify the complete axe matrix in both engines against the new pin. [Playwright 1.64.0 browser versions](https://github.com/microsoft/playwright/releases/tag/v1.64.0#browser-versions)
 
+On Ubuntu 24.04 x64, the hosted Pages run at `54e9662` matched those counts with no failed or flaky tests. Its browser-evidence manifest matched the retained candidate. The deploy job succeeded. [Pages result](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
+
 ## Retest the exception
 
 To retest Firefox 159.0, use a disposable checkout with Playwright 1.65.1 and its bundled Firefox. Build the production assets as in the README. Choose a free port and run the original scan with the override enabled, then run the remaining matrix if that succeeds.

@@ -1,0 +1,218 @@
+{
+  "batches": [
+    {
+      "protocol": "notes-desktop-lab-v1",
+      "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+      "trackedChanges": false,
+      "startedAt": "2026-11-23T14:38:44.293Z",
+      "attempts": 7,
+      "budgetsMs": {
+        "coldLaunch": 2500,
+        "offlineReopen": 2000,
+        "editFrame": 200
+      },
+      "environment": {
+        "platform": "darwin",
+        "osRelease": "26.6.2",
+        "cpu": "Apple M4 (Virtual)",
+        "logicalCpus": 6,
+        "memoryGiB": 6,
+        "initialLoadAverage": [
+          1.18017578125,
+          2.33740234375,
+          3.44677734375
+        ],
+        "node": "v24.22.2",
+        "playwright": "1.64.0",
+        "browser": "Google Chrome (headless)",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "browserVersion": "158.0.8127.36"
+      },
+      "samples": [
+        {
+          "run": 1,
+          "coldLaunch": 404,
+          "offlineReopen": 529,
+          "editFrame": 213
+        },
+        {
+          "run": 2,
+          "coldLaunch": 172,
+          "offlineReopen": 309,
+          "editFrame": 161
+        },
+        {
+          "run": 3,
+          "coldLaunch": 221,
+          "offlineReopen": 866,
+          "editFrame": 161
+        },
+        {
+          "run": 4,
+          "coldLaunch": 272,
+          "offlineReopen": 402,
+          "editFrame": 81
+        },
+        {
+          "run": 5,
+          "coldLaunch": 175,
+          "offlineReopen": 605,
+          "editFrame": 205
+        },
+        {
+          "run": 6,
+          "coldLaunch": 225,
+          "offlineReopen": 497,
+          "editFrame": 135
+        },
+        {
+          "run": 7,
+          "coldLaunch": 302,
+          "offlineReopen": 522,
+          "editFrame": 74
+        }
+      ],
+      "field": {
+        "status": "INSUFFICIENT_DATA",
+        "observedSamples": 0
+      },
+      "source": "retained-artifact",
+      "harnessCommit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+      "buildId": "b-mwtdek2h54e9662",
+      "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05",
+      "workerSha256": "e0851e456809e31bb301669a13dd7b23373cf158fe3e00ad37db69c3717b30b2",
+      "summaryMs": {
+        "coldLaunch": {
+          "min": 172,
+          "median": 225,
+          "p75": 302,
+          "max": 404
+        },
+        "offlineReopen": {
+          "min": 309,
+          "median": 522,
+          "p75": 605,
+          "max": 866
+        },
+        "editFrame": {
+          "min": 74,
+          "median": 161,
+          "p75": 205,
+          "max": 213
+        }
+      },
+      "status": "FAIL",
+      "endedAt": "2026-11-23T14:39:08.314Z"
+    },
+    {
+      "protocol": "notes-desktop-lab-v1",
+      "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+      "trackedChanges": false,
+      "startedAt": "2026-11-23T14:40:30.708Z",
+      "attempts": 7,
+      "budgetsMs": {
+        "coldLaunch": 2500,
+        "offlineReopen": 2000,
+        "editFrame": 200
+      },
+      "environment": {
+        "platform": "darwin",
+        "osRelease": "26.6.2",
+        "cpu": "Apple M4 (Virtual)",
+        "logicalCpus": 6,
+        "memoryGiB": 6,
+        "initialLoadAverage": [
+          1.1474609375,
+          2.02294921875,
+          3.1953125
+        ],
+        "node": "v24.22.2",
+        "playwright": "1.64.0",
+        "browser": "Google Chrome (headless)",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "browserVersion": "158.0.8127.36"
+      },
+      "samples": [
+        {
+          "run": 1,
+          "coldLaunch": 779,
+          "offlineReopen": 628,
+          "editFrame": 102
+        },
+        {
+          "run": 2,
+          "coldLaunch": 155,
+          "offlineReopen": 702,
+          "editFrame": 155
+        },
+        {
+          "run": 3,
+          "coldLaunch": 153,
+          "offlineReopen": 442,
+          "editFrame": 75
+        },
+        {
+          "run": 4,
+          "coldLaunch": 164,
+          "offlineReopen": 717,
+          "editFrame": 56
+        },
+        {
+          "run": 5,
+          "coldLaunch": 138,
+          "offlineReopen": 586,
+          "editFrame": 78
+        },
+        {
+          "run": 6,
+          "coldLaunch": 147,
+          "offlineReopen": 505,
+          "editFrame": 214
+        },
+        {
+          "run": 7,
+          "coldLaunch": 118,
+          "offlineReopen": 535,
+          "editFrame": 201
+        }
+      ],
+      "field": {
+        "status": "INSUFFICIENT_DATA",
+        "observedSamples": 0
+      },
+      "source": "retained-artifact",
+      "harnessCommit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+      "buildId": "b-mwtdek2h54e9662",
+      "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05",
+      "workerSha256": "e0851e456809e31bb301669a13dd7b23373cf158fe3e00ad37db69c3717b30b2",
+      "summaryMs": {
+        "coldLaunch": {
+          "min": 118,
+          "median": 153,
+          "p75": 164,
+          "max": 779
+        },
+        "offlineReopen": {
+          "min": 442,
+          "median": 586,
+          "p75": 702,
+          "max": 717
+        },
+        "editFrame": {
+          "min": 56,
+          "median": 102,
+          "p75": 201,
+          "max": 214
+        }
+      },
+      "status": "FAIL",
+      "endedAt": "2026-11-23T14:40:53.191Z"
+    }
+  ]
+}

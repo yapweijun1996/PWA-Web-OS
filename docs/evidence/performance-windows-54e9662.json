@@ -1,0 +1,107 @@
+{
+  "protocol": "notes-desktop-lab-v1",
+  "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+  "trackedChanges": false,
+  "startedAt": "2026-11-23T14:48:29.778Z",
+  "attempts": 7,
+  "budgetsMs": {
+    "coldLaunch": 2500,
+    "offlineReopen": 2000,
+    "editFrame": 200
+  },
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26100",
+    "cpu": "AMD EPYC 7763 64-Core Processor                ",
+    "logicalCpus": 4,
+    "memoryGiB": 15.994869232177734,
+    "initialLoadAverage": [
+      0,
+      0,
+      0
+    ],
+    "node": "v24.22.3",
+    "playwright": "1.64.0",
+    "browser": "Google Chrome (headless)",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "browserVersion": "157.0.8103.79"
+  },
+  "samples": [
+    {
+      "run": 1,
+      "coldLaunch": 1944,
+      "offlineReopen": 251,
+      "editFrame": 45
+    },
+    {
+      "run": 2,
+      "coldLaunch": 211,
+      "offlineReopen": 279,
+      "editFrame": 39
+    },
+    {
+      "run": 3,
+      "coldLaunch": 213,
+      "offlineReopen": 277,
+      "editFrame": 41
+    },
+    {
+      "run": 4,
+      "coldLaunch": 213,
+      "offlineReopen": 282,
+      "editFrame": 42
+    },
+    {
+      "run": 5,
+      "coldLaunch": 198,
+      "offlineReopen": 289,
+      "editFrame": 41
+    },
+    {
+      "run": 6,
+      "coldLaunch": 205,
+      "offlineReopen": 287,
+      "editFrame": 38
+    },
+    {
+      "run": 7,
+      "coldLaunch": 216,
+      "offlineReopen": 298,
+      "editFrame": 40
+    }
+  ],
+  "field": {
+    "status": "INSUFFICIENT_DATA",
+    "observedSamples": 0
+  },
+  "source": "retained-artifact",
+  "harnessCommit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+  "buildId": "b-mwtdek2h54e9662",
+  "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05",
+  "workerSha256": "e0851e456809e31bb301669a13dd7b23373cf158fe3e00ad37db69c3717b30b2",
+  "summaryMs": {
+    "coldLaunch": {
+      "min": 198,
+      "median": 213,
+      "p75": 216,
+      "max": 1944
+    },
+    "offlineReopen": {
+      "min": 251,
+      "median": 282,
+      "p75": 289,
+      "max": 298
+    },
+    "editFrame": {
+      "min": 38,
+      "median": 41,
+      "p75": 42,
+      "max": 45
+    }
+  },
+  "status": "PASS",
+  "endedAt": "2026-11-23T14:48:48.954Z"
+}
