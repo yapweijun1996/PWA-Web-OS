@@ -37,3 +37,18 @@ Keep Aurora's file space inside the Web OS. The wallpaper, shortcuts, and file b
 4. **Add tools in small slices.** Integrate the chosen Weather tool after the first release, and use Calculator or Settings to test reusable shell entry points. Add the heavier Viewer only after measuring that it leaves Notes startup and offline behavior intact.
 
 The first Aurora review should answer two questions: whether Dock switching keeps the active window obvious, and whether the same Files-to-Preview flow works when the screen changes from floating windows to tiled or full-screen views.
+
+## Feature anchors
+
+These four images are proposed interaction references derived from the selected Aurora visual. They describe the later desktop work. Feature behavior comes from the acceptance column, with product scope governed by the product specification.
+
+| Anchor | Features to build | Prototype acceptance |
+| --- | --- | --- |
+| [01 · Desktop and Dock](assets/aurora-anchor-01-shell.png) | Desktop surface, top bar, workspace shortcuts, static app registry, Dock indicators and an app switcher. | Launch Files and Notes. Switch focus, minimize Notes, and restore the same instance with its draft intact. |
+| [02 · Files and Preview](assets/aurora-anchor-02-files-preview.png) | Workspace folders, breadcrumb, import, selection, Open With, separate Preview window, and export. | Import a sample PNG, find and preview it, then export the original bytes. Show a usable error for an unsupported or unavailable file. |
+| [03 · Window snapping](assets/aurora-anchor-03-window-snap.png) | Focus, resize, snap left and right, maximize, and restore. Provide a window menu with keyboard and click or tap access. | Arrange Files and Notes side by side without dragging. Restore the previous bounds and keep the current note selected. |
+| [04 · Tablet and phone](assets/aurora-anchor-04-adaptive.png) | Tablet two-pane layout, phone single active view, Back to Files, safe-area handling, and touch app switching. | Open the same file on both layouts. Rotate or narrow the viewport and return to Files without losing selection or the active Notes draft. |
+
+Start with 01 and 03 using Notes and a placeholder Files window. Add the real file flow in 02 when the workspace file contract is agreed. Verify 04 throughout the prototype work and repeat it against the real flow once available.
+
+Implement the app switcher from actual window state. In 01, Files is visible behind Notes and should be listed as open in the background, rather than minimized. The inherited Cloud entry, device indicators, capacity values, and rich-text controls are visual placeholders.

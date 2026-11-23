@@ -60,5 +60,7 @@ For each item below, launch Notes online once to complete setup. Then disconnect
 
 ## Post-release candidates
 
+- [ ] Prototype the Aurora Dock and window manager using the [feature anchors](docs/AURORA_WORKSPACE_PLAN.md#feature-anchors). Verify opening, switching, minimizing, restoring, and snapping Notes and a placeholder Files window.
+- [ ] Validate the Aurora Files-to-Preview flow across desktop, tablet, and phone after agreeing on a workspace file contract. Verify import and export, viewport changes, and preservation of the current selection and Notes draft.
 - [ ] Evaluate [Public-API](https://github.com/yapweijun1996/Public-API) as a source of optional online tools. Verify provider terms, browser access, request limits, and offline behavior before selecting any demo. Keep requests independent of Notes data.
 - [ ] Evaluate the [one-model Viewer pilot](docs/BLENDER_GALLERY_REUSE.md#after-m5-one-model-viewer-pilot) with a cleared GLB, fallback, and device budget.
