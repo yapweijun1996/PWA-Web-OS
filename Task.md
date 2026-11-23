@@ -21,6 +21,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 - Source `37ad1b4`, build `b-mwtnv4pp37ad1b4`. Pages passed 150 browser tests with zero skips, then verified the launch URL and 12 hosted files. The saved theme applies before the workspace script loads. Stable Chrome followed the live custom 404 link and retained Dark and the exact note body through two offline process restarts. [Candidate evidence](docs/DEMO_ACCEPTANCE_37AD1B4.md)
 - The Sequoia 15.8.3 Arm64 guest passed Chrome tab, Chrome installed app, and Firefox tab. All three saved offline and read the exact edit after restarting. [Sequoia report](docs/evidence/macos-sequoia-15-8-3-37ad1b4.json)
 - Chromium and Firefox preserved the note through `b9dcafa → 37ad1b4 → b9dcafa` on HTTPS staging after rejecting a mixed candidate. [Recovery evidence](docs/evidence/recovery-mixed-37ad1b4.json)
+- Windows 11 25H2 Arm64 Chrome and Firefox passed the two-tab stale-write and backup rejection checks. Both recovered the draft as a separate note and retained the exact saved records after rejecting a malformed file and a conflicting batch. [Data safety report](docs/evidence/windows-data-safety-37ad1b4.json)
 
 ### Update focus demo evidence from 2026-11-24
 
