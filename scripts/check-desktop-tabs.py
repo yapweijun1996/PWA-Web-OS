@@ -124,6 +124,7 @@ def main():
     parser.add_argument("artifact", type=Path)
     parser.add_argument("report", type=Path)
     parser.add_argument("--client-preferences", action="store_true")
+    parser.add_argument("--client-data-safety", action="store_true")
     args = parser.parse_args()
     manifest_bytes = (args.artifact / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
@@ -132,6 +133,8 @@ def main():
               "startedAt": datetime.now(timezone.utc).isoformat(), "os": platform.platform(),
               "mode": "Headed desktop browser tabs in isolated profiles on one host", "sessions": [],
               "outcome": "INCOMPLETE"}
+    if args.client_data_safety:
+        report["dataSafety"] = []
     args.report.parent.mkdir(parents=True, exist_ok=True)
     try:
         with tempfile.TemporaryDirectory(prefix="pwa-tabs-", dir=os.environ.get("RUNNER_TEMP")) as tmp:
@@ -155,6 +158,14 @@ def main():
                                 manifest["buildId"], args.client_preferences,
                             ))
                     report["transferSha256"] = hashlib.sha256(transfer.read_bytes()).hexdigest()
+                    if args.client_data_safety:
+                        from windows_client_data_safety import exercise_data_safety
+                        for name in ("chrome", "firefox"):
+                            profile = root / f"{name}-data-safety"
+                            profile.mkdir()
+                            report["dataSafety"].append(exercise_data_safety(
+                                name, profile, downloads, url, manifest["buildId"],
+                            ))
                 finally:
                     server.shutdown()
                     thread.join()
