@@ -64,6 +64,42 @@ test('reopens the built app shell offline in the same browser context', async ({
   }
 });
 
+test('returns visitors from an unknown path to Notes before and after offline setup', async ({ page, context }) => {
+  const server = await serveReleases('dist');
+  const missing = new URL('old-link/nested?source=bookmark', server.url).href;
+  try {
+    expect((await page.goto(missing))?.status()).toBe(404);
+    await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible();
+    await page.getByRole('link', { name: 'Open PWA Web OS', exact: true }).click();
+    await expect(page).toHaveURL(server.url);
+    await waitForOfflineReady(page);
+    await page.locator('.launcher-tile').click();
+    await page.getByRole('button', { name: 'New note' }).click();
+    await page.getByLabel('Title', { exact: true }).fill('Unknown path recovery note');
+    await page.getByLabel('Body', { exact: true }).fill('Saved before opening an old link');
+    await expect(page.locator('.save-status')).toHaveText('Saved on this device');
+
+    expect((await page.goto(missing))?.status()).toBe(200);
+    await waitForOfflineReady(page);
+    const build = await page.evaluate(() => window.__pwaUpdate?.buildId);
+    await page.close();
+    await context.setOffline(true);
+    const cold = await context.newPage();
+    expect((await cold.goto(missing))?.status()).toBe(200);
+    await waitForOfflineReady(cold);
+    expect(await cold.evaluate(() => window.__pwaUpdate?.buildId)).toBe(build);
+    await cold.locator('.launcher-tile').click();
+    await cold.getByRole('button', { name: 'Unknown path recovery note' }).click();
+    await expect(cold.getByLabel('Body', { exact: true })).toHaveValue('Saved before opening an old link');
+    // Non-navigation requests on unknown paths must not return the app shell.
+    await context.setOffline(false);
+    expect(await cold.evaluate(() => fetch('missing.json').then(res => res.status))).toBe(404);
+  } finally {
+    await context.setOffline(false);
+    await server.close();
+  }
+});
+
 test('detects an unavailable origin with a working network and keeps offline edits when it recovers', async ({ page }) => {
   const server = await serveReleases('dist');
   try {

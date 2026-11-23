@@ -32,7 +32,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | SW-09 | Announce progress and reload only into the expected controller | [Real progress and one reload](../e2e/update-notes.spec.ts), [controller timeout](../src/pwa/update-controller.test.ts). |
 | SW-10 | Failed update retains the usable offline editor | [Candidate rejection, offline save and reread](../e2e/update-notes.spec.ts). |
 | SW-11 | Recover with a retained build and preserve editability | [Retained release rehearsal](RECOVERY_RUNBOOK.md). Repeat on the intended staging host with the candidate pair. |
-| SW-12 | Recover from an unknown navigation within the app scope | Test a previously prepared workspace using an unknown path online and offline. Also check the hosting response on an uncontrolled first navigation. |
+| SW-12 | Recover from an unknown navigation within the app scope | [Unknown-path recovery](../e2e/pwa.spec.ts) exercises the custom 404 with a fresh profile, then opens the same URL online and offline after setup and reads the committed note. Verify the custom 404 on the deployed host. |
 
 ## Offline storage
 

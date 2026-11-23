@@ -35,7 +35,11 @@ export async function serveReleases(initialDist: string) {
       });
       response.end(bytes);
     } catch {
-      response.writeHead(404, { 'Cache-Control': 'no-store' }).end();
+      // Pages serves the project's custom 404 on unknown navigations, with status 404.
+      const navigation = request.headers['sec-fetch-mode'] === 'navigate'
+        && (request.url ?? '').startsWith(base);
+      const fallback = navigation ? await readFile(resolve(dist, '404.html')).catch(() => undefined) : undefined;
+      response.writeHead(404, { 'Cache-Control': 'no-store', 'Content-Type': 'text/html; charset=utf-8' }).end(fallback);
     }
   });
   return {
