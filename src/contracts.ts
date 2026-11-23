@@ -118,7 +118,7 @@ export type UpdateStatus =
   | 'failed'; // activation failed or timed out
 export interface UpdateState {
   status: UpdateStatus;
-  detail?: 'save_failed' | 'other_client' | 'activation_failed' | 'timeout' | 'reload_pending';
+  detail?: 'check_failed' | 'save_failed' | 'other_client' | 'activation_failed' | 'timeout' | 'reload_pending';
 }
 export interface UpdateController {
   getState(): UpdateState;
@@ -133,7 +133,10 @@ export interface UpdateController {
   onOfflineReadyChange(listener: (ready: boolean) => void): () => void;
 }
 
+export type ConnectionState = 'checking' | 'online' | 'offline' | 'unreachable';
+
 export interface AppDeps {
+  observeConnection(listener: (state: ConnectionState) => void): void;
   storage: Storage;
   prefs: PreferenceStore;
   updates: UpdateController;

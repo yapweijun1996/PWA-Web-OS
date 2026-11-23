@@ -93,10 +93,12 @@ export function createUpdateController(): UpdateController {
   function checkForUpdates() {
     void refreshOffline();
     void refreshCandidate();
-    void registration?.update().catch(() => {
-      // An offline poll must not invalidate the installed release or hide a ready candidate.
-      if (navigator.onLine && !attempt && !registration?.waiting) {
-        publish({ status: 'failed', detail: 'activation_failed' });
+    void registration?.update().then(() => {
+      if (state.detail === 'check_failed') publish({ status: 'idle' });
+    }).catch(() => {
+      // Discovery can fail before there is a candidate to activate.
+      if (navigator.onLine && state.status === 'idle' && !attempt && !registration?.waiting) {
+        publish({ status: 'failed', detail: 'check_failed' });
       }
     });
   }
@@ -124,7 +126,7 @@ export function createUpdateController(): UpdateController {
       observeInstall();
       checkForUpdates();
     } catch {
-      publish({ status: 'failed', detail: 'activation_failed' });
+      publish({ status: 'failed', detail: 'check_failed' });
     } finally {
       registering = false;
     }

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { serveReleases } from '../scripts/pwa-test-server';
 
 async function waitForOfflineReady(page: Page) {
   await expect.poll(() => page.evaluate(() => ({
@@ -58,5 +59,42 @@ test('reopens the built app shell offline in the same browser context', async ({
     await waitForOfflineReady(reopened);
   } finally {
     await context.setOffline(false);
+  }
+});
+
+test('detects an unavailable origin with a working network and keeps offline edits when it recovers', async ({ page }) => {
+  const server = await serveReleases('dist');
+  try {
+    await page.goto(server.url);
+    await waitForOfflineReady(page);
+    const status = page.locator('.network-status');
+    await expect(status).toHaveText('Online');
+
+    // Keep the browser network online while the origin serves no release files.
+    server.deploy('dist/missing-release');
+    await page.clock.install();
+    await page.reload();
+    await expect(status).toHaveText('Site unreachable');
+    expect(await page.evaluate(() => navigator.onLine)).toBe(true);
+    await expect(page.locator('.offline-ready')).toBeVisible();
+
+    await page.locator('.launcher-tile').click();
+    await page.getByRole('button', { name: 'New note' }).click();
+    const body = page.getByLabel('Body', { exact: true });
+    await page.getByLabel('Title', { exact: true }).fill('Reachability test');
+    await body.fill('Saved while the origin was unavailable');
+    await expect(page.locator('.save-status')).toHaveText('Saved on this device');
+    await expect(body).toBeFocused();
+
+    server.deploy('dist');
+    await page.clock.fastForward(60_000);
+    await expect(status).toHaveText('Online');
+    await expect(body).toBeFocused();
+    await page.reload();
+    await page.locator('.launcher-tile').click();
+    await page.getByRole('button', { name: 'Reachability test', exact: true }).click();
+    await expect(body).toHaveValue('Saved while the origin was unavailable');
+  } finally {
+    await server.close();
   }
 });

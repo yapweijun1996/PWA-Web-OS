@@ -124,6 +124,19 @@ describe('update decisions with fake browser adapters', () => {
     expect(sw.registration.update).toHaveBeenCalledTimes(2);
   });
 
+  it('recovers from a failed discovery check without claiming activation failed', async () => {
+    const { sw, updates, document } = await start({ waiting: false });
+    vi.stubGlobal('navigator', { serviceWorker: sw, onLine: true });
+    sw.registration.update.mockRejectedValueOnce(new TypeError('Origin unavailable'));
+    document.dispatchEvent(new Event('visibilitychange'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(updates.getState()).toEqual({ status: 'failed', detail: 'check_failed' });
+    expect(updates.isOfflineReady()).toBe(true);
+    await updates.retry();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(updates.getState()).toEqual({ status: 'idle' });
+  });
+
   it('stays idle without service workers', async () => {
     const { sw, updates } = await start({ supported: false });
     await updates.accept();

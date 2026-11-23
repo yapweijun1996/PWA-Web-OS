@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, expect, onTestFinished, test, vi } from 'vitest';
 import {
   BackupError, LIMITS, StorageError, type BackupErrorCode, type BackupService, type FlushResult, type Note,
   type NoteDraft, type NoteRepository, type UpdateState,
 } from '../contracts';
 import { createPreferenceStore } from '../prefs';
+import { observeConnection } from '../pwa/connection';
 import { mountApp } from './mount';
 
 function deferred<T>() {
@@ -60,6 +61,7 @@ function fixture(backupOverride?: Partial<BackupService>) {
   const readiness = new Set<(ready: boolean) => void>();
   const retry = vi.fn(async () => {});
   mountApp(root, {
+    observeConnection(listener) { onTestFinished(observeConnection(listener)); },
     buildId: 'test-build',
     prefs: createPreferenceStore(),
     storage: {
@@ -127,9 +129,11 @@ const lastStatus = () => node('[role="status"]').textContent;
 
 beforeEach(() => {
   vi.useFakeTimers();
+  vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { headers: { 'content-type': 'application/manifest+json' } })));
   window.localStorage.clear();
 });
 afterEach(() => {
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
   vi.useRealTimers();
 });
@@ -276,6 +280,7 @@ test('connection, offline readiness and fake update states do not change editor 
   expect(node('.offline-ready').hidden).toBe(false);
   online.mockReturnValue(true);
   window.dispatchEvent(new Event('online'));
+  await tick();
   expect(node('.network-status').textContent).toBe('Online');
   expect(node('.offline-ready').hidden).toBe(false);
 

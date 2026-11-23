@@ -53,6 +53,7 @@ export function updateCopy({ status, detail }: UpdateState): { heading: Copy; me
             : 'update.saveFirst',
       };
     case 'failed':
+      if (detail === 'check_failed') return { heading: 'update.checkFailed', message: 'update.checkAgain' };
       return {
         heading: 'update.failed',
         message: detail === 'timeout'

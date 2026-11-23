@@ -158,13 +158,18 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
   expect(browserRequests.some(({ url }) => url === appUrl.href)).toBe(true);
   expect(recordedPreview.requests.some(({ url }) => url === new URL('sw.js', appUrl).href)).toBe(true);
   expect(recordedPreview.requests.some(({ url }) => url === new URL('manifest.webmanifest', appUrl).href)).toBe(true);
+  const probeUrl = new URL('manifest.webmanifest', appUrl).href;
+  expect(recordedPreview.requests.some(request => request.method === 'HEAD' && request.url === probeUrl)).toBe(true);
   for (const [source, observed] of [['browser', browserRequests], ['origin', recordedPreview.requests]] as const) {
-    const unexpected = observed.filter(({ method, url, body }) => method !== 'GET' || !allowed.has(url) || body !== null);
+    const unexpected = observed.filter(({ method, url, body }) => {
+      const allowedMethod = method === 'GET' || (method === 'HEAD' && url === probeUrl);
+      return !allowedMethod || !allowed.has(url) || body !== null;
+    });
     const summary = unexpected.map(({ method, url, body }) => ({
       method, hasBody: body !== null,
       urlKind: new URL(url).pathname === '/favicon.ico' ? 'default favicon' : 'unlisted request',
     }));
-    expect(summary, `${source}: only bodyless same-origin GETs for known app assets`).toEqual([]);
+    expect(summary, `${source}: only bodyless asset GETs and the same-origin manifest HEAD`).toEqual([]);
     expect(observed.some((request) => containsNotes(JSON.stringify(request))),
       `${source}: no synthetic note or backup data in requests`).toBe(false);
   }

@@ -1,7 +1,7 @@
 import { createLanguage, type MessageKey } from '../i18n';
 import { readLocale } from '../prefs/locale';
 import { localizedUi, type LocalizedUi } from './localized';
-import type { AppDeps, UpdateState } from '../contracts';
+import type { AppDeps, ConnectionState, UpdateState } from '../contracts';
 import { createBackupMenu } from './backup';
 import { button, createFeedback, element } from './dom';
 import { icon } from './icons';
@@ -109,7 +109,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 
   let current: UpdateState | undefined;
   let requesting = false;
-  let lastOnline: boolean | undefined;
+  let wasDisconnected = false;
   deps.updates.setFlush(async () => {
     await backup.settle();
     return notes.flush();
@@ -118,9 +118,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   renderUpdate(deps.updates.getState());
   deps.updates.onOfflineReadyChange(renderReadiness);
   renderReadiness();
-  window.addEventListener('online', renderConnection);
-  window.addEventListener('offline', renderConnection);
-  renderConnection();
+  deps.observeConnection(renderConnection);
   startClock(clock, ui);
 
   function renderSurface(): void {
@@ -187,13 +185,17 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     hideNotes(false);
   }
 
-  function renderConnection(): void {
-    const online = navigator.onLine;
-    if (online === lastOnline) return;
-    ui.text(network, online ? 'shell.online' : 'shell.offline');
-    network.toggleAttribute('data-offline', !online);
-    if (!online || lastOnline !== undefined) feedback.announce(online ? 'shell.reconnected' : 'shell.offline');
-    lastOnline = online;
+  function renderConnection(state: ConnectionState): void {
+    const label = `shell.${state}` as const;
+    ui.text(network, label);
+    network.toggleAttribute('data-offline', state !== 'online');
+    if (state === 'offline' || state === 'unreachable') {
+      wasDisconnected = true;
+      feedback.announce(label);
+    } else if (state === 'online' && wasDisconnected) {
+      wasDisconnected = false;
+      feedback.announce('shell.reconnected');
+    }
   }
 
   function renderReadiness(): void {
