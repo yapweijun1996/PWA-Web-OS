@@ -1,0 +1,185 @@
+{
+  "actionsRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45282895116",
+  "workflowCommit": "b9b401fa082145a4eb5f3a614c87df0c8cd14758",
+  "artifactId": 14869482842,
+  "artifactDigest": "sha256:8bf3f39370595d91e8f0317550c490dbfb83225193aa57f7baf0a5f76854e3b2",
+  "source": {
+    "archive": "recovery-37ad1b41d4be8d96212ce60e59532470fd19f6c9-45249652707-1",
+    "pagesRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45249652707",
+    "pagesConclusion": "success",
+    "archiveDigest": "sha256:df88ad6e628fe22e30f5767640cbe7f5114578e5ea947874a70a7535441e672f"
+  },
+  "environment": {
+    "version": "10.0.26200",
+    "edition": "Enterprise",
+    "installationType": "Client",
+    "architecture": "ARM 64-bit Processor",
+    "displayVersion": "25H2",
+    "updateBuildRevision": 9974,
+    "caption": "Microsoft Windows 11 Enterprise"
+  },
+  "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+  "buildId": "b-mwtnv4pp37ad1b4",
+  "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+  "startedAt": "2026-11-23T22:47:34.399426+00:00",
+  "finishedAt": "2026-11-23T22:49:05.011613+00:00",
+  "checks": [
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "zoomMethod": "Chrome default page zoom setting",
+      "pageZoomRatio": 2.0,
+      "normal": {
+        "editorViewport": {
+          "dpr": 1,
+          "height": 637,
+          "scrollWidth": 1013,
+          "visualScale": 1,
+          "width": 1013
+        },
+        "visibleFocusPath": [
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Minimize",
+          "Maximize",
+          "Close",
+          "New note",
+          "Title",
+          "Body",
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Minimize",
+          "Maximize",
+          "Close",
+          "New note",
+          "Saved note"
+        ],
+        "exactNoteReopened": true
+      },
+      "enlarged": {
+        "editorViewport": {
+          "dpr": 2,
+          "height": 318,
+          "scrollWidth": 506,
+          "visualScale": 1,
+          "width": 506
+        },
+        "visibleFocusPath": [
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Back to workspace",
+          "New note",
+          "Title",
+          "Body",
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Back to workspace",
+          "New note",
+          "Saved note"
+        ],
+        "exactNoteReopened": true
+      },
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "zoomMethod": "Firefox tabs.setZoom in a temporary add-on",
+      "pageZoomRatio": 2.0,
+      "normal": {
+        "editorViewport": {
+          "dpr": 1,
+          "height": 707,
+          "scrollWidth": 1164,
+          "visualScale": 1,
+          "width": 1164
+        },
+        "visibleFocusPath": [
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Minimize",
+          "Maximize",
+          "Close",
+          "New note",
+          "Title",
+          "Body",
+          "Workspace",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Minimize",
+          "Maximize",
+          "Close",
+          "New note",
+          "Saved note"
+        ],
+        "exactNoteReopened": true
+      },
+      "enlarged": {
+        "editorViewport": {
+          "dpr": 2,
+          "height": 354,
+          "scrollWidth": 582,
+          "visualScale": 1,
+          "width": 582
+        },
+        "visibleFocusPath": [
+          "Workspace",
+          "Scrollable area before System appearance",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Back to workspace",
+          "New note",
+          "Title",
+          "Body",
+          "Workspace",
+          "Scrollable area before System appearance",
+          "System appearance",
+          "Language",
+          "Backup",
+          "Workspace",
+          "Notes launcher",
+          "Notes heading",
+          "Back to workspace",
+          "New note",
+          "Saved note"
+        ],
+        "exactNoteReopened": true
+      },
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS"
+}
