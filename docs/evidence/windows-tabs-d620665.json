@@ -1,0 +1,67 @@
+{
+  "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+  "buildId": "b-mwtfl4bdd620665",
+  "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130",
+  "startedAt": "2026-11-23T15:53:26.416953+00:00",
+  "os": "Windows-2025Server-10.0.26100-SP0",
+  "mode": "Headed desktop browser tabs in isolated profiles on one host",
+  "sessions": [
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtfl4bdd620665",
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "transferSha256": "b5d22bac0ced9cd03cae5ef99d0d906d881656763d68031f17c0ac59987ffd2a",
+  "finishedAt": "2026-11-23T15:54:20.675826+00:00"
+}

@@ -2,21 +2,27 @@
 
 ## Pending release tasks
 
-**Full production decision on 2026-11-23: HOLD.** GitHub Pages serves the verified Notes demo `b-mwtdek2h54e9662`. See the [60 recorded case outcomes](docs/DEMO_ACCEPTANCE_54E9662.md) and the [candidate checklist](docs/PRODUCTION_READINESS.md).
+**Full production decision on 2026-11-23 is HOLD.** GitHub Pages serves the verified Notes demo `b-mwtfl4bdd620665`. See the [60 recorded case outcomes](docs/DEMO_ACCEPTANCE_D620665.md) and the [candidate checklist](docs/PRODUCTION_READINESS.md).
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
-| 1 | Freeze the Notes candidate and declare the minimum OS and browser versions the release will support. | Record the owner, source SHA, build ID, artifact digest, HTTPS URL and tested lower bounds. |
-| 2 | Run the Windows milestone in normal Chrome and Firefox tabs, followed by Chrome installed and the Firefox web app window. | On one candidate, verify offline cold launch, edit/save/reopen, update deferral and recovery, transfer between profiles, both languages and all three appearance settings. The [Windows report](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run) covers retail Chrome/Firefox restarts and same-machine backup transfer on Windows Server. Consumer Windows, installed modes and the remaining journey still require evidence. |
-| 3 | Complete the iPhone and Android launch matrix and desktop reader checks. | Three required macOS launch modes passed on the current demo in the macOS 26.6.2 VM. Use physical phones for keyboard, safe areas and offline relaunch, and record desktop screen reader and iPhone VoiceOver announcements. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md) |
+| 1 | Declare and verify minimum supported OS and browser versions. | The [candidate record](docs/DEMO_ACCEPTANCE_D620665.md) freezes the source, build, digest, owner and URL. Record supported lower bounds from the device checks. |
+| 2 | Complete the consumer Windows milestone, including Chrome installed and the Firefox web app window. | On the frozen candidate, verify offline cold launch, edit/save/reopen, update deferral and recovery, transfer between profiles, both languages and all three appearance settings. The [Windows report](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run) covers retail browser restarts and same-machine backup transfer on Windows Server. |
+| 3 | Complete the iPhone and Android launch matrix and desktop reader checks. | All three macOS 26.6.2 launch modes passed on this build. Use physical phones for native keyboard, safe areas, rotation and offline relaunch, and record desktop screen reader and iPhone VoiceOver announcements. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md#quota-recovery-demo) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
 | 5 | Finish assistive-technology checks. | Automated axe and the manual text-contrast review passed. Listen for the required announcements on the declared desktop and iPhone readers. [Accessibility evidence](docs/FIREFOX_AXE.md) |
 | 6 | Complete candidate performance and recovery acceptance. | Physical Apple M4 and hosted Windows Server pass the desktop lab on the current demo. The same build passed HTTPS staging rollback in Chromium and Firefox. Declare desktop baselines and capture physical mobile timings under the recorded field-data policy. [Lab results](docs/PERFORMANCE.md) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
-| 7 | Close the release record and verify the deployed artifact. | Bind the [60-case coverage index](docs/STANDARD_COVERAGE.md) to dated results, record exceptions, and verify the live build identity and offline note smoke check after rollout. The owner has [authorized deployment](docs/M0_DECISIONS.md#direction-and-audience-owner-confirmed-2026-11-23). |
+| 7 | Update the release decision after the device and reader checks. | Reconcile the remaining [case outcomes](docs/DEMO_ACCEPTANCE_D620665.md) and decide whether all full-release gates are met. The current demo passed live SHA-256 verification and the synthetic offline note smoke check. |
 
 The top bar checks the hosting origin when visible. A real Chromium and Firefox regression covers OFF-02: the server stops serving its release while the OS remains online, local editing and saving continue, and the next successful check restores the online status. [Origin outage test](e2e/pwa.spec.ts)
 
 ### Current demo evidence from 2026-11-23
+
+- Source `d620665`, build `b-mwtfl4bdd620665`. The Pages runner passed 90 unit and 146 browser tests with zero skips. Firefox and Chromium both recovered from native quota exhaustion. The deploy verification matched the launch URL and all 12 hosted files. [Pages run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45207524392)
+- The same artifact passed headed Chrome tab, Chrome installed and Firefox tab launches on macOS 26.6.2. Windows Server 2025 passed six headed Chrome and Firefox sessions and same-host backup transfer. [Evidence](docs/DEMO_ACCEPTANCE_D620665.md)
+- Physical Mac and hosted Windows desktop performance passed on the same build. The HTTPS staging rehearsal rejected mixed release bytes, upgraded and preserved a synthetic edit through rollback in both engines. [Lab results](docs/PERFORMANCE.md) · [Recovery](docs/RECOVERY_RUNBOOK.md#rehearsal-for-the-firefox-quota-recovery-build)
+
+### Previous demo evidence from 2026-11-23
 
 - Source `54e9662`, build `b-mwtdek2h54e9662`. The Ubuntu x64 release runner passed 90 unit tests and 145 browser tests in Chromium 156.0.8078.4 and Firefox 157.0. The Firefox native quota fixture was the sole skip. The deployed files matched all 12 SHA-256 entries in the retained manifest. [Pages deployment and test report](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
 - Chrome 158.0.8127.36 on macOS 26.6.2 followed the live site's custom 404 link, prepared offline use and saved a synthetic note. It restarted offline, edited and saved, then restarted offline again and read the same edit. A controlled navigation opened that same unknown URL offline.
