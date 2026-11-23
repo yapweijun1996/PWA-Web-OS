@@ -1,0 +1,62 @@
+name: Windows desktop browser acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      pages_run:
+        description: Successful Pages workflow run ID for the retained release
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  tabs:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Verify retained Pages build
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_RUN: ${{ inputs.pages_run }}
+        run: |
+          if ($env:PAGES_RUN -notmatch '^[1-9][0-9]*$') { throw "Expected a numeric run ID" }
+          $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:PAGES_RUN" | ConvertFrom-Json
+          if ($run.path -ne '.github/workflows/pages.yml' -or $run.conclusion -ne 'success' -or $run.head_branch -ne 'main') {
+            throw "Select a successful Pages run for main"
+          }
+          $artifacts = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:PAGES_RUN/artifacts" | ConvertFrom-Json
+          $prefix = "recovery-$($run.head_sha)-$env:PAGES_RUN-"
+          $artifact = $artifacts.artifacts | Where-Object { !$_.expired -and $_.name.StartsWith($prefix) } | Sort-Object id -Descending | Select-Object -First 1
+          if (!$artifact) { throw "No retained release available" }
+          gh run download $env:PAGES_RUN --name $artifact.name --dir retained
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ((Get-Content retained/manifest.json -Raw | ConvertFrom-Json).commit -ne $run.head_sha) { throw "Unexpected manifest commit" }
+          node scripts/release-evidence.mjs verify retained/dist retained/manifest.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Path desktop-evidence
+          Copy-Item retained/manifest.json desktop-evidence
+          @{ pagesRun = $run.html_url; archive = $artifact.name; archiveDigest = $artifact.digest } | ConvertTo-Json | Set-Content desktop-evidence/source.json
+      - name: Install Selenium
+        run: python -m pip install --disable-pip-version-check selenium==4.54.0
+      - name: Test installed Chrome and Firefox in desktop tabs
+        shell: pwsh
+        run: |
+          $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
+          $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
+          python scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json
+      - name: Retain desktop evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-tabs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: desktop-evidence/
+          if-no-files-found: warn
+          retention-days: 90

@@ -17,6 +17,10 @@ Complete this milestone in regular Chrome and Firefox tabs on Windows before tes
 
 This is an engineering milestone. The Windows demo and full release retain their separate gates below.
 
+### Windows hosted browser check
+
+Run the **Windows desktop browser acceptance** workflow with the numeric ID of a successful main-branch Pages run that still has its recovery artifact. It verifies the artifact manifest, opens the retained build in installed retail Chrome and Firefox using dedicated profiles, and exits the browser between each online or offline session. It exports a synthetic note from Chrome, imports it twice in Firefox and compares its contents after offline edits. The JSON report records each completed session and actual browser version. This covers regular browser tabs on a hosted Windows Server machine. Installed windows, the minimum supported consumer Windows version, screen readers and transfer between physical devices still require their own observations.
+
 ## Candidate and release scope
 
 - [ ] Record the release owner, intended audience, commit SHA, build ID, staging URL, production URL, and artifact digest.
