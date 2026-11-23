@@ -24,12 +24,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from windows_browser import browser
+from windows_staging import release_identity, staged_releases
 
 
 TITLE = "PWA Web OS"
 NOTE_TITLE = "Synthetic installed app note"
 ORIGINAL = "Saved in the installed window before disconnecting."
 OFFLINE = "Saved after a cold launch in the installed window."
+UPDATED = "Saved in the original installed app while the update was waiting."
 
 
 class RejectProxy(BaseHTTPRequestHandler):
@@ -222,15 +224,131 @@ def exercise(driver, name, url, build, phase):
     }
 
 
+def launch_from_shortcut(shortcut, profile, name, app_argument, build):
+    wait = WebDriverWait(None, 25, poll_frequency=1)
+    process_args = ("-Profile", str(profile), "-Executable", f"{name}.exe", "-AppArgument", app_argument)
+    assert native_control(*process_args)["pid"] == 0, "The original app process has not closed"
+    os.startfile(str(shortcut))
+    pid = wait.until(lambda _: native_control(*process_args)["pid"], "The original shortcut did not start the app")
+    app = ("-BrowserProcess", str(pid))
+
+    def label(text, kind="Button"):
+        return (*app, "-Label", text, "-ControlType", kind)
+
+    def click(text, *options):
+        control = (*label(text), *options)
+        wait.until(lambda _: native_control(*control)["matches"] == 1, f"Shortcut window did not show {text}")
+        native_control(*control, "-Invoke")
+
+    try:
+        wait.until(lambda _: native_control(*label(f"Build ID: {build}", "Text"))["matches"] >= 1,
+                   "The original shortcut did not load the updated build")
+        click("Notes", "-Ancestor", "Workspace launcher")
+        click(NOTE_TITLE)
+        wait.until(lambda _: native_control(*label("Body", "Edit"), "-ReadValue")["value"] == UPDATED,
+                   "The original shortcut did not reopen the committed edit")
+    finally:
+        if not native_control(*app, "-Close")["closed"]:
+            raise RuntimeError("The native test app did not exit")
+
+
+def accept_update(driver, name, url, server, next_directory, b):
+    wait = WebDriverWait(driver, 25)
+
+    def visible(selector):
+        return wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, selector)))
+
+    active = driver.execute_script("return window.__pwaUpdate.buildId")
+    server.release_directory = next_directory
+    error = driver.execute_async_script("""
+        const done = arguments[arguments.length - 1];
+        navigator.serviceWorker.getRegistration().then(reg => reg.update()).then(() => done(null), e => done(String(e)));
+    """)
+    assert error is None, error
+    wait.until(lambda _: visible(".update-notice h2").text == "Update available")
+    body = visible("#note-body")
+    body.clear()
+    body.send_keys(UPDATED)
+    wait.until(lambda _: visible(".save-status").text == "Saved on this device")
+    assert driver.execute_script("return window.__pwaUpdate.buildId") == active
+    visible(".update-notice button").click()
+    wait.until(lambda _: driver.execute_script("return window.__pwaUpdate?.buildId") == b["buildId"])
+    select_app_window(driver, name, url)
+    visible(".launcher-tile").click()
+    visible(".note-items button").click()
+    assert visible("#note-title").get_property("value") == NOTE_TITLE
+    assert visible("#note-body").get_property("value") == UPDATED
+
+
+def check_registered_update(name, earlier, candidate, output):
+    a, b = map(release_identity, (earlier, candidate))
+    assert a["buildId"] != b["buildId"] and a["commit"] != b["commit"]
+    manifests = [json.loads((directory / "dist/manifest.webmanifest").read_text(encoding="utf-8"))
+                 for directory in (earlier, candidate)]
+    identity = {key: manifests[0][key] for key in ("id", "start_url", "scope", "display")}
+    assert all(manifests[1][key] == value for key, value in identity.items()), "Installed app identity changed"
+    report = {"a": a, "b": b, "browser": name, "os": platform.platform(), "manifestIdentity": identity,
+              "startedAt": datetime.now(timezone.utc).isoformat(), "outcome": "INCOMPLETE"}
+    output.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with tempfile.TemporaryDirectory(prefix="pwa-app-update-", dir=os.environ.get("RUNNER_TEMP")) as directory:
+            root = Path(directory)
+            profile = root / name
+            profile.mkdir()
+            shortcut = None
+            try:
+                with staged_releases(root, earlier, candidate) as (server, versions):
+                    url = f"http://127.0.0.1:{server.server_port}/PWA-Web-OS/"
+                    with browser(name, profile, root, False) as driver:
+                        report["version"] = driver.capabilities["browserVersion"]
+                        driver.get(url)
+                        WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".offline-ready")))
+                        install(driver, name)
+                        shortcut, launcher, arguments = shortcut_wait(name, profile)
+                        original = native_control("-Shortcut", str(shortcut))
+                    if name == "chrome":
+                        app_ids = [arg for arg in arguments if re.fullmatch(r"--app-id=[a-p]{32}", arg)]
+                        assert len(app_ids) == 1
+                        assert f"--user-data-dir={profile}" in arguments, "Chrome shortcut does not own the test profile"
+                        app_argument = app_ids[0].split("=", 1)[1]
+                        installed = chrome_registered_app(launcher, profile, app_ids, None)
+                    else:
+                        marker = arguments.index("-taskbar-tab")
+                        app_argument = arguments[marker + 1]
+                        relaunch = arguments[marker:marker+2] + ["-new-window", url]
+                        installed = browser(name, profile, root, False, relaunch)
+                    print(f"{name}: upgrade retained build in the registered app", flush=True)
+                    with installed as driver:
+                        exercise(driver, name, url, a["buildId"], 1)
+                        accept_update(driver, name, url, server, versions[1], b)
+                    report["updatedInApp"] = "PASS"
+                    assert native_control("-Shortcut", str(shortcut)) == original, "The original shortcut was changed"
+                    print(f"{name}: open the original Start menu shortcut", flush=True)
+                    launch_from_shortcut(shortcut, profile, name, app_argument, b["buildId"])
+                    report["originalShortcut"] = {"name": shortcut.name, "launcher": launcher.name, "reopenedBuild": b["buildId"]}
+                    report["savedEditAfterShortcutLaunch"] = "PASS"
+            finally:
+                if shortcut:
+                    shortcut.unlink(missing_ok=True)
+        report["outcome"] = "PASS"
+    finally:
+        report["finishedAt"] = datetime.now(timezone.utc).isoformat()
+        output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("browser", choices=("chrome", "firefox"))
     parser.add_argument("url")
     parser.add_argument("manifest", type=Path)
     parser.add_argument("report", type=Path)
+    parser.add_argument("--update-from", type=Path, help="Use two retained releases at a disposable loopback origin instead of the live URL")
     args = parser.parse_args()
     if os.environ.get("GITHUB_ACTIONS") != "true":
         raise RuntimeError("Installed-window checks require a disposable Actions desktop")
+    if args.update_from:
+        check_registered_update(args.browser, args.update_from, args.manifest.parent, args.report)
+        return
     raw = args.manifest.read_bytes()
     manifest = json.loads(raw)
     report = {"buildId": manifest["buildId"], "commit": manifest["commit"],

@@ -1,0 +1,31 @@
+{
+  "a": {
+    "buildId": "b-mwtfl4bdd620665",
+    "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+    "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130"
+  },
+  "b": {
+    "buildId": "b-mwth4sjcb9dcafa",
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "browser": "firefox",
+  "os": "Windows-11-10.0.26200-SP0",
+  "manifestIdentity": {
+    "id": "/PWA-Web-OS/",
+    "start_url": "/PWA-Web-OS/",
+    "scope": "/PWA-Web-OS/",
+    "display": "standalone"
+  },
+  "startedAt": "2026-11-23T17:52:40.040182+00:00",
+  "outcome": "PASS",
+  "version": "160.0",
+  "updatedInApp": "PASS",
+  "originalShortcut": {
+    "name": "PWA Web OS.lnk",
+    "launcher": "firefox.exe",
+    "reopenedBuild": "b-mwth4sjcb9dcafa"
+  },
+  "savedEditAfterShortcutLaunch": "PASS",
+  "finishedAt": "2026-11-23T17:53:11.805628+00:00"
+}

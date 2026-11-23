@@ -120,8 +120,9 @@ jobs:
           $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
           $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
           python scripts/check-windows-apps.py firefox $env:LIVE_SITE retained/manifest.json desktop-evidence/firefox-app.json
-      - name: Verify deferred updates and recovery in retail Windows tabs
-        if: ${{ !cancelled() && inputs.next_pages_run != '' && steps.artifact.outcome == 'success' && steps.drivers.outcome == 'success' }}
+      - name: Verify the staged Pages build
+        id: peer
+        if: ${{ !cancelled() && inputs.next_pages_run != '' && steps.artifact.outcome == 'success' }}
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
@@ -146,10 +147,25 @@ jobs:
             throw 'Unexpected staged update commit'
           }
           node scripts/release-evidence.mjs verify retained-peer/dist retained-peer/manifest.json
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Verify deferred updates and recovery in retail Windows tabs
+        if: ${{ !cancelled() && steps.peer.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        run: |
           $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
           $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
           python scripts/check-windows-updates.py retained retained-peer desktop-evidence/windows-updates.json
+      - name: Verify the original Chrome shortcut after app update
+        if: ${{ !cancelled() && inputs.native_apps && steps.peer.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
+          python scripts/check-windows-apps.py chrome $env:LIVE_SITE retained/manifest.json desktop-evidence/chrome-app-update.json --update-from retained-peer
+      - name: Verify the original Firefox shortcut after app update
+        if: ${{ !cancelled() && inputs.native_apps && steps.peer.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
+          python scripts/check-windows-apps.py firefox $env:LIVE_SITE retained/manifest.json desktop-evidence/firefox-app-update.json --update-from retained-peer
       - name: Retain desktop evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

@@ -2,41 +2,17 @@
 
 import argparse
 from datetime import datetime, timezone
-import hashlib
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
 import platform
-import shutil
 import tempfile
-import threading
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from windows_browser import browser
-
-
-class ReleaseFiles(SimpleHTTPRequestHandler):
-    extensions_map = {**SimpleHTTPRequestHandler.extensions_map, ".webmanifest": "application/manifest+json"}
-
-    def __init__(self, request, address, server):
-        super().__init__(request, address, server, directory=server.release_directory)
-
-    def end_headers(self):
-        self.send_header("Cache-Control", "no-store")
-        super().end_headers()
-
-    def log_message(self, _format, *args):
-        pass
-
-
-def release_identity(directory):
-    raw = (directory / "manifest.json").read_bytes()
-    manifest = json.loads(raw)
-    return {"buildId": manifest["buildId"], "commit": manifest["commit"],
-            "manifestSha256": hashlib.sha256(raw).hexdigest()}
+from windows_staging import release_identity, staged_releases
 
 
 def exercise(name, root, server, a, b, artifacts):
@@ -141,20 +117,11 @@ def main():
     try:
         with tempfile.TemporaryDirectory(prefix="pwa-client-update-") as directory:
             root = Path(directory)
-            release_dirs = [root / "a", root / "b"]
-            for source, target in zip((args.a, args.b), release_dirs):
-                shutil.copytree(source / "dist", target / "PWA-Web-OS")
-            with ThreadingHTTPServer(("127.0.0.1", 0), ReleaseFiles) as server:
-                thread = threading.Thread(target=server.serve_forever, daemon=True)
-                thread.start()
-                try:
-                    for name in ("chrome", "firefox"):
-                        print(f"Checking deferred update and retry in {name}", flush=True)
-                        (root / name).mkdir()
-                        report["sessions"].append(exercise(name, root, server, a, b, release_dirs))
-                finally:
-                    server.shutdown()
-                    thread.join()
+            with staged_releases(root, args.a, args.b) as (server, release_dirs):
+                for name in ("chrome", "firefox"):
+                    print(f"Checking deferred update and retry in {name}", flush=True)
+                    (root / name).mkdir()
+                    report["sessions"].append(exercise(name, root, server, a, b, release_dirs))
         report["outcome"] = "PASS"
     finally:
         report["finishedAt"] = datetime.now(timezone.utc).isoformat()
