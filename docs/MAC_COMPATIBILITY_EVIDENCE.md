@@ -58,3 +58,17 @@ On November 24 in Singapore, macOS 26.6.2 repeated the three required launch mod
 On November 24 in Singapore, Chrome 158.0.8127.36 on macOS 26.6.2 installed `d620665` through the address bar on a disposable loopback origin. The verified `b9dcafa` release had the same manifest ID, start URL, scope and display mode. The standalone app saved a synthetic note while the update waited, accepted the update and reopened the saved edit in `b9dcafa`.
 
 After Chrome exited, Launch Services reopened the original `PWA Web OS.app` bundle. Its `Info.plist` digest matched the value recorded at installation. The build footer displayed `b-mwth4sjcb9dcafa` and text copied from the reopened editor matched the entire synthetic body. The test profile's first-run marker was initialized after Chrome presented its welcome dialog on the first shortcut launch. [Installed update report](evidence/macos-installed-update-b9dcafa.json)
+
+## Sequoia browser tabs
+
+The build `b-mwth4sjcb9dcafa` passed six headed sessions on each of three Sequoia environments. The hosted Mac images ran 15.8.2 (24H232) on Arm64 and 15.7.9 (24G830) on Intel. A disposable local Tart guest ran 15.7.7 (24G720) on Apple Silicon. All three ran signed retail Chrome 158.0.8127.37 and Firefox 160.0.1.
+
+Each browser used three separate processes, one signed-out test profile and an uncached request that returned 404 online and failed during both offline launches. Chrome created the synthetic note, saved an offline edit and exported the backup on the final offline launch. Firefox imported it twice, made its own offline edit and read that edit after another process restart. The backup check used two browser profiles on each test host. [Session evidence](evidence/macos-sequoia-tabs-b9dcafa.json) · [Hosted retail checks](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45235982611)
+
+Apple Software Update offered 15.8.3 (24H241) to the local guest. Preparing that update failed because the guest lacked the recovery volume needed for personalization. The selected patch 15.8.3 still requires verification. [Apple's Sequoia release record](https://support.apple.com/en-us/149720)
+
+## Sequoia Chrome installation
+
+On the 15.7.7 Arm64 guest, signed retail Chrome 158.0.8127.37 installed the same retained release through its address bar and registered `PWA Web OS.app`. Three separate Chrome processes launched the registered app ID in standalone mode. The first created and saved a note with the origin running. After the loopback server stopped, the second cold launch saved a new edit and the third read the exact saved body. The uncached network control returned 404 online and failed on the two offline launches. [Installed-window report](evidence/macos-sequoia-installed-b9dcafa.json)
+
+For a fresh test account, create the user Applications folder before installation. ChromeDriver's default `test-type` switch suppresses native app shims on macOS. The successful native install check excluded that switch and verified the generated bundle before restarting the app. [Chromium shortcut implementation](https://chromium.googlesource.com/chromium/src/+/05dc0d76b85428669a02367bb967477e7e0b0411/chrome/browser/web_applications/os_integration/web_app_shortcut_mac.mm)

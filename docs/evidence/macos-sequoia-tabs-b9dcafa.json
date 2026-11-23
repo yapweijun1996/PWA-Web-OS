@@ -1,0 +1,235 @@
+{
+  "buildId": "b-mwth4sjcb9dcafa",
+  "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+  "environmentResults": [
+    {
+      "platform": "GitHub hosted macos-15",
+      "environment": {
+        "os": "15.8.2",
+        "build": "24H232",
+        "architecture": "arm64",
+        "runnerImage": "20261118.0550.1",
+        "workflowRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45235982611"
+      },
+      "tabCheck": {
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "buildId": "b-mwth4sjcb9dcafa",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+        "startedAt": "2026-11-23T18:19:16.572219+00:00",
+        "os": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "mode": "Headed desktop browser tabs in isolated profiles on one host",
+        "sessions": [
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          }
+        ],
+        "outcome": "PASS",
+        "transferSha256": "027fe7cd371d8156f4494526916fd104bba6553795d8e10a732ee83b90886b22",
+        "finishedAt": "2026-11-23T18:20:03.825639+00:00"
+      }
+    },
+    {
+      "platform": "GitHub hosted macos-15-intel",
+      "environment": {
+        "os": "15.7.9",
+        "build": "24G830",
+        "architecture": "x86_64",
+        "runnerImage": "20260824.0482.1",
+        "workflowRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45235982611"
+      },
+      "tabCheck": {
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "buildId": "b-mwth4sjcb9dcafa",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+        "startedAt": "2026-11-23T18:14:31.184667+00:00",
+        "os": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+        "mode": "Headed desktop browser tabs in isolated profiles on one host",
+        "sessions": [
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          }
+        ],
+        "outcome": "PASS",
+        "transferSha256": "fd2e348bd26e0932f23375785a3ee72426bb6e7efd3c4b34701cdab9966d2f12",
+        "finishedAt": "2026-11-23T18:15:46.827311+00:00"
+      }
+    },
+    {
+      "platform": "Local Tart VM",
+      "environment": {
+        "os": "15.7.7",
+        "build": "24G720",
+        "architecture": "arm64"
+      },
+      "tabCheck": {
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "buildId": "b-mwth4sjcb9dcafa",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+        "startedAt": "2026-11-23T18:08:16.523803+00:00",
+        "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+        "mode": "Headed desktop browser tabs in isolated profiles on one host",
+        "sessions": [
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "chrome",
+            "browserVersion": "158.0.8127.37",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 1,
+            "browserOffline": false,
+            "networkControlHttpStatus": 404,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 2,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          },
+          {
+            "browser": "firefox",
+            "browserVersion": "160.0.1",
+            "phase": 3,
+            "browserOffline": true,
+            "networkControlHttpStatus": 0,
+            "buildId": "b-mwth4sjcb9dcafa",
+            "outcome": "PASS"
+          }
+        ],
+        "outcome": "PASS",
+        "transferSha256": "8fed99bb5db5cb78bec38dd856155bd1729e18ca7be524e654747e67bc53a9bf",
+        "finishedAt": "2026-11-23T18:09:38.846234+00:00"
+      }
+    }
+  ]
+}

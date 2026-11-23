@@ -17,7 +17,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from windows_browser import browser
+from desktop_browser import browser
 
 
 TITLE = "Synthetic desktop transfer"

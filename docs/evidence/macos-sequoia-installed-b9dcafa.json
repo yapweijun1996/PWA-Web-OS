@@ -1,0 +1,43 @@
+{
+  "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+  "buildId": "b-mwth4sjcb9dcafa",
+  "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+  "os": "15.7.7",
+  "architecture": "arm64",
+  "startedAt": "2026-11-23T18:19:13.112664+00:00",
+  "sessions": [
+    {
+      "phase": 1,
+      "processId": 2721,
+      "browserVersion": "158.0.8127.37",
+      "buildId": "b-mwth4sjcb9dcafa",
+      "nativeStandalone": true,
+      "networkControlHttpStatus": 404,
+      "outcome": "PASS"
+    },
+    {
+      "phase": 2,
+      "processId": 2742,
+      "browserVersion": "158.0.8127.37",
+      "buildId": "b-mwth4sjcb9dcafa",
+      "nativeStandalone": true,
+      "networkControlHttpStatus": 0,
+      "outcome": "PASS"
+    },
+    {
+      "phase": 3,
+      "processId": 2770,
+      "browserVersion": "158.0.8127.37",
+      "buildId": "b-mwth4sjcb9dcafa",
+      "nativeStandalone": true,
+      "networkControlHttpStatus": 0,
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "registration": {
+    "name": "PWA Web OS.app",
+    "appId": "ljdalmiogeplaialikimoaigkgdbdjif"
+  },
+  "finishedAt": "2026-11-23T18:21:28.872557+00:00"
+}

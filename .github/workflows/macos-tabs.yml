@@ -1,0 +1,73 @@
+name: macOS desktop browser acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      pages_run:
+        description: Successful main-branch Pages run with a retained release
+        required: true
+        type: string
+      image:
+        description: macOS Sequoia runner architecture
+        type: choice
+        default: macos-15
+        options:
+          - macos-15
+          - macos-15-intel
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  tabs:
+    runs-on: ${{ inputs.image }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Verify retained Pages release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_RUN: ${{ inputs.pages_run }}
+        run: |
+          [[ "$PAGES_RUN" =~ ^[1-9][0-9]*$ ]]
+          run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PAGES_RUN")
+          jq -e '.path == ".github/workflows/pages.yml" and .event == "push" and .head_branch == "main" and .conclusion == "success"' <<< "$run"
+          commit=$(jq -r '.head_sha' <<< "$run")
+          attempt=$(jq -r '.run_attempt' <<< "$run")
+          name="recovery-$commit-$PAGES_RUN-$attempt"
+          artifact=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PAGES_RUN/artifacts" |
+            jq -cer --arg name "$name" '.artifacts[] | select(.name == $name and .expired == false)')
+          gh run download "$PAGES_RUN" --name "$name" --dir retained
+          jq -e --arg commit "$commit" '.commit == $commit' retained/manifest.json
+          node scripts/release-evidence.mjs verify retained/dist retained/manifest.json
+          mkdir macos-evidence
+          cp retained/manifest.json macos-evidence/manifest.json
+          jq '{name, digest, archive_download_url}' <<< "$artifact" > macos-evidence/source.json
+      - name: Record Sequoia patch and architecture
+        run: |
+          jq -n --arg os "$(sw_vers -productVersion)" --arg build "$(sw_vers -buildVersion)" \
+            --arg arch "$(uname -m)" --arg image "$ImageVersion" \
+            '{os: $os, build: $build, architecture: $arch, runnerImage: $image}' > macos-evidence/environment.json
+      - name: Install signed retail Chrome and Firefox
+        run: bash scripts/prepare-macos-browsers.sh "$RUNNER_TEMP/retail-browsers"
+      - name: Run headed Chrome and Firefox tab acceptance
+        run: |
+          export CHROME_BINARY="$RUNNER_TEMP/retail-browsers/Google Chrome.app/Contents/MacOS/Google Chrome"
+          export FIREFOX_BINARY="$RUNNER_TEMP/retail-browsers/Firefox.app/Contents/MacOS/firefox"
+          export CHROMEDRIVER_PATH="$RUNNER_TEMP/retail-browsers/chromedriver"
+          export GECKODRIVER_PATH="$GECKOWEBDRIVER/geckodriver"
+          python3 -m venv "$RUNNER_TEMP/selenium"
+          "$RUNNER_TEMP/selenium/bin/python" -m pip install --disable-pip-version-check selenium==4.54.0
+          "$RUNNER_TEMP/selenium/bin/python" scripts/check-desktop-tabs.py retained macos-evidence/tabs.json
+      - name: Retain macOS observations
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-tabs-${{ inputs.image }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: macos-evidence/
+          if-no-files-found: warn
+          retention-days: 90

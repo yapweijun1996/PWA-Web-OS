@@ -10,6 +10,8 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 def browser(name, profile, downloads, offline, relaunch=(), proxy_port=None):
     if name == "chrome":
         options = webdriver.ChromeOptions()
+        if binary := os.environ.get("CHROME_BINARY"):
+            options.binary_location = binary
         options.add_argument(f"--user-data-dir={profile}")
         options.add_argument("--lang=en-US")
         options.add_experimental_option("prefs", {
@@ -19,6 +21,8 @@ def browser(name, profile, downloads, offline, relaunch=(), proxy_port=None):
         driver = webdriver.Chrome(options=options, service=ChromeService(os.environ["CHROMEDRIVER_PATH"]))
     else:
         options = webdriver.FirefoxOptions()
+        if binary := os.environ.get("FIREFOX_BINARY"):
+            options.binary_location = binary
         # Use this profile in place so the next process can open the same IndexedDB.
         options.add_argument("-profile")
         options.add_argument(str(profile))

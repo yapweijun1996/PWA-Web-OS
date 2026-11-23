@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from windows_browser import browser
+from desktop_browser import browser
 from windows_staging import release_identity, staged_releases
 
 
