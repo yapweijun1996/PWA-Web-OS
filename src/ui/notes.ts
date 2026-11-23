@@ -1,6 +1,7 @@
 import type { FlushResult, Note, NoteRepository } from '../contracts';
 import { button, element, openDialog, setText, type Feedback } from './dom';
 import { DraftSession } from './draft';
+import { icon } from './icons';
 import { storageErrorCode, storageHelp } from './messages';
 
 type NotesRoute = 'list' | 'editor';
@@ -10,9 +11,9 @@ const noopFlush: FlushResult = { ok: true };
 export function createNotes(
   repository: NoteRepository,
   feedback: Feedback,
-  navigate: (route: NotesRoute) => void,
   backToLauncher: () => void,
 ) {
+  let view: NotesRoute = 'list';
   let session: DraftSession | undefined;
   let notes = new Map<string, Note>();
   let ready = false;
@@ -25,7 +26,9 @@ export function createNotes(
 
   const issue = element('p', undefined, 'feedback error');
   issue.hidden = true;
-  const listPane = element('section', undefined, 'notes-list panel');
+  const panes = element('div', undefined, 'notes-panes');
+  panes.dataset.view = view;
+  const listPane = element('section', undefined, 'notes-list');
   listPane.setAttribute('aria-labelledby', 'notes-heading');
   const heading = element('h2', 'Notes');
   heading.id = 'notes-heading';
@@ -36,38 +39,42 @@ export function createNotes(
   const listStatus = element('p', undefined, 'muted');
   const refreshButton = button('Retry loading notes', () => { void refresh(); });
   refreshButton.hidden = true;
-  const launcherBack = button('← Workspace launcher', backToLauncher, 'launcher-back');
+  const launcherBack = button('Workspace launcher', backToLauncher, 'launcher-back');
+  launcherBack.prepend(icon('back'));
   const add = button('New note', () => run('Could not create a note.', async () => {
     if (!await canSwitch()) return;
     const note = await repository.create({ title: '', body: '' });
     remember(note);
     showNote(note, true);
   }), 'primary');
-  const listBar = element('div', undefined, 'pane-bar');
-  listBar.append(heading, add);
-  listPane.append(launcherBack, listBar, listStatus, refreshButton, empty, list);
+  add.prepend(icon('plus'));
+  listPane.append(launcherBack, add, listStatus, refreshButton, empty, list);
 
-  const editorPane = element('section', undefined, 'editor panel');
+  const editorPane = element('section', undefined, 'editor');
   editorPane.setAttribute('aria-labelledby', 'editor-heading');
   editorPane.tabIndex = -1;
-  const editorHeading = element('h2', 'Note editor');
+  const editorHeading = element('h2', 'Note editor', 'visually-hidden');
   editorHeading.id = 'editor-heading';
-  const listBack = button('← Notes list', () => focusList(true), 'list-back');
+  const listBack = button('Back to Notes list', () => focusList(true), 'list-back');
+  listBack.prepend(icon('back'));
   const placeholder = element('p', 'Select a note or create a new one.', 'empty-state');
   const title = element('textarea');
   title.id = 'note-title';
   title.rows = 1;
+  title.placeholder = 'Untitled note';
   const body = element('textarea');
   body.id = 'note-body';
   body.rows = 8;
-  const titleLabel = element('label', 'Title');
+  const titleLabel = element('label', 'Title', 'visually-hidden');
   titleLabel.htmlFor = title.id;
-  const bodyLabel = element('label', 'Body');
+  const bodyLabel = element('label', 'Body', 'visually-hidden');
   bodyLabel.htmlFor = body.id;
   const fields = element('div', undefined, 'editor-fields');
-  fields.append(titleLabel, title, bodyLabel, body);
-
+  const editorHeader = element('div', undefined, 'editor-header');
   const saveStatus = element('p', undefined, 'save-status');
+  const statusChip = element('div', undefined, 'save-chip');
+  statusChip.append(icon('check'), saveStatus);
+  editorHeader.append(titleLabel, title, statusChip);
   const recovery = element('div', undefined, 'feedback error recovery');
   const recoveryDetail = element('p');
   const storageDetail = element('p');
@@ -119,7 +126,9 @@ export function createNotes(
   const recoveryActions = element('div', undefined, 'actions');
   recoveryActions.append(retry, saveAsNew, reload, copy);
   recovery.append(recoveryDetail, storageDetail, recoveryActions, clipboardDetail);
-  editorPane.append(listBack, editorHeading, placeholder, fields, saveStatus, recovery, discard);
+  fields.append(editorHeader, recovery, bodyLabel, body);
+  editorPane.append(listBack, editorHeading, placeholder, fields, discard);
+  panes.append(listPane, editorPane);
 
   title.addEventListener('input', () => { if (!blocked()) session?.edit('title', title.value); });
   body.addEventListener('input', () => { if (!blocked()) session?.edit('body', body.value); });
@@ -151,10 +160,19 @@ export function createNotes(
     report(`${label} ${code === 'conflict' ? 'Try again.' : storageHelp[code]}`);
   }
 
-  async function canSwitch(): Promise<boolean> {
-    if (!session || (await session.flush()).ok) return true;
+  function navigate(route: NotesRoute): void {
+    view = route;
+    panes.dataset.view = route;
+  }
+
+  function focusEditor(): void {
     navigate('editor');
     editorPane.focus();
+  }
+
+  async function canSwitch(): Promise<boolean> {
+    if (!session || (await session.flush()).ok) return true;
+    focusEditor();
     return false;
   }
 
@@ -179,8 +197,7 @@ export function createNotes(
   function openNote(id: string): void {
     run('Could not open the note.', async () => {
       if (session?.committed.id === id && session.dirty) {
-        navigate('editor');
-        editorPane.focus();
+        focusEditor();
         return;
       }
       if (!await canSwitch()) return;
@@ -250,11 +267,23 @@ export function createNotes(
         row = element('li');
         const control = button('', () => openNote(note.id));
         control.dataset.noteId = note.id;
+        const label = element('span', undefined, 'note-row-text');
+        const name = element('span', undefined, 'note-row-title');
+        const updated = element('time', undefined, 'note-row-date');
+        name.id = `note-name-${note.id}`;
+        updated.id = `note-date-${note.id}`;
+        control.setAttribute('aria-labelledby', name.id);
+        control.setAttribute('aria-describedby', updated.id);
+        label.append(name, updated);
+        control.append(icon('document'), label);
         row.append(control);
       }
       existing.delete(note.id);
       const control = row.firstElementChild as HTMLButtonElement;
-      setText(control, displayTitle(note.title));
+      const name = control.querySelector<HTMLElement>('.note-row-title')!;
+      const updated = control.querySelector('time')!;
+      setText(name, displayTitle(note.title));
+      paintDate(updated, note.updatedAt);
       control.setAttribute('aria-disabled', String(blocked()));
       if (note.id === session?.committed.id) control.setAttribute('aria-current', 'true');
       else control.removeAttribute('aria-current');
@@ -283,6 +312,7 @@ export function createNotes(
       : state === 'failed' && !conflict ? saveFailed : '';
     setText(saveStatus, status);
     saveStatus.dataset.state = state ?? '';
+    statusChip.hidden = status === '';
     if ((state === 'saving' || state === 'saved') && announcedSave !== status) {
       announcedSave = status;
       feedback.announce(status);
@@ -326,9 +356,13 @@ export function createNotes(
 
   paintEditor();
   return {
-    listPane, editorPane, issue,
-    enter() { focusList(); void refresh(); },
-    refresh,
+    heading, panes, issue,
+    enter() {
+      if (view === 'editor') focusEditor();
+      else focusList();
+      void refresh();
+    },
+    focusEditor, refresh,
     hasUnsaved: () => session?.dirty ?? false,
     setLocked(next: boolean) {
       if (locked === next) return;
@@ -341,4 +375,24 @@ export function createNotes(
       return session ? session.flush(true) : noopFlush;
     },
   };
+}
+
+const shortDate = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+const timeOfDay = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+
+function paintDate(node: HTMLTimeElement, updatedAt: number): void {
+  const date = new Date(updatedAt);
+  if (!Number.isFinite(date.getTime())) {
+    node.removeAttribute('datetime');
+    setText(node, 'Date unavailable');
+    return;
+  }
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const day = date.toDateString();
+  const label = day === today.toDateString() ? 'Today' : day === yesterday.toDateString() ? 'Yesterday' : shortDate.format(date);
+  const iso = date.toISOString();
+  if (node.dateTime !== iso) node.dateTime = iso;
+  setText(node, `${label}, ${timeOfDay.format(date)}`);
 }

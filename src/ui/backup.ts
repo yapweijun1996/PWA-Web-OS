@@ -25,6 +25,7 @@ export function createBackupMenu(
   hasUnsaved: () => boolean,
   refresh: () => Promise<void>,
   feedback: Feedback,
+  revealWorkspace: () => void,
 ) {
   let locked = false;
   let reading = false;
@@ -128,6 +129,7 @@ export function createBackupMenu(
       setText(newCount, `New notes: ${result.newCount}`);
       setText(unchangedCount, `Already in Notes: ${result.unchangedCount}`);
       titleList.replaceChildren(...result.titles.map((title) => element('li', title.trim() ? title : 'Untitled note')));
+      revealWorkspace();
       menu.open = true;
       openDialog(dialog, cancel, restoreButton);
     } catch (error) {

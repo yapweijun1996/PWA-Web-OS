@@ -1,30 +1,40 @@
-import type { AppDeps, Theme, UpdateState } from '../contracts';
+import type { AppDeps, UpdateState } from '../contracts';
 import { createBackupMenu } from './backup';
-import { button, createFeedback, element, setText, type Feedback } from './dom';
+import { button, createFeedback, element, setText } from './dom';
+import { icon } from './icons';
 import { updateCopy } from './messages';
 import { createNotes } from './notes';
+import { createWorkspaceMenu } from './workspace-menu';
 
-type Route = 'launcher' | 'list' | 'editor';
+const demoText = 'Demo build. Notes are stored only on this device and are never uploaded.';
+type Surface = 'launcher' | 'notes' | 'desktop';
 
 export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const { polite, assertive, feedback } = createFeedback();
-  const theme = createThemeControl(deps.prefs, feedback);
   const app = element('div', undefined, 'workspace');
-  const header = element('div', undefined, 'app-header');
-  const brand = element('div');
-  brand.append(element('p', 'Local workspace', 'eyebrow'), element('h1', 'PWA Web OS'));
-  header.append(brand, theme);
+  const banner = element('header', undefined, 'top-bar');
+  const brand = element('div', undefined, 'brand');
+  brand.append(icon('brand'), element('h1', 'PWA Web OS'));
+  const menu = createWorkspaceMenu(deps.prefs, feedback);
 
-  const demo = element('div', undefined, 'demo-notice');
+  const demo = element('footer', undefined, 'demo-notice');
   const build = element('small', `Build ID: ${deps.buildId}`);
   build.id = 'build-id';
-  demo.append(element('p', 'Demo build. Notes are stored only on this device and are never uploaded.'), build);
+  demo.append(element('p', demoText), build);
 
+  const systemStatus = element('div', undefined, 'system-status');
+  systemStatus.setAttribute('role', 'region');
+  systemStatus.setAttribute('aria-label', 'Connection status');
   const connection = element('div', undefined, 'connection');
-  const offline = element('span', 'Offline', 'badge');
-  const ready = element('span', 'Available offline', 'badge');
-  connection.append(offline, ready);
-  const update = element('section', undefined, 'update-notice feedback');
+  const network = element('span', undefined, 'network-status');
+  const ready = element('span', 'Available offline', 'offline-ready');
+  ready.hidden = true;
+  connection.append(network, ready);
+  const clock = element('time', undefined, 'clock');
+  systemStatus.append(connection, clock);
+  banner.append(brand, menu.trigger, menu.panel, systemStatus);
+
+  const update = element('section', undefined, 'update-notice');
   const updateHeading = element('h2');
   updateHeading.id = 'update-heading';
   update.setAttribute('aria-labelledby', updateHeading.id);
@@ -35,37 +45,49 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const retryUpdate = button('Retry update', () => { void requestUpdate(true); });
   update.append(updateProgress, updateHeading, updateText, updateButton, retryUpdate);
 
-  const grid = element('main', undefined, 'workspace-grid');
-  const rail = element('nav', undefined, 'workspace-rail panel');
-  rail.setAttribute('aria-label', 'Workspace');
-  const launcher = element('section', undefined, 'launcher panel');
-  launcher.setAttribute('aria-labelledby', 'launcher-heading');
+  const stage = element('main', undefined, 'workspace-stage');
+  const launcher = element('section', undefined, 'launcher');
   const launcherHeading = element('h2', 'Workspace launcher');
   launcherHeading.id = 'launcher-heading';
   launcherHeading.tabIndex = -1;
-  const railLauncher = button('Workspace launcher', openLauncher);
-  const railNotes = button('Notes', () => notes.enter());
-  rail.append(element('p', 'Workspace', 'eyebrow'), railLauncher, railNotes);
-  const tile = button('Notes', () => notes.enter(), 'launcher-tile');
-  tile.prepend(noteIcon());
+  launcher.setAttribute('aria-labelledby', launcherHeading.id);
+  const tile = button('Notes', openNotes, 'launcher-tile');
+  tile.prepend(icon('lines'));
   launcher.append(element('p', 'Built-in tools', 'eyebrow'), launcherHeading,
     element('p', 'Open Notes to write and keep your work on this device.', 'muted'), tile);
 
-  const notes = createNotes(deps.storage.repository, feedback, setRoute, openLauncher);
-  const backup = createBackupMenu(deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback);
-  const tools = element('div', undefined, 'workspace-tools');
-  tools.setAttribute('role', 'region');
-  tools.setAttribute('aria-label', 'Connection status and backup');
-  tools.append(connection, backup.menu);
-  grid.append(rail, launcher, notes.listPane, notes.editorPane);
-  // The banner landmark holds the brand, theme control and the permanent demo notice.
-  const banner = element('header');
-  banner.append(header, demo);
-  app.append(banner, tools, update, notes.issue, grid, backup.dialog);
-  setRoute('launcher');
+  const notes = createNotes(deps.storage.repository, feedback, openLauncher);
+  const backup = createBackupMenu(deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback, menu.show);
+  menu.panel.append(backup.menu, element('p', demoText, 'menu-disclosure'));
+
+  const notesWindow = element('div', undefined, 'notes-window');
+  notesWindow.id = 'notes-window';
+  const windowBar = element('div', undefined, 'window-bar');
+  const windowControls = element('div', undefined, 'window-controls');
+  const minimize = windowButton('Minimize', 'minimize', () => hideNotes(true));
+  const maximize = windowButton('Maximize', 'maximize', toggleMaximized);
+  const close = windowButton('Close', 'close', () => { void closeNotes(); });
+  windowControls.append(minimize, maximize, close);
+  windowBar.append(icon('document'), notes.heading, windowControls);
+  notesWindow.append(windowBar, notes.issue, notes.panes);
+  stage.append(launcher, notesWindow);
+
+  const dock = element('nav', undefined, 'dock');
+  dock.setAttribute('aria-label', 'Dock');
+  const workspaceDock = dockButton('Workspace', 'cube', openLauncher);
+  const notesDock = dockButton('Notes', 'lines', openNotes);
+  notesDock.setAttribute('aria-controls', notesWindow.id);
+  dock.append(workspaceDock, notesDock);
+  app.append(banner, stage, demo, dock, backup.dialog);
+  let surface: Surface = 'launcher';
+  let running = false;
+  let maximized = false;
+  let closing = false;
+  renderSurface();
   root.replaceChildren(app);
-  // The update controller makes #app inert while it switches builds. Keep the live
-  // regions outside that subtree so progress and failures are still announced.
+  // Both the notice and its announcements must survive #app becoming inert.
+  if (root.parentNode) root.before(update);
+  else app.prepend(update);
   document.querySelectorAll('[data-live-regions]').forEach((node) => node.remove());
   const live = element('div');
   live.dataset.liveRegions = '';
@@ -76,7 +98,6 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   let current: UpdateState | undefined;
   let requesting = false;
   let lastOnline: boolean | undefined;
-  ready.hidden = true;
   deps.updates.setFlush(async () => {
     await backup.settle();
     return notes.flush();
@@ -88,27 +109,72 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   window.addEventListener('online', renderConnection);
   window.addEventListener('offline', renderConnection);
   renderConnection();
+  startClock(clock);
 
-  function setRoute(route: Route): void {
-    app.dataset.route = route;
-    if (route === 'launcher') {
-      railLauncher.setAttribute('aria-current', 'page');
-      railNotes.removeAttribute('aria-current');
-    } else {
-      railNotes.setAttribute('aria-current', 'page');
-      railLauncher.removeAttribute('aria-current');
-    }
+  function renderSurface(): void {
+    launcher.hidden = surface !== 'launcher';
+    notesWindow.hidden = surface !== 'notes';
+    workspaceDock.toggleAttribute('data-running', surface === 'launcher');
+    notesDock.toggleAttribute('data-running', running);
+    workspaceDock.setAttribute('aria-pressed', String(surface === 'launcher'));
+    notesDock.setAttribute('aria-pressed', String(surface === 'notes'));
   }
 
   function openLauncher(): void {
-    setRoute('launcher');
+    if (closing) return;
+    surface = 'launcher';
+    renderSurface();
     launcherHeading.focus();
+  }
+
+  function openNotes(): void {
+    if (closing) return;
+    surface = 'notes';
+    running = true;
+    renderSurface();
+    notes.enter();
+  }
+
+  function hideNotes(stillRunning: boolean): void {
+    if (closing) return;
+    surface = 'desktop';
+    running = stillRunning;
+    renderSurface();
+    notesDock.focus();
+  }
+
+  function toggleMaximized(): void {
+    if (closing) return;
+    maximized = !maximized;
+    notesWindow.toggleAttribute('data-maximized', maximized);
+    maximize.setAttribute('aria-label', maximized ? 'Restore' : 'Maximize');
+    maximize.title = maximized ? 'Restore' : 'Maximize';
+    maximize.replaceChildren(icon(maximized ? 'restore' : 'maximize'));
+  }
+
+  async function closeNotes(): Promise<void> {
+    if (closing) return;
+    closing = true;
+    lockControls();
+    try {
+      if (!(await notes.flush()).ok) {
+        // Keep drafts that still need recovery visible.
+        notes.focusEditor();
+        return;
+      }
+    } finally {
+      closing = false;
+      lockControls();
+    }
+    if (maximized) toggleMaximized();
+    hideNotes(false);
   }
 
   function renderConnection(): void {
     const online = navigator.onLine;
     if (online === lastOnline) return;
-    offline.hidden = online;
+    setText(network, online ? 'Online' : 'Offline');
+    network.toggleAttribute('data-offline', !online);
     if (!online || lastOnline !== undefined) feedback.announce(online ? 'Back online.' : 'Offline');
     lastOnline = online;
   }
@@ -119,14 +185,17 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     ready.hidden = !isReady;
   }
 
-  function lockForUpdate(): void {
+  function lockControls(): void {
     const status = current?.status;
     const progress = status === 'saving' || status === 'activating' || status === 'reloading';
     updateProgress.hidden = !progress;
     updateButton.setAttribute('aria-disabled', String(requesting));
     retryUpdate.setAttribute('aria-disabled', String(requesting));
-    notes.setLocked(requesting || progress);
+    notes.setLocked(closing || requesting || progress);
     backup.setLocked(requesting || progress);
+    for (const control of [minimize, maximize, close, workspaceDock, notesDock]) {
+      control.setAttribute('aria-disabled', String(closing));
+    }
   }
 
   function renderUpdate(state: UpdateState): void {
@@ -138,7 +207,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     setText(updateText, message);
     updateButton.hidden = state.status !== 'available';
     retryUpdate.hidden = state.status !== 'paused' && state.status !== 'failed';
-    lockForUpdate();
+    lockControls();
     if (state.status === 'paused' || state.status === 'failed') feedback.alert(`${heading}. ${message}`);
     else if (state.status !== 'idle') feedback.announce(state.status === 'available' ? heading : message);
   }
@@ -146,7 +215,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   async function requestUpdate(retry: boolean): Promise<void> {
     if (requesting) return;
     requesting = true;
-    lockForUpdate();
+    lockControls();
     try {
       if (retry) await deps.updates.retry();
       else await deps.updates.accept();
@@ -154,48 +223,38 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
       renderUpdate({ status: 'failed', detail: 'activation_failed' });
     } finally {
       requesting = false;
-      lockForUpdate();
+      lockControls();
     }
   }
 }
 
-function createThemeControl(prefs: AppDeps['prefs'], feedback: Feedback): HTMLFieldSetElement {
-  const group = element('fieldset', undefined, 'theme-control');
-  group.append(element('legend', 'Theme', 'visually-hidden'));
-  const theme = prefs.getTheme();
-  document.documentElement.dataset.theme = theme;
-  const choices: Record<Theme, string> = { system: 'System', light: 'Light', dark: 'Dark theme' };
-  for (const mode of ['system', 'light', 'dark'] as const) {
-    const option = element('label');
-    const radio = element('input');
-    radio.type = 'radio';
-    radio.name = 'theme';
-    radio.value = mode;
-    radio.checked = mode === theme;
-    radio.addEventListener('change', () => {
-      if (!radio.checked) return;
-      document.documentElement.dataset.theme = mode;
-      if (!prefs.setTheme(mode).persisted) feedback.announce('Theme changed for this session only.');
-    });
-    option.append(radio, element('span', choices[mode]));
-    group.append(option);
-  }
-  return group;
+function windowButton(label: string, glyph: Parameters<typeof icon>[0], action: () => void): HTMLButtonElement {
+  const control = button('', action);
+  control.setAttribute('aria-label', label);
+  control.title = label;
+  control.append(icon(glyph));
+  return control;
 }
 
-function noteIcon(): SVGSVGElement {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('width', '24');
-  svg.setAttribute('height', '24');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.setAttribute('focusable', 'false');
-  const path = document.createElementNS(svg.namespaceURI, 'path');
-  path.setAttribute('d', 'M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8');
-  path.setAttribute('fill', 'none');
-  path.setAttribute('stroke', 'currentColor');
-  path.setAttribute('stroke-width', '1.5');
-  path.setAttribute('stroke-linejoin', 'round');
-  svg.append(path);
-  return svg;
+function dockButton(label: string, glyph: 'cube' | 'lines', action: () => void): HTMLButtonElement {
+  const control = button('', action, `dock-item dock-${glyph}`);
+  control.setAttribute('aria-label', label);
+  const face = element('span', undefined, 'dock-face');
+  face.append(icon(glyph));
+  const tooltip = element('span', label, 'dock-tooltip');
+  tooltip.setAttribute('aria-hidden', 'true');
+  control.append(face, tooltip);
+  return control;
+}
+
+function startClock(clock: HTMLTimeElement): void {
+  const format = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+  function tick(): void {
+    if (!clock.isConnected) return;
+    const now = new Date();
+    clock.dateTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    setText(clock, format.format(now));
+    setTimeout(tick, 60_000 - now.getTime() % 60_000);
+  }
+  tick();
 }

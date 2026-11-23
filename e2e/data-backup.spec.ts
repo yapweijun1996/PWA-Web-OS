@@ -12,6 +12,8 @@ function backupMenu(page: Page): Locator {
 }
 
 async function showBackupMenu(page: Page): Promise<Locator> {
+  const workspace = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+  if (await workspace.getAttribute('aria-expanded') === 'false') await workspace.click();
   const menu = backupMenu(page);
   const summary = menu.getByText('Backup and restore', { exact: true });
   await expect(summary).toBeVisible();
@@ -58,6 +60,8 @@ async function confirmRestore(page: Page, added: number, unchanged: number): Pro
   await expect(dialog).toBeHidden();
   const message = `Notes restored: ${added}. Already in Notes: ${unchanged}.`;
   await expect(backupMenu(page).getByText(message, { exact: true })).toBeVisible();
+  // The Workspace popover can cover note rows. Dismiss it before returning to Notes.
+  await page.getByRole('banner').getByRole('button', { name: 'Workspace' }).click();
 }
 
 function verifyExport(bytes: Buffer, expected: NoteDraft[]): BackupNote[] {
@@ -173,7 +177,7 @@ for (const { kind, bytes, message } of [
     await expect(backupMenu(page).getByText(message, { exact: true })).toBeVisible();
     await expect(restoreDialog(page)).toBeHidden();
     await reloadNotes(page);
-    await expect(noteButtons(page)).toHaveText([existing.title]);
+    await expect(noteButtons(page).locator('.note-row-title')).toHaveText([existing.title]);
     await openNote(page, existing);
   });
 }

@@ -4,18 +4,19 @@ for (const width of [390, 1280]) {
   test(`keyboard follows the launcher-to-editor sequence with visible focus at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     await page.goto('./');
-    await tabTo(page, page.getByRole('radio', { name: 'System' }));
+    const workspace = await openWorkspaceWithKeyboard(page);
     await tabTo(page, page.locator('.backup-menu summary'));
-    if (width === 1280) {
-      const rail = page.getByRole('navigation', { name: 'Workspace' });
-      await tabTo(page, rail.getByRole('button', { name: 'Workspace launcher' }));
-      await tabTo(page, rail.getByRole('button', { name: 'Notes' }));
-    }
+    await page.keyboard.press('Escape');
+    await expect(workspace).toHaveAttribute('aria-expanded', 'false');
+    await focusedWithIndicator(workspace);
     const launcher = page.getByRole('region', { name: 'Workspace launcher' });
     await tabTo(page, launcher.getByRole('button', { name: 'Notes' }));
     await page.keyboard.press('Enter');
     const list = page.getByRole('region', { name: 'Notes', exact: true });
-    await expect(list.getByRole('heading', { name: 'Notes' })).toBeFocused();
+    await expect(page.getByRole('heading', { name: 'Notes', exact: true })).toBeFocused();
+    for (const label of width === 1280 ? ['Minimize', 'Maximize', 'Close'] : ['Workspace launcher']) {
+      await tabTo(page, page.getByRole('button', { name: label, exact: true }));
+    }
     await tabTo(page, list.getByRole('button', { name: 'New note' }));
     await page.keyboard.press('Enter');
     const title = page.getByRole('textbox', { name: 'Title' });
@@ -62,8 +63,17 @@ test('Escape dismisses the real restore preview without importing and returns fo
   await expect(page.getByText('No notes yet. Create a note to get started.')).toBeVisible();
 });
 
-async function openBackupWithKeyboard(page: Page) {
+async function openWorkspaceWithKeyboard(page: Page) {
+  const workspace = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+  await tabTo(page, workspace);
+  await page.keyboard.press('Enter');
+  await expect(workspace).toHaveAttribute('aria-expanded', 'true');
   await tabTo(page, page.getByRole('radio', { name: 'System' }));
+  return workspace;
+}
+
+async function openBackupWithKeyboard(page: Page) {
+  await openWorkspaceWithKeyboard(page);
   const menu = page.locator('.backup-menu');
   const summary = menu.locator('summary');
   await tabTo(page, summary);

@@ -31,7 +31,7 @@ test('rejects a stale write from a second tab and saves its draft as a separate 
   await createStaleDraft(page, tabB);
 
   await reloadNotes(page);
-  await expect(noteButtons(page)).toHaveText([newer.title]);
+  await expect(noteButtons(page).locator('.note-row-title')).toHaveText([newer.title]);
   await openNote(page, newer);
 
   await editor(tabB).getByRole('button', { name: 'Save as new', exact: true }).click();
@@ -63,6 +63,6 @@ test('Reload saved version discards the stale draft only after confirmation and 
   await expect(reload).toBeHidden();
 
   await reloadNotes(tabB);
-  await expect(noteButtons(tabB)).toHaveText([newer.title]);
+  await expect(noteButtons(tabB).locator('.note-row-title')).toHaveText([newer.title]);
   await openNote(tabB, newer);
 });

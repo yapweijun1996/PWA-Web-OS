@@ -1,33 +1,35 @@
 :root {
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --type-ui: system-ui, "Segoe UI", sans-serif;
+  color-scheme: light;
+  --type-ui: system-ui, 'Segoe UI', sans-serif;
   --type-small: 0.875rem;
   --radius: 0.75rem;
-  --progress-cycle: 900ms;
-
-  color-scheme: light;
-  --surface-canvas: light-dark(#edf2f7, #111923);
-  --surface-panel: light-dark(#ffffff, #1b2735);
-  --surface-raised: light-dark(#f5f8fc, #223244);
-  --surface-selected: light-dark(#e1ecfa, #304969);
-  --surface-danger: light-dark(#fff4f2, #3a252a);
-  --text-primary: light-dark(#172639, #edf4ff);
-  --text-muted: light-dark(#445974, #b7c7da);
-  --text-danger: light-dark(#8b2724, #ffb9b0);
-  --text-success: light-dark(#215639, #ace6bd);
-  --border-subtle: light-dark(#becbda, #3e536b);
-  --border-control: light-dark(#63758c, #9bb0c9);
-  --action-primary: light-dark(#184a83, #9ac5fb);
-  --action-text: light-dark(#ffffff, #142437);
-  --focus-ring: light-dark(#0065ba, #acd5ff);
+  --surface-canvas: light-dark(#eeebfa, #101334);
+  --surface-panel: light-dark(#fff, #151937);
+  --surface-window: light-dark(#fff, rgb(18 22 55 / 96%));
+  --surface-chrome: light-dark(rgb(253 251 255 / 96%), rgb(13 15 42 / 96%));
+  --surface-raised: light-dark(#f2eefb, #20244b);
+  --surface-selected: light-dark(#ebe0fc, #3a2e70);
+  --surface-danger: light-dark(#fff1ef, #3b2439);
+  --text-primary: light-dark(#211a3a, #f8f6ff);
+  --text-muted: light-dark(#50476b, #c7c4e0);
+  --text-danger: light-dark(#932c35, #ffb9c2);
+  --text-accent: light-dark(#5826a7, #c7a6ff);
+  --border-subtle: light-dark(#d8cdec, #3a3d64);
+  --border-control: light-dark(#8472a6, #777ba6);
+  --border-window: light-dark(#9475d0, #8763f0);
+  --focus-ring: light-dark(#6132b1, #d4b8ff);
+  --action-primary: #6133c6;
+  --action-gradient: linear-gradient(115deg, #6f40e2, #502cac);
+  --icon-gradient: linear-gradient(150deg, #9b6dff, #7c4dff 55%, #5930cc);
+  --wallpaper: url('/wallpapers/wallpaper-desktop.webp');
+  --aurora-background: linear-gradient(180deg, #0a0d2c38, #06081812 55%, #080a233d), var(--wallpaper);
+  --desktop-background: radial-gradient(ellipse at 82% 28%, #fff4fb, transparent 56%), linear-gradient(155deg, #e6e0fa, #f6f2fd 58%, #d9d9f5);
 }
 
-:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme='dark'] { color-scheme: dark; --desktop-background: var(--aurora-background); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]), :root[data-theme="system"] { color-scheme: dark; }
+  :root:not([data-theme]), :root[data-theme='system'] { color-scheme: dark; --desktop-background: var(--aurora-background); }
+}
+@media (max-width: 600px) {
+  :root { --wallpaper: url('/wallpapers/wallpaper-phone.webp'); }
 }

@@ -13,7 +13,11 @@ for (const viewport of viewports) {
     const tile = page.getByRole('region', { name: 'Workspace launcher' }).getByRole('button', { name: 'Notes' });
     await withinViewport(page, tile);
     await minimumTarget(tile);
+    const workspace = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+    await minimumTarget(workspace);
+    await workspace.click();
     await minimumTarget(page.getByText('Dark theme', { exact: true }).locator('..'));
+    await workspace.click();
     await tile.click();
     const add = page.getByRole('button', { name: 'New note' });
     await withinViewport(page, add);
@@ -24,9 +28,10 @@ for (const viewport of viewports) {
     await title.fill(longTitle);
     await expect(page.locator('.save-status')).toHaveText('Saved on this device');
     await withinViewport(page, title, page.getByRole('textbox', { name: 'Body' }));
-    const back = page.getByRole('button', { name: 'Notes list' });
-    if (viewport.width < 704) await back.click();
+    const back = page.getByRole('button', { name: 'Back to Notes list' });
+    if (viewport.width <= 600) await back.click();
     await withinViewport(page, page.getByRole('button', { name: longTitle, exact: true }));
+    await workspace.click();
     const summary = page.getByText('Backup and restore', { exact: true });
     await minimumTarget(summary);
     await summary.click();
