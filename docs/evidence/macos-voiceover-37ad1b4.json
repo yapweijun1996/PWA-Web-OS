@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-11-23T20:43:37.221Z",
+  "finishedAt": "2026-11-23T20:44:46.822Z",
+  "os": "15.8.3",
+  "osBuild": "24H241",
+  "architecture": "arm64",
+  "browser": "158.0.8127.37",
+  "reader": "Native macOS VoiceOver",
+  "capture": "Native VoiceOver Caption Panel frames captured from the isolated guest",
+  "a": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+  },
+  "b": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "checks": [
+    {
+      "id": "launcher-notes",
+      "outcome": "PASS",
+      "phrase": "Notes, button, Workspace launcher, region"
+    },
+    {
+      "id": "editor-body",
+      "outcome": "PASS",
+      "phrase": "Body, edit text"
+    },
+    {
+      "id": "editor-title",
+      "outcome": "PASS",
+      "phrase": "Title Untitled note, edit text"
+    },
+    {
+      "id": "note-saving",
+      "outcome": "UNOBSERVED",
+      "phrase": "You are currently on a text area."
+    },
+    {
+      "id": "note-saved",
+      "outcome": "PASS",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "note-failed",
+      "outcome": "PASS",
+      "phrase": "Save failed. Your changes are not saved. The last saved version is unchanged. Try again. If the problem continues, copy your draft before leaving the editor."
+    },
+    {
+      "id": "note-retried",
+      "outcome": "PASS",
+      "phrase": "Saved on this device"
+    },
+    {
+      "id": "update-available",
+      "outcome": "UNOBSERVED",
+      "phrase": "You are currently on a region."
+    },
+    {
+      "id": "update-saving",
+      "outcome": "PASS",
+      "phrase": "Updating Notes, region, Saving changes before update..., group"
+    }
+  ],
+  "updateRecoveredExactBody": true,
+  "outcome": "PARTIAL",
+  "followup": {
+    "startedAt": "2026-11-23T20:45:19.107Z",
+    "finishedAt": "2026-11-23T20:46:12.253Z",
+    "checks": [
+      {
+        "id": "note-saving",
+        "outcome": "UNOBSERVED",
+        "phrase": ""
+      }
+    ],
+    "updateRecoveredExactBody": false,
+    "outcome": "INCOMPLETE",
+    "stoppedBy": "The Caption Panel framebuffer request timed out before the update-available retry."
+  },
+  "summary": {
+    "passed": [
+      "launcher-notes",
+      "editor-body",
+      "editor-title",
+      "note-saved",
+      "note-failed",
+      "note-retried",
+      "update-saving"
+    ],
+    "unobserved": [
+      "note-saving",
+      "update-available"
+    ],
+    "outcome": "PARTIAL"
+  }
+}
