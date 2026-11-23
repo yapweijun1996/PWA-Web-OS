@@ -4,7 +4,6 @@ import { DraftSession } from './draft';
 import { storageErrorCode, storageHelp } from './messages';
 
 type NotesRoute = 'list' | 'editor';
-const titles = new Intl.Collator('en', { sensitivity: 'accent' });
 const displayTitle = (title: string) => title.trim() ? title : 'Untitled note';
 const noopFlush: FlushResult = { ok: true };
 
@@ -241,7 +240,9 @@ export function createNotes(
       const row = item as HTMLLIElement;
       return [(row.firstElementChild as HTMLButtonElement).dataset.noteId, row];
     }));
-    const sorted = [...notes.values()].sort((a, b) => titles.compare(a.title, b.title) || a.id.localeCompare(b.id));
+    // Preserve NoteRepository.list() ordering when merging locally committed changes.
+    const sorted = [...notes.values()].sort((a, b) => b.updatedAt - a.updatedAt
+      || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     let focusedButton: HTMLButtonElement | undefined;
     for (const [index, note] of sorted.entries()) {
       let row = existing.get(note.id);
