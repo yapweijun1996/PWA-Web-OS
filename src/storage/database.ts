@@ -1,6 +1,7 @@
 import { BackupError, DB_NAME, DB_VERSION, StorageError } from '../contracts';
 
 const STORE = 'notes';
+const OPEN_TIMEOUT_MS = 3_000;
 
 function databaseError(error: unknown, duringOpen = false): StorageError {
   const name = error instanceof DOMException ? error.name : undefined;
@@ -27,16 +28,20 @@ function openDatabase(release: () => void): Promise<IDBDatabase> {
       return;
     }
 
-    let blocked = false;
+    let abandoned = false;
     let migrationError: unknown;
-    request.onblocked = () => {
-      blocked = true;
+    function abandon() {
+      abandoned = true;
+      clearTimeout(timeout);
       reject(new StorageError('blocked', 'Close other tabs using notes and retry.'));
-    };
+    }
+    // An open queued behind another tab's upgrade may not get its own blocked event.
+    const timeout = setTimeout(abandon, OPEN_TIMEOUT_MS);
+    request.onblocked = abandon;
     request.onupgradeneeded = (event) => {
       const transaction = request.transaction!;
-      // A blocked open cannot be canceled. Do not migrate after reporting failure.
-      if (blocked || event.oldVersion !== 0 || event.newVersion !== 1) {
+      // The open request cannot be canceled. Do not start a migration after reporting failure.
+      if (abandoned || event.oldVersion !== 0 || event.newVersion !== 1) {
         transaction.abort();
         return;
       }
@@ -47,10 +52,14 @@ function openDatabase(release: () => void): Promise<IDBDatabase> {
         transaction.abort();
       }
     };
-    request.onerror = () => reject(databaseError(migrationError ?? request.error, true));
+    request.onerror = () => {
+      clearTimeout(timeout);
+      if (!abandoned) reject(databaseError(migrationError ?? request.error, true));
+    };
     request.onsuccess = () => {
+      clearTimeout(timeout);
       const db = request.result;
-      if (blocked) {
+      if (abandoned) {
         db.close();
         return;
       }
