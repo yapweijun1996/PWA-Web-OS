@@ -9,13 +9,13 @@
         "build": "24H232",
         "architecture": "arm64",
         "runnerImage": "20261118.0550.1",
-        "workflowRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45235982611"
+        "workflowRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45237947952"
       },
       "tabCheck": {
         "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
         "buildId": "b-mwth4sjcb9dcafa",
         "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
-        "startedAt": "2026-11-23T18:19:16.572219+00:00",
+        "startedAt": "2026-11-23T18:30:13.055002+00:00",
         "os": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
         "mode": "Headed desktop browser tabs in isolated profiles on one host",
         "sessions": [
@@ -75,8 +75,8 @@
           }
         ],
         "outcome": "PASS",
-        "transferSha256": "027fe7cd371d8156f4494526916fd104bba6553795d8e10a732ee83b90886b22",
-        "finishedAt": "2026-11-23T18:20:03.825639+00:00"
+        "transferSha256": "b618d5f50cc3f02815b1f7bdf4c61c27a7e1721766cb551f5fe14765dc853002",
+        "finishedAt": "2026-11-23T18:30:50.965964+00:00"
       }
     },
     {

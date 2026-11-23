@@ -31,9 +31,11 @@ Set **next_pages_run** to rehearse an update to a distinct compatible retained r
 
 With both options enabled, the installed update checks install **next_pages_run** first on a separate loopback origin and promote **pages_run** on that same origin. They compare the manifest ID, launch path, scope and display mode, save while the update waits, and close the upgraded app. Windows then opens the original Start menu shortcut through the shell. UI Automation checks the new build and the exact saved edit. [Installed update qualification](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45232735360)
 
+The standard Ubuntu x64 runner exposed KVM API version 12 with 89 GiB of free temporary disk in a lab preflight. This establishes resources for trying a disposable x64 client VM. Windows 11 25H2 still needs to boot and pass the required browser and installed app checks in that environment. [Lab preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45239186556)
+
 ### macOS hosted browser tabs
 
-Run the **macOS desktop browser acceptance** workflow with the numeric ID of a successful main-branch Pages push. Choose `macos-15` for Arm64 or `macos-15-intel` for Intel. The workflow records the OS patch, verifies the retained release, installs the signed retail Chrome and Firefox bundles, and uses those binaries for headed cold launches and a same-host backup transfer. Inspect the exact OS patch recorded by the runner before counting the result against the supported minimum. [Sequoia observations](MAC_COMPATIBILITY_EVIDENCE.md#sequoia-browser-tabs) · [GitHub runner labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+Run the **macOS desktop browser acceptance** workflow with the numeric ID of a successful main-branch Pages push. Choose `macos-15` for Arm64 or `macos-15-intel` for Intel. The workflow records the OS patch, verifies the retained release, installs the signed retail Chrome and Firefox bundles, and uses those binaries for headed cold launches and a same-host backup transfer. Inspect the exact OS patch recorded by the runner before counting the result against the supported minimum. [Workflow](https://github.com/yapweijun1996/PWA-Web-OS/actions/workflows/macos-tabs.yml) · [Sequoia observations](MAC_COMPATIBILITY_EVIDENCE.md#sequoia-browser-tabs) · [GitHub runner labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
 
 ### Desktop screen reader
 
