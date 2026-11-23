@@ -2,7 +2,7 @@
 
 This index maps the 60 cases of `pwa:product-standard` v1.1.0 to the public Notes release, profile `STATIC_OFFLINE`. Note content stays in IndexedDB. Only app assets enter the service worker cache. The [platform matrix](PRODUCT_SPEC.md#platform-support) defines the supported launch modes.
 
-Use the test title and project name in the candidate's retained Playwright JSON to locate an executed assertion. The adjoining manifest binds those results to the compiled worker and files. Two-release fixture tests build their own A and B, and retained-artifact rehearsals have their own two identities. For manual checks, record the candidate SHA, build ID, artifact digest, date, OS, browser/version, mode, observation and evidence location. A source link describes coverage. Assign PASS only when the candidate's matching observation covers the case in the claimed context. Track missing device access as BLOCKED and unexecuted checks as NOT_RUN.
+Use the test title and project name in the candidate's retained Playwright JSON to locate an executed assertion. The adjoining manifest binds those results to the compiled worker and files. Two-release fixture tests build their own A and B, and retained-artifact rehearsals have their own two identities. For manual checks, record the candidate SHA, build ID, artifact digest, date, OS, browser/version, mode, observation and evidence location. A source link describes coverage. Assign PASS only when the candidate's matching observation covers the case in the claimed context. Track missing device access as BLOCKED and unexecuted checks as NOT_RUN. See the [60 recorded outcomes for the November 23 demo](DEMO_ACCEPTANCE_54E9662.md).
 
 ## Installation
 

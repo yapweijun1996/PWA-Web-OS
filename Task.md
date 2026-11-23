@@ -2,7 +2,7 @@
 
 ## Pending release tasks
 
-**Full production decision on 2026-11-23: HOLD.** GitHub Pages serves the verified Notes demo `b-mwtdek2h54e9662`. Use the [candidate checklist](docs/PRODUCTION_READINESS.md) for full release sign-off.
+**Full production decision on 2026-11-23: HOLD.** GitHub Pages serves the verified Notes demo `b-mwtdek2h54e9662`. See the [60 recorded case outcomes](docs/DEMO_ACCEPTANCE_54E9662.md) and the [candidate checklist](docs/PRODUCTION_READINESS.md).
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
