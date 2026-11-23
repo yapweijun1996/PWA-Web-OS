@@ -277,11 +277,12 @@ svg { flex: none; vertical-align: middle; }
 }
 body:has(.update-notice:not([hidden])) .workspace { padding-block-start: 0; }
 .update-notice h2 { font-size: 1rem; }
+/* Classic Ring from Loader Studio. See docs/UPSTREAM_REUSE.md. */
 .progress-mark {
   flex: none;
   inline-size: 1rem;
   block-size: 1rem;
-  border: 2px solid var(--border-control);
+  border: 2px solid color-mix(in srgb, var(--text-accent) 30%, transparent);
   border-block-start-color: var(--text-accent);
   border-radius: 50%;
 }

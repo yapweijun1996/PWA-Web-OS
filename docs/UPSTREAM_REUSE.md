@@ -1,6 +1,6 @@
 # Reuse from sibling repositories
 
-Status: Planned. The upstream repositories belong to the same owner and serve different roles. The first release remains a Notes-only workspace. Its launch, editing, storage, and updates use the app's own release assets.
+The Notes build includes the pinned SVG and loader selections below. The first release remains a Notes-only workspace. Its launch, editing, storage, and updates use the app's own release assets.
 
 | Source | What to reuse | Integration point |
 | --- | --- | --- |
@@ -11,15 +11,34 @@ Status: Planned. The upstream repositories belong to the same owner and serve di
 
 ## M1: SVG icons
 
-Start with the launcher, Notes, new note, back, offline, and update icons. Prefer the studio's 24 × 24 outline family with a consistent 1.5 stroke and `currentColor` for theme-aware rendering. Select each from the upstream catalog, then use the original SVG source or a reviewed export. Record the upstream commit, path, and applicable attribution for each selected asset. Retain the applicable MIT and Lucide/Feather notices. Keep the in-app set separate from the manifest install icon work in M2.
+The source is the [SVG-Icon-Studio catalog at `f0c55ec`](https://github.com/yapweijun1996/SVG-Icon-Studio/tree/f0c55ec5bb202148114a3c10b6ff5878376f516f/icons/catalog). Each filename below is relative to `icons/catalog/` at that revision. The workspace bundles the reviewed path data in [icons.ts](../src/ui/icons.ts), joining compatible subpaths and retaining the 24 × 24 view box, rounded 1.5 stroke and `currentColor`. Only local path geometry is copied. Each SVG is decorative and the owning control exposes its name.
 
-Bundle the selected icons as local assets. Inspect the SVG files before inclusion and exclude scripts, event handlers, and remote references. Use visible text or an accessible name for controls and hide purely decorative glyphs from assistive technology. Verify recognizability, alignment, contrast, and offline rendering in the target layouts.
+| Use | Local glyph | Upstream SVG |
+| --- | --- | --- |
+| Workspace Dock | `cube` | `package.svg` |
+| Notes launcher and Dock | `lines` | `list.svg` (upstream marks it as adapted from Lucide 1.77.0) |
+| Notes window and list rows | `document` | `document.svg` |
+| New note | `plus` | `plus.svg` |
+| Back navigation | `back` | `arrow-left.svg` |
+| Committed save status | `check` | `check.svg` |
+| Workspace menu | `chevron` | `chevron-down.svg` |
+
+The project also retains its local brand and window-control geometry introduced in `bddfc2f`. The PWA installation PNGs have a separate project source, [app-icon.svg](../scripts/app-icon.svg), and [Chromium renderer](../scripts/generate-pwa-icons.mjs) first committed in `95b6d12`.
 
 ## M3: Update loader
 
-Choose a compact Loader Studio example with plain markup and locally scoped CSS. Prefer an example that needs no JavaScript, remote fonts, or assets. If the selected snippet includes a demo initializer, omit it and let the workspace render the indicator from update state. Pin the source revision and record the upstream loader ID, path, notices, and local adaptations.
+The selected [Loader Studio `ring` (Classic Ring)](https://github.com/yapweijun1996/Vanilla-HTML-Loader/blob/a02c4f9c67eb48062eb5d651f4a7bcdf53d241fb/loaders/spinners.js) uses a circular track, an accent arc and a linear rotation. The local `.progress-mark` adaptation in [workspace.css](../src/styles/workspace.css) scales it to 1 rem, uses a 2 px, 30% accent track, and follows the workspace palette. The update coordinator controls visibility. Status text and announcements convey progress independently of the ring. With reduced motion the arc stays still.
 
-The existing PWA update coordinator owns readiness, activation, timeout, and recovery. Show the loader only after the user accepts and the app is actively preparing or switching builds. Pair it with status text and a static reduced-motion variant. Keep the editor usable while an update is waiting. Clear the busy state on completion, failure, or timeout and present the outcome and next action. Verify both motion settings on a staged two-build update, and check that the loader remains available when the candidate was prepared before the connection was lost.
+The [distribution notices](../public/THIRD-PARTY-NOTICES.txt) contain both projects' MIT text and the upstream Lucide/Feather notices. The build ships that file on the site and precaches it alongside the bundled icon and loader code. Upstream catalog scripts and demo initializers are excluded.
+
+## Wallpaper provenance
+
+The handoff records Codex CLI image generation as the source of the Aurora wallpaper. The project first shipped these exact images in `bddfc2f`. The available history records neither a generation receipt nor a decision about source-image rights or public distribution. Keep wallpaper clearance open in the full release review until the release owner can bind that evidence to these files. [Handoff](HANDOFF_NEXT_SESSION.md)
+
+| File under `public/wallpapers/` | SHA-256 |
+| --- | --- |
+| `wallpaper-desktop.webp` | `3805eaf91c8a1ae83f88c98c2e75b709c9bb8d9db4360d86230a08c1977008d9` |
+| `wallpaper-phone.webp` | `5f8c7a418d061d4af5aba665b2913539752019d3e8720ffeab07b69194ca03c7` |
 
 ## After M5: Public API tool
 

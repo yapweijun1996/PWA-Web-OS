@@ -147,7 +147,7 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
   await expectLiteralEditor(page, draft);
   expect(await page.evaluate(() => Object.entries(localStorage))).toEqual([[THEME_KEY, 'dark']]);
 
-  const cachePaths = ['index.html', 'manifest.webmanifest', ...manifest.icons.map(({ src }) => src),
+  const cachePaths = ['index.html', 'manifest.webmanifest', 'THIRD-PARTY-NOTICES.txt', ...manifest.icons.map(({ src }) => src),
     ...(await readdir('dist/assets')).map((name) => `assets/${name}`),
     'wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
   await expectReleaseCache(page, appUrl, cachePaths);
