@@ -63,6 +63,9 @@
       },
       "finishedAt": "2026-11-23T18:52:02.088853+00:00"
     },
+    "homeScreenShortcut": {
+      "outcome": "NOT_RUN"
+    },
     "webApk": {
       "outcome": "BLOCKED",
       "nativeInstallPromptConfirmed": true,
@@ -74,7 +77,15 @@
     "version": "160.0.1",
     "apkSha256": "1c811bbdc8d7488b9340d379889cf04105525596d21a7c596b3a664d833858ea",
     "apkSigningCertificateSha256": "a78b62a5165b4494b2fead9e76a280d22d937fee6251aece599446b2ea319b04",
-    "apkSource": "https://archive.mozilla.org/pub/fenix/releases/160.0.1/android/fenix-160.0.1-android-arm64-v8a/"
+    "apkSource": "https://archive.mozilla.org/pub/fenix/releases/160.0.1/android/fenix-160.0.1-android-arm64-v8a/",
+    "regularTab": {
+      "outcome": "INCOMPLETE",
+      "onlineLaunchAndOfflineReadinessObserved": true,
+      "environmentFailure": "Android displayed Process system isn't responding. After reboot Firefox reopened the cached build, and the app reported Site unreachable."
+    },
+    "homeScreen": {
+      "outcome": "NOT_RUN"
+    }
   },
   "scope": "Supplemental emulator observations for this release. Physical Android 10 compatibility and mobile performance remain open."
 }
