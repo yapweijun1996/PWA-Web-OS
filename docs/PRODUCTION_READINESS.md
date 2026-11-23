@@ -31,7 +31,7 @@ Set **next_pages_run** to rehearse an update to a distinct compatible retained r
 
 With both options enabled, the installed update checks install **next_pages_run** first on a separate loopback origin and promote **pages_run** on that same origin. They compare the manifest ID, launch path, scope and display mode, save while the update waits, and close the upgraded app. Windows then opens the original Start menu shortcut through the shell. UI Automation checks the new build and the exact saved edit. [Installed update qualification](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45232735360)
 
-The standard Ubuntu x64 runner exposed KVM API version 12 with 89 GiB of free temporary disk in a lab preflight. This establishes resources for trying a disposable x64 client VM. Windows 11 25H2 still needs to boot and pass the required browser and installed app checks in that environment. [Lab preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45239186556)
+The standard Ubuntu x64 runner exposed KVM API version 12 with 89 GiB of free temporary disk. A `windows-2025` x64 runner also started a blank Generation 2 Hyper-V guest and had about 220 GiB free on its temporary `D:` volume. Microsoft's deployment kit provides 25H2 client images for its Hyper-V evaluation lab. The kit has its own evaluation terms. Windows 11 x64 boot and browser acceptance remain open. [KVM preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45239186556) · [Hyper-V preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45240881415) · [Microsoft deployment kit](https://learn.microsoft.com/en-us/microsoft-365/enterprise/modern-desktop-deployment-and-management-lab?view=o365-worldwide)
 
 ### macOS hosted browser tabs
 
