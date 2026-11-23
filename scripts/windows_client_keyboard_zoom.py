@@ -3,6 +3,7 @@
 import json
 from zipfile import ZipFile
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -60,13 +61,19 @@ def exercise_at_zoom(driver, url, build, expected_dpr, title, body):
         ActionChains(driver).send_keys(key).perform()
 
     def focused(selector, label):
-        node = wait.until(
-            lambda browser: browser.execute_script("""
+        try:
+            node = wait.until(
+                lambda browser: browser.execute_script("""
+                    const node = document.activeElement;
+                    return node.matches(arguments[0]) ? node : null;
+                """, selector),
+            )
+        except TimeoutException as error:
+            actual = driver.execute_script("""
                 const node = document.activeElement;
-                return node.matches(arguments[0]) ? node : null;
-            """, selector),
-            message=f"Expected keyboard focus on {label}",
-        )
+                return [node.tagName, node.id, node.className, node.getAttribute('aria-label')];
+            """)
+            raise AssertionError(f"Expected keyboard focus on {label}, found {actual}") from error
         if not driver.execute_script("""
             const node = arguments[0];
             const style = getComputedStyle(node);
@@ -81,8 +88,16 @@ def exercise_at_zoom(driver, url, build, expected_dpr, title, body):
         focus_path.append(label)
         return node
 
-    def tab_to(selector, label):
+    def tab_to(selector, label, scroll_stop=None):
         press(Keys.TAB)
+        # Browsers can give overflowing containers one Tab stop for keyboard scrolling.
+        if scroll_stop and driver.execute_script("""
+            const node = document.activeElement;
+            return node.matches(arguments[0]) && node.scrollHeight > node.clientHeight &&
+              ['auto', 'scroll'].includes(getComputedStyle(node).overflowY);
+        """, scroll_stop):
+            focused(scroll_stop, f"Scrollable area before {label}")
+            press(Keys.TAB)
         return focused(selector, label)
 
     def open_notes():
@@ -90,9 +105,10 @@ def exercise_at_zoom(driver, url, build, expected_dpr, title, body):
         wait.until(lambda browser: browser.execute_script("return window.__pwaUpdate?.buildId") == build)
         if abs(viewport(driver)["dpr"] - expected_dpr) > 0.01:
             raise AssertionError("Browser did not retain page zoom across navigation")
-        tab_to(".workspace-toggle", "Workspace")
+        toggle = tab_to(".workspace-toggle", "Workspace")
         press(Keys.ENTER)
-        tab_to('input[type="radio"]:checked', "System appearance")
+        wait.until(lambda _: toggle.get_attribute("aria-expanded") == "true", message="Workspace did not open")
+        tab_to('input[type="radio"]:checked', "System appearance", scroll_stop=".workspace-menu")
         tab_to("select", "Language")
         tab_to(".backup-menu summary", "Backup")
         press(Keys.ESCAPE)
@@ -102,11 +118,11 @@ def exercise_at_zoom(driver, url, build, expected_dpr, title, body):
         press(Keys.ENTER)
         focused(".window-bar h2", "Notes heading")
         if driver.execute_script("return matchMedia('(max-width: 600px)').matches"):
-            tab_to(".launcher-back", "Back to workspace")
+            tab_to(".launcher-back", "Back to workspace", scroll_stop=".notes-list")
         else:
             for label in ("Minimize", "Maximize", "Close"):
                 tab_to(f'.window-controls button[aria-label="{label}"]', label)
-        tab_to(".notes-list .primary", "New note")
+        tab_to(".notes-list .primary", "New note", scroll_stop=".notes-list")
 
     open_notes()
     press(Keys.ENTER)
