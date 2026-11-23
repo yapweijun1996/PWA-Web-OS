@@ -1,0 +1,59 @@
+{
+  "environment": {
+    "os": "15.7.7",
+    "build": "24G720",
+    "architecture": "arm64",
+    "browser": "Google Chrome 158.0.8127.37",
+    "hostType": "Disposable Tart guest on Apple Silicon",
+    "reader": "Native macOS VoiceOver",
+    "capture": "Guest-native screenshot of the VoiceOver Caption Panel with on-guest Vision OCR and visual confirmation of the two targeted captions"
+  },
+  "a": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+  },
+  "b": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "outcome": "PASS",
+  "scope": "Two previously unobserved desktop captions on the retained candidate, across separate runs on Sequoia 15.7.7",
+  "checks": [
+    {
+      "id": "note-saving",
+      "startedAt": "2026-11-23T21:04:14.956Z",
+      "finishedAt": "2026-11-23T21:06:09.601Z",
+      "phrase": "Saving...",
+      "outcome": "PASS",
+      "control": "The held real IndexedDB write had visible and live-region Saving text. Releasing it produced a saved caption."
+    },
+    {
+      "id": "update-available",
+      "startedAt": "2026-11-23T21:10:00.531Z",
+      "finishedAt": "2026-11-23T21:10:59.057Z",
+      "phrase": "Update available",
+      "launcherCaption": "Notes, button, Workspace launcher, region",
+      "politeRegionInOrder": [
+        "Update available"
+      ],
+      "updatingCaption": "Updating Notes, region, Saving changes before update , group",
+      "exactBodyAfterUpdate": true,
+      "outcome": "PASS"
+    }
+  ],
+  "earlierAttempts": {
+    "clipboard": "The last-spoken-phrase capture returned no text for the Notes launcher control.",
+    "savingRun": "The saving caption was captured before the later update capture failed with a screenshot read error.",
+    "updateDuringPageSpeech": {
+      "startedAt": "2026-11-23T21:06:57.746Z",
+      "finishedAt": "2026-11-23T21:07:44.567Z",
+      "politeRegionInOrder": [
+        "Update available"
+      ],
+      "updateAvailableCaption": "UNOBSERVED",
+      "exactBodyAfterUpdate": true
+    }
+  }
+}
