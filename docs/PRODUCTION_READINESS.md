@@ -25,6 +25,10 @@ Set **windows_image** to `windows-11-arm` to run the same checks on the hosted W
 
 Enable **client_preferences** to exercise both catalogs in Light and Dark during an offline edit, retain the draft and selection, and retry the save. The check briefly changes the Apps appearance setting on the disposable Windows runner, verifies that System follows the OS, and restores the original setting.
 
+Enable **native_apps** to verify the selected release's live bytes, install through each browser's native control, and check the generated application shortcut. The test reuses the registered app ID and its isolated profile for separate process launches. In both installed modes it records an uncached 404 while online, a blocked uncached request during two offline launches, and the exact note read after saving offline.
+
+Set **next_pages_run** to rehearse an update to a distinct compatible retained release on a loopback staging origin. Chrome and Firefox each save while the update waits, pause after an injected IndexedDB abort, and preserve both the open draft and the previous commit. The test then retries into the staged build and reads the exact committed edit. [Windows 11 qualification](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45222834638)
+
 ### Desktop screen reader
 
 Run [Windows desktop screen reader](https://github.com/yapweijun1996/PWA-Web-OS/actions/workflows/desktop-reader.yml) with two successful Pages push run IDs on `main`. Set **active_pages_run** to the release whose editor and update prompt should be observed. Set **next_pages_run** to the compatible release the local test server should serve during the update. The workflow checks both manifests and runs portable NVDA 2026.3.1 with headed Chrome in a disposable Windows Server session. It reads the NVDA Speech Viewer while testing control names, saving, failure and retry, and the pending-write update. The report identifies both builds and the captured phrases.

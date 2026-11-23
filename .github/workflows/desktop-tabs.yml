@@ -18,6 +18,14 @@ on:
         description: Exercise locale and Windows appearance while editing offline
         type: boolean
         default: false
+      native_apps:
+        description: Install and verify both web app windows against the live release
+        type: boolean
+        default: false
+      next_pages_run:
+        description: Successful Pages push run for a compatible staged update
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -27,12 +35,15 @@ jobs:
   tabs:
     runs-on: ${{ inputs.windows_image }}
     timeout-minutes: 20
+    env:
+      LIVE_SITE: https://yapweijun1996.github.io/PWA-Web-OS/
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
       - name: Verify retained Pages build
+        id: artifact
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
@@ -71,6 +82,7 @@ jobs:
             updateBuildRevision = $version.UBR
           } | ConvertTo-Json | Set-Content desktop-evidence/windows-environment.json
       - name: Install Selenium
+        id: drivers
         run: python -m pip install --disable-pip-version-check selenium==4.54.0
       - name: Test installed Chrome and Firefox in desktop tabs
         shell: pwsh
@@ -87,6 +99,57 @@ jobs:
           npm ci
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node scripts/measure-performance.mjs desktop-evidence/windows-performance.json retained
+      - name: Verify live bytes for native installation
+        id: online
+        if: ${{ !cancelled() && inputs.native_apps && steps.artifact.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $identity = Get-Content retained/manifest.json -Raw | ConvertFrom-Json
+          node scripts/release-evidence.mjs verify-hosted $env:LIVE_SITE retained/manifest.json $identity.commit
+      - name: Verify native Chrome app
+        if: ${{ !cancelled() && steps.online.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
+          $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
+          python scripts/check-windows-apps.py chrome $env:LIVE_SITE retained/manifest.json desktop-evidence/chrome-app.json
+      - name: Verify native Firefox app
+        if: ${{ !cancelled() && steps.online.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
+          $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
+          python scripts/check-windows-apps.py firefox $env:LIVE_SITE retained/manifest.json desktop-evidence/firefox-app.json
+      - name: Verify deferred updates and recovery in retail Windows tabs
+        if: ${{ !cancelled() && inputs.next_pages_run != '' && steps.artifact.outcome == 'success' && steps.drivers.outcome == 'success' }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT_RUN: ${{ inputs.next_pages_run }}
+        run: |
+          $id = $env:NEXT_RUN
+          if ($id -notmatch '^[1-9][0-9]*$') { throw 'Expected a numeric staged Pages run ID' }
+          $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$id" | ConvertFrom-Json
+          if ($LASTEXITCODE -or $run.path -ne '.github/workflows/pages.yml' -or
+              $run.event -ne 'push' -or $run.head_branch -ne 'main' -or $run.conclusion -ne 'success') {
+            throw 'Select a successful main Pages push for the staged update'
+          }
+          $prefix = "recovery-$($run.head_sha)-$id-"
+          $available = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$id/artifacts?per_page=100" | ConvertFrom-Json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $artifact = $available.artifacts | Where-Object { !$_.expired -and $_.name.StartsWith($prefix) } |
+            Sort-Object id -Descending | Select-Object -First 1
+          if (!$artifact) { throw "No retained update artifact for run $id" }
+          gh run download $id --name $artifact.name --dir retained-peer
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ((Get-Content retained-peer/manifest.json -Raw | ConvertFrom-Json).commit -ne $run.head_sha) {
+            throw 'Unexpected staged update commit'
+          }
+          node scripts/release-evidence.mjs verify retained-peer/dist retained-peer/manifest.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
+          $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
+          python scripts/check-windows-updates.py retained retained-peer desktop-evidence/windows-updates.json
       - name: Retain desktop evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

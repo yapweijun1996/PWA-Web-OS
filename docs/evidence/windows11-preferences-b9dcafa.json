@@ -2,7 +2,7 @@
   "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
   "buildId": "b-mwth4sjcb9dcafa",
   "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
-  "startedAt": "2026-11-23T16:53:14.584093+00:00",
+  "startedAt": "2026-11-23T16:58:09.278002+00:00",
   "os": "Windows-11-10.0.26200-SP0",
   "mode": "Headed desktop browser tabs in isolated profiles on one host",
   "sessions": [
@@ -114,6 +114,6 @@
     }
   ],
   "outcome": "PASS",
-  "transferSha256": "c95f4bc843e5bcb99737f8c0f1f5f9132d3867fc8c09b8fd0f4f7de9d8f9f65d",
-  "finishedAt": "2026-11-23T16:54:09.116323+00:00"
+  "transferSha256": "34b01e8cd6fee9cfca1991a7b0983d7e2d45e1ddbbf02656d92bc17a1c609cfb",
+  "finishedAt": "2026-11-23T16:59:07.053793+00:00"
 }

@@ -1,0 +1,39 @@
+{
+  "buildId": "b-mwth4sjcb9dcafa",
+  "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+  "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+  "os": "Windows-11-10.0.26200-SP0",
+  "startedAt": "2026-11-23T17:02:17.233329+00:00",
+  "sessions": [
+    {
+      "browser": "chrome",
+      "version": "157.0.8103.79",
+      "phase": 1,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "version": "157.0.8103.79",
+      "phase": 2,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "version": "157.0.8103.79",
+      "phase": 3,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "registration": {
+    "shortcut": "PWA Web OS.lnk",
+    "launcher": "chrome_proxy.exe"
+  },
+  "finishedAt": "2026-11-23T17:02:49.520149+00:00"
+}
