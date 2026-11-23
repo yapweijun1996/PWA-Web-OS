@@ -1,0 +1,150 @@
+{
+  "environment": {
+    "os": "15.8.3",
+    "osBuild": "24H241",
+    "architecture": "arm64",
+    "hostType": "Disposable Tart guest on Apple Silicon",
+    "baseImage": "ghcr.io/cirruslabs/macos-sequoia-vanilla@sha256:57a83b1b52f928f5b11b0963927178fd6c4cac52c315279f227c27cc5ab81587",
+    "baseOs": "15.7.7",
+    "upgrade": "Apple Software Update followed by a verified boot",
+    "browserSignatures": [
+      {
+        "identifier": "com.google.Chrome",
+        "teamIdentifier": "EQHXZ8M8AV",
+        "outcome": "PASS"
+      },
+      {
+        "identifier": "org.mozilla.firefox",
+        "teamIdentifier": "43AQ936H96",
+        "outcome": "PASS"
+      }
+    ]
+  },
+  "tabs": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+    "startedAt": "2026-11-23T20:18:12.604254+00:00",
+    "os": "macOS-15.8.3-arm64-arm-64bit-Mach-O",
+    "mode": "Headed desktop browser tabs in isolated profiles on one host",
+    "sessions": [
+      {
+        "browser": "chrome",
+        "browserVersion": "158.0.8127.37",
+        "phase": 1,
+        "browserOffline": false,
+        "networkControlHttpStatus": 404,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "chrome",
+        "browserVersion": "158.0.8127.37",
+        "phase": 2,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "chrome",
+        "browserVersion": "158.0.8127.37",
+        "phase": 3,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0.1",
+        "phase": 1,
+        "browserOffline": false,
+        "networkControlHttpStatus": 404,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0.1",
+        "phase": 2,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0.1",
+        "phase": 3,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      }
+    ],
+    "outcome": "PASS",
+    "transferSha256": "05c862783584352c0a9215c550d7f24511e1445923e8460943eaa2719d82ac4e",
+    "finishedAt": "2026-11-23T20:22:16.278847+00:00"
+  },
+  "chromeInstalled": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+    "os": "15.8.3",
+    "osBuild": "24H241",
+    "architecture": "arm64",
+    "startedAt": "2026-11-23T20:29:09.274960+00:00",
+    "sessions": [
+      {
+        "phase": 1,
+        "processId": 731,
+        "browserVersion": "158.0.8127.37",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "nativeStandalone": true,
+        "networkControlHttpStatus": 404,
+        "noteBodyMatched": true,
+        "outcome": "PASS"
+      },
+      {
+        "phase": 2,
+        "processId": 759,
+        "browserVersion": "158.0.8127.37",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "nativeStandalone": true,
+        "networkControlHttpStatus": 0,
+        "noteBodyMatched": true,
+        "outcome": "PASS"
+      },
+      {
+        "phase": 3,
+        "processId": 792,
+        "browserVersion": "158.0.8127.37",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "nativeStandalone": true,
+        "networkControlHttpStatus": 0,
+        "noteBodyMatched": true,
+        "outcome": "PASS"
+      }
+    ],
+    "outcome": "PASS",
+    "registration": {
+      "name": "PWA Web OS.app",
+      "appId": "bejdicknbbagpkikpbmfnhiljbdfiedf",
+      "infoPlistSha256": "dc092d863697cbb434b2d55db1f203cc9d78048d0ec40da9d8bb13cceeb57ae1",
+      "registrationMethod": "Chrome address-bar Install action"
+    },
+    "finishedAt": "2026-11-23T20:30:38.827200+00:00"
+  },
+  "signedHostedTabRerun": {
+    "runId": 45258787839,
+    "artifactId": 14859302715,
+    "environment": {
+      "os": "15.8.2",
+      "build": "24H232",
+      "architecture": "arm64",
+      "runnerImage": "20261118.0550.1"
+    },
+    "outcome": "PASS"
+  }
+}

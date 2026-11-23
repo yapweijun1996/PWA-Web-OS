@@ -6,7 +6,7 @@
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
-| 1 | Verify the lower-end platform targets and publish supported versions. | The [qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) identify the OS baselines and browser channels. Record exact browser versions and the required launch results on each target before publishing. |
+| 1 | Verify the lower-end platform targets and publish supported versions. | All three macOS modes passed on Sequoia 15.8.3 Arm64. Complete the Windows x64, iOS, and Android rows before publishing. [Qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) · [Sequoia report](docs/evidence/macos-sequoia-15-8-3-37ad1b4.json) |
 | 2 | Complete Windows client support qualification. | Windows 11 Enterprise 25H2 Arm64 passed all four launch modes on `37ad1b4`, including original shortcuts after upgrading. A hosted x64 Hyper-V guest preflight passed. Run the four launch modes on a licensed 25H2 x64 client. [Arm64 results](docs/evidence/windows11-37ad1b4.json) · [Hyper-V preflight](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45240881415) |
 | 3 | Complete the iPhone and Android launch matrix. | The Android 16 emulator passed the Chrome tab save and offline cold-launch journey. Qualify iOS 18 and Android 10 on physical phones, including each required launch mode, native keyboard, safe areas and rotation. [Qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) · [Android emulator evidence](docs/evidence/android16-emulator-b9dcafa.json) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
@@ -19,6 +19,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 ### Current demo evidence from 2026-11-24
 
 - Source `37ad1b4`, build `b-mwtnv4pp37ad1b4`. Pages passed 150 browser tests with zero skips, then verified the launch URL and 12 hosted files. The saved theme applies before the workspace script loads. Stable Chrome followed the live custom 404 link and retained Dark and the exact note body through two offline process restarts. [Candidate evidence](docs/DEMO_ACCEPTANCE_37AD1B4.md)
+- The Sequoia 15.8.3 Arm64 guest passed Chrome tab, Chrome installed app, and Firefox tab. All three saved offline and read the exact edit after restarting. [Sequoia report](docs/evidence/macos-sequoia-15-8-3-37ad1b4.json)
 - Chromium and Firefox preserved the note through `b9dcafa → 37ad1b4 → b9dcafa` on HTTPS staging after rejecting a mixed candidate. [Recovery evidence](docs/evidence/recovery-mixed-37ad1b4.json)
 
 ### Update focus demo evidence from 2026-11-24
@@ -84,7 +85,7 @@ For each item below, launch Notes online once to complete setup. Then disconnect
 Run the Windows tab checks first. Run installed-mode and other platform checks after the Windows browser milestone and before M5, or record why a required check is blocked.
 
 - [ ] Windows: Chrome tab and installed app, Firefox tab and web app window.
-- [ ] macOS: Chrome tab and installed app, Firefox tab.
+- [x] macOS: Chrome tab and installed app, Firefox tab. [Sequoia 15.8.3 Arm64](docs/evidence/macos-sequoia-15-8-3-37ad1b4.json)
 - [ ] iOS: Safari, Chrome, and Firefox tabs, plus the Home Screen app installed through Safari.
 - [ ] Android: Chrome and Firefox tabs, plus each browser's installed app or Home Screen launch.
 
