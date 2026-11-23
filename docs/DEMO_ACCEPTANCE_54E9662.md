@@ -15,7 +15,7 @@
 - **CI evidence** is from Ubuntu 24.04 x64, Node 24.22.3, Chromium 156.0.8078.4 and Firefox 157.0. The browser-evidence report records 145 passed, one skipped, and zero failures or flaky results. All 12 deployed files matched the retained manifest. [Pages release run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
 - **Desktop evidence** covers Windows Server 2025 with retail Chrome and Firefox tabs. On macOS 26.6.2, all three required launch modes passed on the deployed demo. The platform records contain the exact versions and launch methods. [Windows evidence](RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run) · [macOS evidence](MAC_COMPATIBILITY_EVIDENCE.md)
 - **HTTPS staging evidence** covers Chromium and Firefox on macOS 27.2. Both phases of release replacement plus return to A used the same HTTPS origin within each run. [Staging record](RECOVERY_RUNBOOK.md#rehearsal-with-the-november-23-demo)
-- **Desktop lab evidence** covers the same build on a physical Apple M4 and Windows Server 2025. Both passed. Two macOS VM batches exceeded the editing ceiling. Physical mobile lab results, declared support floors, and the field-data decision remain open. [Performance](PERFORMANCE.md)
+- **Desktop lab evidence** covers the same build on a physical Apple M4 and Windows Server 2025. Both passed. Two macOS VM batches exceeded the editing ceiling. The launch policy records field results as `INSUFFICIENT_DATA` and requires the same build to pass the declared desktop and physical mobile labs. The physical mobile measurements and support floors remain open. [Performance](PERFORMANCE.md)
 
 PASS covers the observation stated in that row. BLOCKED records a required environment or device that is unavailable. NOT_RUN records an unfinished or skipped check. INSUFFICIENT_DATA is the field measurement outcome.
 
@@ -67,7 +67,7 @@ PASS covers the observation stated in that row. BLOCKED records a required envir
 | A11Y-08 | BLOCKED | CI verified live region updates. Confirm audible save and update sequencing on the declared readers. |
 | QA-01 | INSUFFICIENT_DATA | No representative field LCP sample. The cold-launch lab passed on the measured physical Mac and hosted Windows profiles. |
 | QA-02 | INSUFFICIENT_DATA | No representative field INP sample. Editor p75 passed on the physical Mac and hosted Windows and exceeded the ceiling in two Mac VM batches. |
-| QA-03 | INSUFFICIENT_DATA | No representative field CLS sample and no full-release field-data decision. |
+| QA-03 | INSUFFICIENT_DATA | No representative field CLS sample. The launch policy requires passing candidate lab results and live synthetic checks with field data recorded separately. |
 | QA-04 | PASS | CI checked mobile portrait and landscape reflow and 200% text at 320 and 768 CSS pixels. |
 | QA-05 | PASS | CI exercised the production CSP, worker, manifest, backup export and literal imported text. |
 | QA-06 | PASS | CI recorded network requests and exact app caches without synthetic note data. |

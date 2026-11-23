@@ -28,7 +28,7 @@ Use a new output filename for each run. The report records the source SHA, build
 
 ## Field policy
 
-Record field LCP, INP and CLS at p75 separately when a representative dataset exists. No real-user timing collection is enabled in the app. With no such dataset, record INSUFFICIENT_DATA. As an initial launch policy, a passing lab run can support the Windows demo when the Windows baseline also passes. For full production, require candidate lab results on the declared desktop and mobile baselines, and record the release owner's decision about missing field samples. A lab result on macOS covers that profile only.
+Record field LCP, INP and CLS at p75 separately when a representative dataset exists. The first Notes release uses local-only storage and the field result is `INSUFFICIENT_DATA`. For initial rollout, use a passing lab run on each declared desktop and physical mobile baseline, bound to the same release artifact. Pair those runs with synthetic launch, save and offline-reopen checks on the published build. The rest of the [full release gates](PRODUCTION_READINESS.md) apply. Report the measured lab and field outcomes separately in the release decision.
 
 ## Recorded desktop run
 
