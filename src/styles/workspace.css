@@ -3,6 +3,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
+/* Pane breakpoints follow the available width and the root text size. */
+#app { container-type: inline-size; }
+
 body {
   margin: 0;
   background: var(--surface-canvas);
@@ -81,10 +84,11 @@ button[aria-disabled='true'] { opacity: 0.7; cursor: default; }
 .theme-control label {
   display: inline-flex;
   min-block-size: 44px;
+  min-inline-size: 44px;
   align-items: center;
   gap: var(--space-1);
   padding-inline: var(--space-2);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-control);
   border-radius: var(--radius);
   background: var(--surface-panel);
   font-size: var(--type-small);
@@ -113,7 +117,7 @@ button[aria-disabled='true'] { opacity: 0.7; cursor: default; }
   font-size: var(--type-small);
 }
 .backup-menu { margin-inline-start: auto; }
-.backup-menu summary { min-block-size: 44px; padding: var(--space-2); color: var(--text-muted); }
+.backup-menu summary { min-block-size: 44px; min-inline-size: 44px; padding: var(--space-2); color: var(--text-muted); }
 .backup-menu .actions { justify-content: flex-end; }
 
 .feedback {
@@ -145,7 +149,7 @@ button[aria-disabled='true'] { opacity: 0.7; cursor: default; }
 @keyframes progress { to { transform: rotate(1turn); } }
 @media (prefers-reduced-motion: reduce) { .progress-mark { animation: none; } }
 
-.workspace-grid { display: grid; gap: var(--space-3); align-items: stretch; }
+.workspace-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); align-items: stretch; }
 .panel {
   min-inline-size: 0;
   padding: var(--space-4);
@@ -178,7 +182,7 @@ button[aria-disabled='true'] { opacity: 0.7; cursor: default; }
 .note-items { list-style: none; padding: 0; margin: var(--space-3) 0 0; }
 .note-items li + li { margin-block-start: var(--space-2); }
 .note-items button, .workspace-rail button { inline-size: 100%; text-align: start; }
-.note-items button, .preview-titles li { white-space: pre-wrap; }
+.note-items button, .preview-titles li { white-space: pre-wrap; overflow-wrap: anywhere; }
 button[aria-current] { background: var(--surface-selected); font-weight: 700; border-inline-start-width: 4px; }
 
 .editor-fields {
@@ -204,14 +208,14 @@ button[aria-current] { background: var(--surface-selected); font-weight: 700; bo
 .recovery p + p, .recovery .actions { margin-block-start: var(--space-2); }
 
 /* At 44rem there is room for a 14rem list and roughly 26rem of writing space. */
-@media (min-width: 44rem) {
+@container (min-width: 44rem) {
   .workspace:not([data-route='launcher']) > .workspace-grid { grid-template-columns: 14rem minmax(0, 1fr); }
   .workspace:not([data-route='launcher']) :is(.notes-list, .editor) { display: block; }
   .list-back { display: none; }
 }
 
 /* Add an 11rem rail and more generous gutters only when both panes still fit. */
-@media (min-width: 62rem) {
+@container (min-width: 62rem) {
   .workspace { padding-inline: max(var(--space-5), env(safe-area-inset-left)) max(var(--space-5), env(safe-area-inset-right)); }
   .workspace-grid { gap: var(--space-4); }
   .workspace-rail { display: block; }
@@ -223,9 +227,11 @@ button[aria-current] { background: var(--surface-selected); font-weight: 700; bo
 }
 
 dialog {
-  inline-size: min(30rem, 100% - 2rem);
+  inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  inline-size: min(30rem, 100% - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right));
   max-block-size: calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   overflow: auto;
+  scroll-padding-block: var(--space-3);
   padding: var(--space-5);
   background: var(--surface-panel);
   color: var(--text-primary);
