@@ -30,3 +30,7 @@ On 2026-11-23, Chrome 158.0.8127.36 on macOS 26.6.2 installed the deployed `54e9
 ## Firefox regular tab on the deployed demo
 
 On the same macOS 26.6.2 VM, Mozilla-signed Firefox 160.0.1 opened the deployed `54e9662` demo in three distinct headed browser processes using one disposable test profile. The served worker digest matched the release manifest. An uncached request returned 404 during the online setup and failed in both later sessions under a browser-only rejecting proxy. Firefox saved the note, restarted offline, edited it, and compared its exact value after another offline restart. [Session evidence](evidence/macos-firefox-tabs-54e9662.json)
+
+## Chrome regular tab on the deployed demo
+
+Chrome 158.0.8127.36 on the same macOS VM ran the deployed `54e9662` demo as headed browser tabs across three distinct processes in a disposable profile. Browser-only network emulation blocked the uncached request in both offline launches. Each launch confirmed the worker and build identity. The note saved online was edited on the first offline launch and the exact edit was read after the second offline restart. This gives the three required macOS launch modes on the tested versions. Desktop screen-reader checks and the supported minimum version still need release sign-off. [Session evidence](evidence/macos-chrome-tabs-54e9662.json)
