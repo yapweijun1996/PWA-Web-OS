@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import { markKnownFirefoxAxeCrash } from './helpers/firefox-axe';
 import { expect, test, type Page } from '@playwright/test';
 import { LIMITS } from '../src/contracts';
 
@@ -15,8 +16,8 @@ const tags = ['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice'];
 test.describe('production Notes accessibility', () => {
   for (const viewport of viewports) {
     for (const theme of themes) {
-      test(`axe scans Notes and backup states at ${viewport.width}x${viewport.height}, ${theme}`, async ({ page, context, browserName }) => {
-        test.skip(browserName === "firefox", "Playwright Firefox crashes the page during axe evaluation on this Windows host (Page crashed). Firefox axe coverage is UNVERIFIED; Chromium runs the full matrix.");
+      test(`axe scans Notes and backup states at ${viewport.width}x${viewport.height}, ${theme}`, async ({ page, context, browser }) => {
+        markKnownFirefoxAxeCrash(browser);
         test.setTimeout(60_000);
         const findings: Awaited<ReturnType<typeof scan>>[] = [];
         const audit = async (state: string) => {
