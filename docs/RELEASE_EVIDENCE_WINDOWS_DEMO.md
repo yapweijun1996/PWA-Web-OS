@@ -6,7 +6,7 @@ Status: **Provisional.** This records what was run for the Windows demo track de
 
 | Item | Value |
 | --- | --- |
-| Code tested | Working tree identical to commit `ae37122` on branch `m1-integration`. The build ID suffix `65fd063` is the parent commit that Git reported when the build ran, before `ae37122` was committed. |
+| Code tested | Commit `dd2d68a` (branch `m1-integration`, pushed to `main`); the tests ran on a working tree equal to that commit. The earlier candidate `ae37122` ran 97 passed and 7 skipped. |
 | Environment | Windows 11 (10.0.26200), Node 24.22.3, Vite 8.3.8, Vitest 5.1.1, Playwright 1.65.1, TypeScript 7.0.2 |
 | Browsers | Playwright Chromium 159.0.8154.6 and Firefox 159.0. These are Playwright builds, not branded Chrome or a normal Firefox profile. |
 | Release owner | Not assigned |
@@ -19,15 +19,17 @@ Status: **Provisional.** This records what was run for the Windows demo track de
 | `npm run typecheck` | PASS | strict TypeScript, no diagnostics |
 | `npm test` | PASS | 84 unit tests in 6 files, using fakes (jsdom, fake-indexeddb) |
 | `npm run build` | PASS | production bundle and service worker emitted |
-| `npm run e2e` | PASS | 97 passed, 7 skipped, 0 failed in Chromium and Firefox against `vite preview` of the production build |
+| `npm run e2e` | PASS | 106 passed, 8 skipped, 0 failed in Chromium and Firefox against `vite preview` of the production build |
 
-The 7 skipped tests are the Firefox axe scans, which crash the page under Playwright on this host (`Page crashed`). Firefox axe coverage is `NOT_RUN`. Chromium ran the full axe matrix.
+Seven of the 8 skipped tests are the Firefox axe scans, which crash the page under Playwright on this host (`Page crashed`). Firefox axe coverage is `NOT_RUN`. Chromium ran the full axe matrix. The storage worker reported native Firefox quota behaviour as unverified, which is consistent with the remaining skip, but that mapping was not checked line by line here.
+
+Live check of the deployed build `dd2d68a` (deployment run matched by commit SHA): a real Chromium and a real Firefox created two notes on <https://yapweijun1996.github.io/PWA-Web-OS/>, reloaded, found both notes with the most recently updated first, saw the Service Worker controlling the page and recorded no page errors.
 
 ## Gates
 
 | Gate | Status | Basis |
 | --- | --- | --- |
-| G1 Data, offline and update safety | Partly evidenced | Real-browser tests cover persistence across reload, offline cold launch with edit and save, stale two-tab write, an injected IndexedDB abort with rollback and retry, text limits, backup export and restore in a fresh browser context, rejected backups, A to B update with a pending draft, flush failure, an unready second client and an A-only asset after deployment. Real quota exhaustion, a blocked or interrupted schema migration and a real older-schema upgrade were not exercised. |
+| G1 Data, offline and update safety | Partly evidenced | Real-browser tests cover persistence across reload, offline cold launch with edit and save, stale two-tab write, an injected IndexedDB abort with rollback and retry, text limits, backup export and restore in a fresh browser context, rejected backups, A to B update with a pending draft, flush failure, an unready second client and an A-only asset after deployment. Wave 3 added real-browser tests (Chromium and Firefox) for a database from a newer schema (data left untouched, clear message), a version change from a second tab, a blocked open (a fix now ends the wait with a clear error after 3 seconds instead of showing "Saving…" indefinitely), IndexedDB unavailable, and a native Chromium `QuotaExceededError` under a 4 MiB quota override (draft and last committed revision survive, Retry works). Not exercised: Firefox native quota, exhaustion at the default quota, private mode, and an upgrade from an older schema (the schema is still version 1, so no older schema exists). |
 | G1 Security | Partly evidenced | Production CSP via meta tag allows the service worker, manifest and Blob download with no violations in the test flow. Imported markup stays literal text. Recorded requests were same-origin GETs for app assets only. The cache holds app assets plus one small retained-release metadata record. A meta CSP cannot provide `frame-ancestors` or other response headers. |
 | G2 Compatibility | `NOT_RUN` or `BLOCKED` | See the matrix below. |
 | G3 Performance | `NOT_RUN` | No budgets, lab measurements or field data recorded. |
