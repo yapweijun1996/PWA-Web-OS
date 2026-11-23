@@ -71,7 +71,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | A11Y-05 | Touch targets remain reachable and sufficiently spaced | Inspect physical touch behavior at the smallest supported viewport and higher text size. |
 | A11Y-06 | Preserve status text with reduced motion | [Reduced-motion progress during a real update](../e2e/a11y-update.spec.ts). |
 | A11Y-07 | Keep dialog focus contained and restore it on dismissal | [Native restore modal](../e2e/a11y-keyboard.spec.ts) checks forward and reverse tabbing at both edges, Escape dismissal, focus restoration and an unchanged note store. |
-| A11Y-08 | Announce save and update state changes | [Live region during update](../e2e/a11y-update.spec.ts), [saving and failure states](../e2e/ui-notes.spec.ts). Listen for sequencing on the declared readers. |
+| A11Y-08 | Announce save and update state changes | [Live region during update](../e2e/a11y-update.spec.ts), [saving and failure states](../e2e/ui-notes.spec.ts) and [native desktop reader output](PRODUCTION_READINESS.md#desktop-screen-reader). Listen for sequencing on the declared readers and iPhone VoiceOver. |
 
 ## Quality
 

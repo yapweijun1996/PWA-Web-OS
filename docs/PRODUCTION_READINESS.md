@@ -21,6 +21,12 @@ This is an engineering milestone. The Windows demo and full release retain their
 
 Run the **Windows desktop browser acceptance** workflow with the numeric ID of a completed main-branch Pages run. Use the recovery artifact from a successful run or the candidate artifact from a failed run, if available. The workflow verifies the manifest, opens the retained build in installed retail Chrome and Firefox using dedicated profiles, and exits the browser between each online or offline session. It exports a synthetic note from Chrome, imports it twice in Firefox and compares its contents after offline edits. The reports record the source run's conclusion, completed sessions and browser versions. This covers regular browser tabs on a hosted Windows Server machine. Installed windows, the minimum supported consumer Windows version, screen readers and transfer between physical devices require their own observations.
 
+### Desktop screen reader
+
+Run [Windows desktop screen reader](https://github.com/yapweijun1996/PWA-Web-OS/actions/workflows/desktop-reader.yml) with two successful Pages push run IDs on `main`. Set **active_pages_run** to the release whose editor and update prompt should be observed. Set **next_pages_run** to the compatible release the local test server should serve during the update. The workflow checks both manifests and runs portable NVDA 2026.3.1 with headed Chrome in a disposable Windows Server session. It reads the NVDA Speech Viewer while testing control names, saving, failure and retry, and the pending-write update. The report identifies both builds and the captured phrases.
+
+Keep the pointer outside Speech Viewer so it continues appending text. The runner pins the published NVDA checksum and checks its Windows signature before starting it. On macOS, accept the VoiceOver welcome window and verify that the Caption Panel shows live output before evaluating announcements. Include the separate iPhone VoiceOver observations in the release record. [NV Access release and checksum](https://www.nvaccess.org/post/nvda-2026-3-1/) · [Apple Caption Panel guide](https://support.apple.com/guide/voiceover/use-the-braille-and-caption-panel-unac078/10/mac/27)
+
 ## Candidate and release scope
 
 - [ ] Record the release owner, intended audience, commit SHA, build ID, staging URL, production URL, and artifact digest.
