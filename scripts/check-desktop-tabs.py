@@ -64,7 +64,7 @@ def browser(name, profile, downloads, offline):
         raise
 
 
-def exercise_session(name, phase, profile, downloads, transfer, url, build):
+def exercise_session(name, phase, profile, downloads, transfer, url, build, preferences):
     offline = phase > 1
     with browser(name, profile, downloads, offline) as driver:
         wait = WebDriverWait(driver, 20)
@@ -140,15 +140,21 @@ def exercise_session(name, phase, profile, downloads, transfer, url, build):
                 raise AssertionError("The downloaded backup differs from the offline edit")
             shutil.copyfile(backup, transfer)
 
+        checks = {}
+        if preferences and phase == 2:
+            from windows_client_preferences import exercise_client_preferences
+            body_text = CHROME_BODY if name == "chrome" else FIREFOX_BODY
+            checks["preferences"] = exercise_client_preferences(driver, TITLE, body_text)
         return {"browser": name, "browserVersion": driver.capabilities["browserVersion"],
                 "phase": phase, "browserOffline": offline, "networkControlHttpStatus": status,
-                "buildId": build, "outcome": "PASS"}
+                "buildId": build, "outcome": "PASS", **checks}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("artifact", type=Path)
     parser.add_argument("report", type=Path)
+    parser.add_argument("--client-preferences", action="store_true")
     args = parser.parse_args()
     manifest_bytes = (args.artifact / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
@@ -175,7 +181,10 @@ def main():
                         profile = root / name
                         profile.mkdir()
                         for phase in range(1, 4):
-                            report["sessions"].append(exercise_session(name, phase, profile, downloads, transfer, url, manifest["buildId"]))
+                            report["sessions"].append(exercise_session(
+                                name, phase, profile, downloads, transfer, url,
+                                manifest["buildId"], args.client_preferences,
+                            ))
                     report["transferSha256"] = hashlib.sha256(transfer.read_bytes()).hexdigest()
                 finally:
                     server.shutdown()

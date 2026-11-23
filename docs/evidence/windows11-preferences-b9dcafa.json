@@ -1,0 +1,119 @@
+{
+  "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+  "buildId": "b-mwth4sjcb9dcafa",
+  "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+  "startedAt": "2026-11-23T16:53:14.584093+00:00",
+  "os": "Windows-11-10.0.26200-SP0",
+  "mode": "Headed desktop browser tabs in isolated profiles on one host",
+  "sessions": [
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS",
+      "preferences": {
+        "localesAndExplicitThemes": [
+          {
+            "locale": "zh-Hans",
+            "theme": "dark"
+          },
+          {
+            "locale": "zh-Hans",
+            "theme": "light"
+          },
+          {
+            "locale": "en",
+            "theme": "dark"
+          },
+          {
+            "locale": "en",
+            "theme": "light"
+          }
+        ],
+        "systemAppearance": {
+          "from": "light",
+          "to": "dark"
+        },
+        "offlineDraftAndSelection": "PASS",
+        "retry": "PASS"
+      }
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS",
+      "preferences": {
+        "localesAndExplicitThemes": [
+          {
+            "locale": "zh-Hans",
+            "theme": "dark"
+          },
+          {
+            "locale": "zh-Hans",
+            "theme": "light"
+          },
+          {
+            "locale": "en",
+            "theme": "dark"
+          },
+          {
+            "locale": "en",
+            "theme": "light"
+          }
+        ],
+        "systemAppearance": {
+          "from": "light",
+          "to": "dark"
+        },
+        "offlineDraftAndSelection": "PASS",
+        "retry": "PASS"
+      }
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "transferSha256": "c95f4bc843e5bcb99737f8c0f1f5f9132d3867fc8c09b8fd0f4f7de9d8f9f65d",
+  "finishedAt": "2026-11-23T16:54:09.116323+00:00"
+}

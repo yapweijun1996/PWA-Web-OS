@@ -1,0 +1,35 @@
+{
+  "buildId": "b-mwth4sjcb9dcafa",
+  "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+  "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
+  "os": "Windows-11-10.0.26200-SP0",
+  "startedAt": "2026-11-23T16:54:50.607780+00:00",
+  "sessions": [
+    {
+      "browser": "firefox",
+      "version": "160.0",
+      "phase": 1,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "version": "160.0",
+      "phase": 2,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "version": "160.0",
+      "phase": 3,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwth4sjcb9dcafa",
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "finishedAt": "2026-11-23T16:55:15.776567+00:00"
+}
