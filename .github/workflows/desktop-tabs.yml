@@ -111,7 +111,7 @@ jobs:
           if ($env:CLIENT_DATA_SAFETY -eq 'true') { $checks += '--client-data-safety' }
           if ($env:CLIENT_KEYBOARD_ZOOM -eq 'true') { $checks += '--client-keyboard-zoom' }
           if ($env:CLIENT_FORCED_COLORS -eq 'true') { $checks += '--client-forced-colors' }
-          python scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json @checks
+          python -X faulthandler scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json @checks
       - name: Measure the retained release in desktop Chrome
         run: |
           npm ci

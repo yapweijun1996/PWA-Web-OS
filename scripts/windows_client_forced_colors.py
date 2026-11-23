@@ -5,6 +5,7 @@ import ctypes
 from ctypes import wintypes
 import os
 import time
+import winreg
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -40,9 +41,11 @@ def windows_contrast():
     get_color = user32.GetSysColor
     get_color.argtypes = (ctypes.c_int,)
     get_color.restype = wintypes.DWORD
-    free = ctypes.WinDLL("kernel32").LocalFree
-    free.argtypes = (wintypes.HLOCAL,)
-    free.restype = wintypes.HLOCAL
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Control Panel\Accessibility\HighContrast") as key:
+            scheme = winreg.QueryValueEx(key, "High Contrast Scheme")[0]
+    except FileNotFoundError:
+        scheme = ""
 
     def colors():
         palette = {}
@@ -55,17 +58,12 @@ def windows_contrast():
         state = HighContrast(size=ctypes.sizeof(HighContrast))
         if not params(GET_CONTRAST, state.size, ctypes.byref(state), 0):
             raise ctypes.WinError(ctypes.get_last_error())
-        try:
-            scheme = ctypes.wstring_at(state.scheme) if state.scheme else None
-            return {"active": bool(state.flags & CONTRAST_ON), "flags": state.flags,
-                    "scheme": scheme, "palette": colors()}
-        finally:
-            if state.scheme:
-                free(state.scheme)
+        return {"active": bool(state.flags & CONTRAST_ON), "flags": state.flags,
+                "palette": colors()}
 
-    def set_flags(flags, scheme):
-        # Keep the buffer alive through the Win32 call. The hotkey availability bit is read-only.
-        buffer = ctypes.create_unicode_buffer(scheme) if scheme is not None else None
+    def set_flags(flags):
+        # Keep the scheme buffer alive through the native call.
+        buffer = ctypes.create_unicode_buffer(scheme)
         state = HighContrast(ctypes.sizeof(HighContrast), flags & ~HOTKEY_AVAILABLE,
                              ctypes.cast(buffer, wintypes.LPVOID))
         if not params(SET_CONTRAST, state.size, ctypes.byref(state), BROADCAST_CHANGE):
@@ -81,19 +79,21 @@ def windows_contrast():
                 raise AssertionError(f"Windows did not {description}: {state}")
             time.sleep(0.25)
 
+    print("Read the native Windows contrast setting", flush=True)
     baseline = get()
     if baseline["active"]:
         raise AssertionError("The Windows image must start with its ordinary color palette")
-    observations = {"baseline": baseline}
+    observations = {"baseline": baseline, "configuredScheme": scheme}
     try:
-        set_flags(baseline["flags"] | CONTRAST_ON, baseline["scheme"])
+        print("Enable Windows contrast", flush=True)
+        set_flags(baseline["flags"] | CONTRAST_ON)
         observations["forced"] = wait_for_state(
             lambda state: state["active"] and state["palette"] != baseline["palette"],
             "apply a distinct contrast palette",
         )
         yield observations
     finally:
-        set_flags(baseline["flags"], baseline["scheme"])
+        set_flags(baseline["flags"])
         observations["restored"] = wait_for_state(
             lambda state: not state["active"] and state["palette"] == baseline["palette"],
             "restore the original contrast setting",
