@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { transformWithOxc, type Plugin, type ResolvedConfig } from 'vite';
 
 const manifestPath = 'manifest.webmanifest';
-const publicAssets = ['THIRD-PARTY-NOTICES.txt', 'wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
+const publicAssets = ['THIRD-PARTY-NOTICES.txt', 'wallpapers/aurora-lake-desktop.webp', 'wallpapers/aurora-lake-phone.webp'];
 const runtimePath = fileURLToPath(new URL('./service-worker-runtime.ts', import.meta.url));
 const integrity = (bytes: string | Uint8Array) => `sha256-${createHash('sha256').update(bytes).digest('base64')}`;
 

@@ -33,12 +33,18 @@ The [distribution notices](../public/THIRD-PARTY-NOTICES.txt) contain both proje
 
 ## Wallpaper provenance
 
-The handoff records Codex CLI image generation as the source of the Aurora wallpaper. The project first shipped these exact images in `bddfc2f`. The available history records neither a generation receipt nor a decision about source-image rights or public distribution. Keep wallpaper clearance open in the full release review until the release owner can bind that evidence to these files. [Handoff](HANDOFF_NEXT_SESSION.md)
+On 2026-11-23, the built-in Codex ImageGen tool generated an original landscape from text for public distribution in the Aurora Notes workspace. The generation used no reference images or external visual assets. The original PNG is 1672 × 941, SHA-256 `ae56d68925b0d6c53d8692f44b3533c397f6bee78d801af23bd629da7327dbe4`. The selected exports below replace the earlier images from `bddfc2f` in the release. The provider describes its assignment of rights in output to the user or customer in the applicable service terms. [Terms of Use](https://openai.com/policies/terms-of-use/) · [Services Agreement](https://openai.com/policies/services-agreement/)
 
-| File under `public/wallpapers/` | SHA-256 |
-| --- | --- |
-| `wallpaper-desktop.webp` | `3805eaf91c8a1ae83f88c98c2e75b709c9bb8d9db4360d86230a08c1977008d9` |
-| `wallpaper-phone.webp` | `5f8c7a418d061d4af5aba665b2913539752019d3e8720ffeab07b69194ca03c7` |
+The generation prompt was:
+
+> Create an original stylized landscape painting for the Aurora Notes desktop wallpaper. Wide 16:9 composition. A quiet alpine lake at blue hour, low silhouettes of layered mountain ridges, indigo water, broad flowing strokes of violet dusk cloud with a restrained pink-coral glow near the right-hand horizon reflected in the lake. Keep the center and lower middle calm and the corners dark so desktop application windows remain legible. The center-right slice must also work as a portrait phone crop. A refined atmospheric digital landscape with soft tonal transitions and very limited fine detail. No buildings, people, symbols, logos, text, frame, desktop interface, or watermark.
+
+Both exports use cwebp 1.6.0, quality 82, method 6. Crop coordinates give x, y, width and height in pixels of the original.
+
+| File under `public/wallpapers/` | Crop | Export | Bytes | SHA-256 |
+| --- | --- | --- | ---: | --- |
+| `aurora-lake-desktop.webp` | 0, 0, 1672, 940 | 1600 × 900 | 23,798 | `e9df90c60408fb3d960a4ba57fb8d3fdb824b4fa3f4b0748218fb1e14d0add19` |
+| `aurora-lake-phone.webp` | 1020, 0, 434, 940 | 720 × 1560 | 20,088 | `3641deb91392a5c10fb58c8b1f7ff9de95e4c04c2be36bb7db6dfe63464817fe` |
 
 ## After M5: Public API tool
 

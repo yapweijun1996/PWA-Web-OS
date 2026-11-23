@@ -39,7 +39,7 @@ declare const release: {
   }
 
   async function versionedAsset(request: Request): Promise<Response> {
-    // Only Vite's hashed assets can fall back to another release. Never mix HTML, manifest or icons.
+    // Previously loaded documents may still request their hashed bundles and named wallpapers.
     for (const cacheName of await previousReleases()) {
       const response = await caches.match(request, { cacheName });
       if (response) return response;
@@ -85,7 +85,9 @@ declare const release: {
     // Pin navigations to the controlling build, even if the origin now serves a new release.
     const key = request.mode === 'navigate' ? index : request.url;
     if (assets.has(key)) event.respondWith(cached(key).then((response) => response ?? fetch(request)));
-    else if (url.pathname.startsWith(release.base + 'assets/')) event.respondWith(versionedAsset(request));
+    else if (url.pathname.startsWith(release.base + 'assets/') || url.pathname.startsWith(release.base + 'wallpapers/')) {
+      event.respondWith(versionedAsset(request));
+    }
   });
 
   worker.addEventListener('message', (event) => {

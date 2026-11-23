@@ -156,8 +156,8 @@ test('dark desktop and phone wallpapers decode under production CSP on an offlin
   await context.setOffline(true);
   try {
     for (const [viewport, file, dimensions] of [
-      [{ width: 1280, height: 800 }, 'wallpaper-desktop.webp', [1600, 900]],
-      [{ width: 390, height: 844 }, 'wallpaper-phone.webp', [720, 1560]],
+      [{ width: 1280, height: 800 }, 'aurora-lake-desktop.webp', [1600, 900]],
+      [{ width: 390, height: 844 }, 'aurora-lake-phone.webp', [720, 1560]],
     ] as const) {
       const reopened = await context.newPage();
       await reopened.setViewportSize(viewport);

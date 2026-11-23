@@ -303,6 +303,15 @@ test('serves an A-only asset requested late by a live A tab already controlled b
     const response = await fetch(url, { cache: 'no-store' });
     return { status: response.status, source: await response.text() };
   }, oldEntry);
+  // Give A a wallpaper name that B does not ship. Use actual cached image bytes.
+  const oldWallpaper = new URL('wallpapers/prior-desktop.webp', releases.url).href;
+  const expectedWallpaper = await peer.evaluate(async ({ id, url, base }) => {
+    const cache = await caches.open('pwa-web-os:release:' + id);
+    const image = await cache.match(new URL('wallpapers/aurora-lake-desktop.webp', base));
+    if (!image) throw new Error('A is missing its desktop wallpaper');
+    await cache.put(url, image.clone());
+    return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await image.arrayBuffer())));
+  }, { id: releases.a, url: oldWallpaper, base: releases.url });
   const original = await fetchEntry();
   expect(original.status).toBe(200);
   expect(original.source).toContain(releases.a);
@@ -322,12 +331,21 @@ test('serves an A-only asset requested late by a live A tab already controlled b
     const late = await fetchEntry();
     expect(late.status).toBe(200);
     expect(late.source === original.source).toBe(true);
+    expect((await page.request.get(oldWallpaper)).status()).toBe(404);
+    const lateWallpaper = await peer.evaluate(async url => {
+      const response = await fetch(url);
+      return { status: response.status, digest: Array.from(new Uint8Array(
+        await crypto.subtle.digest('SHA-256', await response.arrayBuffer())
+      )) };
+    }, oldWallpaper);
+    expect(lateWallpaper).toEqual({ status: 200, digest: expectedWallpaper });
   } finally {
     await gate.release();
   }
   await reopenOnB(peer, releases.b, 'Asset retention note', 'Retained across both tabs');
   // Once both documents really run B, the old release is retired.
   expect((await fetchEntry()).status).toBe(404);
+  expect(await peer.evaluate(async url => (await fetch(url)).status, oldWallpaper)).toBe(404);
   expect([navigations(), peerNavigations()]).toEqual([1, 1]);
 });
 

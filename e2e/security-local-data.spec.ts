@@ -149,7 +149,7 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
 
   const cachePaths = ['index.html', 'manifest.webmanifest', 'THIRD-PARTY-NOTICES.txt', ...manifest.icons.map(({ src }) => src),
     ...(await readdir('dist/assets')).map((name) => `assets/${name}`),
-    'wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
+    'wallpapers/aurora-lake-desktop.webp', 'wallpapers/aurora-lake-phone.webp'];
   await expectReleaseCache(page, appUrl, cachePaths);
   const allowed = new Set(['', 'sw.js', ...cachePaths].map((path) => new URL(path, appUrl).href));
   const browserRequests = await Promise.all(requests.map(async (request) => ({

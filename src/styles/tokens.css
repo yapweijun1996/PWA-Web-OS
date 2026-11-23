@@ -21,7 +21,7 @@
   --action-primary: #6133c6;
   --action-gradient: linear-gradient(115deg, #6f40e2, #502cac);
   --icon-gradient: linear-gradient(150deg, #9b6dff, #7c4dff 55%, #5930cc);
-  --wallpaper: url('/wallpapers/wallpaper-desktop.webp');
+  --wallpaper: url('/wallpapers/aurora-lake-desktop.webp');
   --aurora-background: linear-gradient(180deg, #0a0d2c38, #06081812 55%, #080a233d), var(--wallpaper);
   --desktop-background: radial-gradient(ellipse at 82% 28%, #fff4fb, transparent 56%), linear-gradient(155deg, #e6e0fa, #f6f2fd 58%, #d9d9f5);
 }
@@ -31,5 +31,5 @@
   :root:not([data-theme]), :root[data-theme='system'] { color-scheme: dark; --desktop-background: var(--aurora-background); }
 }
 @media (max-width: 600px) {
-  :root { --wallpaper: url('/wallpapers/wallpaper-phone.webp'); }
+  :root { --wallpaper: url('/wallpapers/aurora-lake-phone.webp'); }
 }
