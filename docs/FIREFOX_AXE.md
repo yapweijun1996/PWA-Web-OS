@@ -20,6 +20,10 @@ On the same Ubuntu workstation, Playwright 1.64.0 with Firefox 157.0 completed t
 
 On Ubuntu 24.04 x64, the hosted Pages run at `54e9662` matched those counts with no failed or flaky tests. Its browser-evidence manifest matched the retained candidate. The deploy job succeeded. [Pages result](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
 
+## Review of incomplete text contrast results
+
+On 2026-11-23, Chromium 156.0.8078.4 and Firefox 157.0 repeated the 14 axe tests on macOS 26.6.2 and captured 144 page states across both themes and three viewport sizes. The Notes views used the verified `54e9662` artifacts. The waiting-update fixtures used the same production stylesheet bytes. The review covered the 1,126 text-contrast observations that axe left incomplete. It calculated relative luminance from the browsers' computed sRGB foreground colors and conservative background bounds, using the full channel range for unknown wallpaper colors and stop bounds for opaque legacy gradients. All reviewed bounds exceeded 4.5:1. The lowest bound was 5.987:1 for white text on the primary button gradient. Physical touch and spoken announcements have separate acceptance cases. [Contrast evidence](evidence/contrast-54e9662.json) · [WCAG 2.2 contrast minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+
 ## Retest the exception
 
 To retest Firefox 159.0, use a disposable checkout with Playwright 1.65.1 and its bundled Firefox. Build the production assets as in the README. Choose a free port and run the original scan with the override enabled, then run the remaining matrix if that succeeds.

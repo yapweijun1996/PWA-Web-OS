@@ -60,7 +60,7 @@ PASS covers the observation stated in that row. BLOCKED records a required envir
 | A11Y-01 | PASS | CI used the keyboard to open Notes, edit a note and navigate backup and restore. |
 | A11Y-02 | PASS | CI verified visible keyboard focus and restoration after closing workspace controls and the restore preview. |
 | A11Y-03 | BLOCKED | All automated axe views passed. Desktop reader and iPhone VoiceOver observations remain. |
-| A11Y-04 | NOT_RUN | The two-engine axe matrix passed across viewport sizes and Light and Dark. Manual contrast findings remain to be reviewed. |
+| A11Y-04 | PASS | Both engines passed the axe matrix in Light and Dark. The manual review calculated at least 5.987:1 contrast for all 1,126 incomplete text-contrast observations. [Contrast evidence](evidence/contrast-54e9662.json) |
 | A11Y-05 | BLOCKED | Check target spacing with physical touch and larger text. |
 | A11Y-06 | PASS | CI verified static reduced-motion progress with update status available. |
 | A11Y-07 | PASS | CI checked tab containment at both dialog edges, Escape dismissal and focus restoration. |
