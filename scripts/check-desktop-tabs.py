@@ -64,7 +64,7 @@ def browser(name, profile, downloads, offline):
         raise
 
 
-def exercise_session(name, phase, profile, downloads, url, build):
+def exercise_session(name, phase, profile, downloads, transfer, url, build):
     offline = phase > 1
     with browser(name, profile, downloads, offline) as driver:
         wait = WebDriverWait(driver, 20)
@@ -98,7 +98,7 @@ def exercise_session(name, phase, profile, downloads, url, build):
         if name == "firefox" and phase == 1:
             click(".workspace-toggle")
             click(".backup-menu summary")
-            backup = downloads / "notes-backup.json"
+            backup = transfer.resolve(strict=True)
             for expected_preview in ("New notes: 1", "New notes: 0"):
                 driver.find_element(By.CSS_SELECTOR, ".backup-menu input[type=file]").send_keys(str(backup))
                 wait.until(lambda _: expected_preview in visible("dialog[open]").text)
@@ -138,6 +138,7 @@ def exercise_session(name, phase, profile, downloads, url, build):
             records = [(note["title"], note["body"]) for note in data["notes"]]
             if records != [(TITLE, CHROME_BODY)]:
                 raise AssertionError("The downloaded backup differs from the offline edit")
+            shutil.copyfile(backup, transfer)
 
         return {"browser": name, "browserVersion": driver.capabilities["browserVersion"],
                 "phase": phase, "browserOffline": offline, "networkControlHttpStatus": status,
@@ -158,11 +159,12 @@ def main():
               "outcome": "INCOMPLETE"}
     args.report.parent.mkdir(parents=True, exist_ok=True)
     try:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(prefix="pwa-tabs-", dir=os.environ.get("RUNNER_TEMP")) as tmp:
             root = Path(tmp)
             shutil.copytree(args.artifact / "dist", root / "site" / "PWA-Web-OS")
             downloads = root / "downloads"
             downloads.mkdir()
+            transfer = root / "transfer.json"
             handler = partial(ReleaseFiles, directory=root / "site")
             with ThreadingHTTPServer(("127.0.0.1", 0), handler) as server:
                 thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -173,7 +175,8 @@ def main():
                         profile = root / name
                         profile.mkdir()
                         for phase in range(1, 4):
-                            report["sessions"].append(exercise_session(name, phase, profile, downloads, url, manifest["buildId"]))
+                            report["sessions"].append(exercise_session(name, phase, profile, downloads, transfer, url, manifest["buildId"]))
+                    report["transferSha256"] = hashlib.sha256(transfer.read_bytes()).hexdigest()
                 finally:
                     server.shutdown()
                     thread.join()
