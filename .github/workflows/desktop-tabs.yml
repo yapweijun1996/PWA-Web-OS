@@ -22,6 +22,10 @@ on:
         description: Exercise two-tab stale writes and rejected backup batches
         type: boolean
         default: false
+      client_keyboard_zoom:
+        description: Exercise keyboard navigation and native page zoom in browser tabs
+        type: boolean
+        default: false
       native_apps:
         description: Install and verify both web app windows against the live release
         type: boolean
@@ -93,12 +97,14 @@ jobs:
         env:
           CLIENT_PREFERENCES: ${{ inputs.client_preferences }}
           CLIENT_DATA_SAFETY: ${{ inputs.client_data_safety }}
+          CLIENT_KEYBOARD_ZOOM: ${{ inputs.client_keyboard_zoom }}
         run: |
           $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
           $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
           $checks = @()
           if ($env:CLIENT_PREFERENCES -eq 'true') { $checks += '--client-preferences' }
           if ($env:CLIENT_DATA_SAFETY -eq 'true') { $checks += '--client-data-safety' }
+          if ($env:CLIENT_KEYBOARD_ZOOM -eq 'true') { $checks += '--client-keyboard-zoom' }
           python scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json @checks
       - name: Measure the retained release in desktop Chrome
         run: |

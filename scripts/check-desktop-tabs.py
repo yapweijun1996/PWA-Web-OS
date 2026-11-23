@@ -125,6 +125,7 @@ def main():
     parser.add_argument("report", type=Path)
     parser.add_argument("--client-preferences", action="store_true")
     parser.add_argument("--client-data-safety", action="store_true")
+    parser.add_argument("--client-keyboard-zoom", action="store_true")
     args = parser.parse_args()
     manifest_bytes = (args.artifact / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
@@ -135,6 +136,8 @@ def main():
               "outcome": "INCOMPLETE"}
     if args.client_data_safety:
         report["dataSafety"] = []
+    if args.client_keyboard_zoom:
+        report["keyboardZoom"] = []
     args.report.parent.mkdir(parents=True, exist_ok=True)
     try:
         with tempfile.TemporaryDirectory(prefix="pwa-tabs-", dir=os.environ.get("RUNNER_TEMP")) as tmp:
@@ -164,6 +167,14 @@ def main():
                             profile = root / f"{name}-data-safety"
                             profile.mkdir()
                             report["dataSafety"].append(exercise_data_safety(
+                                name, profile, downloads, url, manifest["buildId"],
+                            ))
+                    if args.client_keyboard_zoom:
+                        from windows_client_keyboard_zoom import exercise_keyboard_zoom
+                        for name in ("chrome", "firefox"):
+                            profile = root / f"{name}-keyboard-zoom"
+                            profile.mkdir()
+                            report["keyboardZoom"].append(exercise_keyboard_zoom(
                                 name, profile, downloads, url, manifest["buildId"],
                             ))
                 finally:
