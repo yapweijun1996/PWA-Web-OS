@@ -34,7 +34,7 @@ Install `cloudflared` and set the same four release variables. The HTTPS mode pu
 RECOVERY_HTTPS=1 PLAYWRIGHT_HTML_OPEN=never npx playwright test --config=playwright.recovery.config.ts --reporter=html
 ```
 
-`staging-byte-checks` records the time and file count for each verified phase. Tunnel DNS provisioning can take over a minute. If it fails, review the transport diagnostics in the local report. This mode exercises the project subpath, publicly trusted HTTPS and a real network release transition. A rollback on GitHub Pages uses its own hosting procedure.
+`staging-byte-checks` records the time and file count for each verified phase. The HTTPS rehearsal includes a mixed B with one JavaScript response from A. It checks that A stays usable and can commit an edit before verified B is served. Tunnel DNS provisioning can take over a minute, so the rehearsal allows up to three minutes for the initial HTTPS file check. If that check fails, review the transport diagnostics in the local report. A rollback on GitHub Pages uses its own hosting procedure.
 
 ## During an incident
 
@@ -55,3 +55,5 @@ Both Playwright Chromium and Firefox passed the complete A → B → A case on m
 On macOS 26.6.2, Playwright 1.64.0 Chromium and Firefox both passed A → B → A using the retained `4ef0b87` release and the pre-deployment `54e9662` artifact. The manifest SHA-256 digests were `f2d7044d4fe020f32b38c6662a69e2fa0ef91b3e0922e8da123ec4de9c3bdc3d` and `7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05`. In both browsers the committed version from B survived rollback and a new edit saved on A. The rehearsal used disposable loopback origins. A subsequent live demo check matched all 12 hosted files to B's manifest and reread a synthetic edit after an offline restart. [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45183715617) · [Release B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
 
 A second rehearsal used the same artifacts through temporary HTTPS staging on macOS 27.2. Chromium 156.0.8078.4 and Firefox 157.0 both verified all files in each phase, successfully upgraded, rolled back, reopened the saved note and saved again. Early attempts reached the tunnel connector while the assigned DNS names still returned no address. With a bounded readiness wait, the complete check passed in both browsers. [HTTPS staging evidence](evidence/recovery-https-54e9662.json)
+
+The mixed-release rehearsal served B with one JavaScript response from A on each browser's temporary HTTPS origin. Chromium and Firefox verified the served bytes, rejected the candidate, saved on A, accepted healthy B, and read the retained note after rollback. Several initial attempts ended at DNS provisioning before the browser assertions ran. The recorded passing runs each verified all four phases. [Mixed-release evidence](evidence/recovery-mixed-54e9662.json)

@@ -11,7 +11,7 @@ export default defineConfig<RecoveryOptions>({
   testMatch: 'update-notes.spec.ts',
   grep: /rehearses A to B to retained A/,
   workers: 1,
-  timeout: httpsRecovery ? 180_000 : 30_000,
+  timeout: httpsRecovery ? 270_000 : 30_000,
   projects: base.projects,
   use: { retainedArtifacts: true, httpsRecovery, locale: 'en-US' },
 });

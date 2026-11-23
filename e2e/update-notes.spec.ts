@@ -73,7 +73,8 @@ async function reopenOnB(page: Page, id: string, title: string, content: string)
 
 test('rehearses A to B to retained A with compatible schema and synthetic notes', async ({ page, releases }) => {
   await start(page, releases.url, releases.a);
-  await createNote(page, 'Recovery rehearsal', 'Created on A');
+  let savedOnA = 'Created on A';
+  await createNote(page, 'Recovery rehearsal', savedOnA);
   const schema = () => page.evaluate(() => new Promise<number>((resolve, reject) => {
     const request = indexedDB.open('pwa-web-os-notes');
     request.onupgradeneeded = () => request.transaction?.abort();
@@ -81,11 +82,26 @@ test('rehearses A to B to retained A with compatible schema and synthetic notes'
     request.onsuccess = () => { const version = request.result.version; request.result.close(); resolve(version); };
   }));
   expect(await schema()).toBe(1);
+  if (releases.stageMixedB) {
+    const navigations = countNavigations(page);
+    await releases.stageMixedB();
+    await checkForUpdate(page);
+    await expect(page.getByRole('heading', { name: 'Update failed', exact: true })).toBeVisible();
+    await expect(update(page)).toBeHidden();
+    await ready(page, releases.a);
+    expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.waiting)).toBeNull();
+    await expect(body(page)).toHaveValue(savedOnA);
+    savedOnA = 'Saved on A after rejecting mixed release bytes';
+    await body(page).fill(savedOnA);
+    await saved(page);
+    expect(await committedNotes(page)).toMatchObject([{ body: savedOnA }]);
+    expect(navigations()).toBe(0);
+  }
   await releases.deployB();
   await checkForUpdate(page);
   await expect(available(page)).toBeVisible();
   await update(page).click();
-  await reopenOnB(page, releases.b, 'Recovery rehearsal', 'Created on A');
+  await reopenOnB(page, releases.b, 'Recovery rehearsal', savedOnA);
   await body(page).fill('Committed on B before rollback');
   await saved(page);
   const onB = await committedNotes(page);

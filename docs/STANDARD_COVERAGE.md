@@ -23,7 +23,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | --- | --- | --- |
 | SW-01 | Report readiness only after installation and cache validation | [Fresh setup and controlling worker](../e2e/pwa.spec.ts), [incomplete cache decision](../src/pwa/update-controller.test.ts). |
 | SW-02 | Discover a new release without replacing an open editor | [A and B on one origin](../e2e/pwa-update.spec.ts), [deferred edit on A](../e2e/update-notes.spec.ts). |
-| SW-03 | A mismatched worker or unverified asset cannot silently take over | [Controller identity and reload guards](../src/pwa/update-controller.test.ts), [byte-mismatched B](../e2e/pwa-update.spec.ts). Check mixed-release delivery on staging. |
+| SW-03 | A mismatched worker or unverified asset cannot silently take over | [Controller identity and reload guards](../src/pwa/update-controller.test.ts), [byte-mismatched B](../e2e/pwa-update.spec.ts), and [mixed deliveries over HTTPS](RECOVERY_RUNBOOK.md#rehearse-on-disposable-https-staging). |
 | SW-04 | Reject stale or missing release bytes | [Rejected B and late A-only asset](../e2e/update-notes.spec.ts). |
 | SW-05 | Announce the waiting update and let the user defer | [Real update notice](../e2e/a11y-update.spec.ts), [defer while editing](../e2e/update-notes.spec.ts). |
 | SW-06 | Protect dirty edits before activation | [Pending write, real abort and retry](../e2e/update-notes.spec.ts). |
@@ -31,7 +31,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | SW-08 | Repeated acceptance cannot start a second switch | [Rapid repeated clicks](../e2e/update-notes.spec.ts) activate the same control twice while an IndexedDB transaction blocks the save. The app commits the pending edit once, waits for the verified worker and reloads once. |
 | SW-09 | Announce progress and reload only into the expected controller | [Real progress and one reload](../e2e/update-notes.spec.ts), [controller timeout](../src/pwa/update-controller.test.ts). |
 | SW-10 | Failed update retains the usable offline editor | [Candidate rejection, offline save and reread](../e2e/update-notes.spec.ts). |
-| SW-11 | Recover with a retained build and preserve editability | [Retained release rehearsal](RECOVERY_RUNBOOK.md). Repeat on the intended staging host with the candidate pair. |
+| SW-11 | Recover with a retained build and preserve editability | [Retained release rehearsal](RECOVERY_RUNBOOK.md). Run on HTTPS staging with the candidate pair. |
 | SW-12 | Recover from an unknown navigation within the app scope | [Unknown-path recovery](../e2e/pwa.spec.ts) exercises the custom 404 with a fresh profile, then opens the same URL online and offline after setup and reads the committed note. Verify the custom 404 on the deployed host. |
 
 ## Offline storage

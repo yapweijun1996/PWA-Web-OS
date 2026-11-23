@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
-import { resolve } from 'node:path';
+import { copyFile, cp } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { DB_NAME, type Note } from '../src/contracts';
@@ -32,6 +33,7 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
   distB: string;
   deployA(): void | Promise<void>;
   deployB(): void | Promise<void>;
+  stageMixedB?: () => Promise<void>;
   takeOffline(): void;
 } }>({
   retainedArtifacts: [false, { option: true }],
@@ -43,7 +45,7 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
     const { a, b } = retained ?? await buildFixturePair(testInfo);
     const server = await serveReleases(a.dist);
     let tunnel: Awaited<ReturnType<typeof startRecoveryTunnel>> | undefined;
-    const hosted: { release: 'A' | 'B'; fileCount: number; verifiedAt: string }[] = [];
+    const hosted: { release: 'A' | 'B' | 'mixed B'; fileCount: number; verifiedAt: string; replacedFile?: string }[] = [];
     try {
       if (httpsRecovery) {
         if (!retained) throw new Error('HTTPS recovery requires verified retained release artifacts');
@@ -56,7 +58,7 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
         await verifyHostedRelease(url, files);
         hosted.push({ release, fileCount: Object.keys(files).length, verifiedAt: new Date().toISOString() });
       };
-      if (tunnel) await expect(() => verify('A')).toPass({ timeout: 90_000, intervals: [2000, 4000] });
+      if (tunnel) await expect(() => verify('A')).toPass({ timeout: 180_000, intervals: [2000, 4000] });
       if (retained) {
         const identity = ({ commit, buildId, manifestSha256 }: typeof retained.a) => ({ commit, buildId, manifestSha256 });
         await testInfo.attach('recovery-identities', {
@@ -71,6 +73,24 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
         url, a: a.buildId, b: b.buildId, distB: b.dist,
         deployA: () => { server.deploy(a.dist); if (tunnel) return verify('A'); },
         deployB: () => { server.deploy(b.dist); if (tunnel) return verify('B'); },
+        stageMixedB: tunnel && retained ? async () => {
+          const isBundle = (path: string) => path.startsWith('assets/') && path.endsWith('.js');
+          const previous = Object.keys(retained.a.files).find(isBundle);
+          const current = Object.keys(retained.b.files).find(isBundle);
+          if (!previous || !current || retained.a.files[previous] === retained.b.files[current]) {
+            throw new Error('Mixed-release rehearsal needs distinct A and B JavaScript bundles');
+          }
+          const mixed = testInfo.outputPath('mixed-release');
+          await cp(b.dist, mixed, { recursive: true });
+          await copyFile(join(a.dist, previous), join(mixed, current));
+          server.deploy(mixed);
+          const files = { ...retained.b.files, [current]: retained.a.files[previous] };
+          await verifyHostedRelease(url, files);
+          hosted.push({
+            release: 'mixed B', fileCount: Object.keys(files).length,
+            replacedFile: current, verifiedAt: new Date().toISOString(),
+          });
+        } : undefined,
         takeOffline: () => server.deploy(testInfo.outputPath('unavailable-release')),
       });
     } catch (error) {

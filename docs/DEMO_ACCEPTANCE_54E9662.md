@@ -31,7 +31,7 @@ PASS covers the observation stated in that row. BLOCKED records a required envir
 | INS-08 | NOT_APPLICABLE | Notes exposes one supported entry URL and has no note-specific deep links. The entry URL is covered by INS-03. |
 | SW-01 | PASS | CI waited for worker control and verified readiness was withdrawn when required cache entries were removed. |
 | SW-02 | PASS | CI discovered B and preserved the live A editor while the user kept editing. |
-| SW-03 | NOT_RUN | CI rejected a mismatched served asset and covered controller identity. A mixed-release delivery fault on HTTPS staging remains unexercised. |
+| SW-03 | PASS | Chromium and Firefox rejected a mixed B on HTTPS staging, saved on the unchanged A controller, accepted healthy B, and preserved the note through rollback. [Mixed-release evidence](evidence/recovery-mixed-54e9662.json) |
 | SW-04 | PASS | CI rejected wrong bytes and served the retained A-only asset to a live A document. |
 | SW-05 | PASS | The real update notice was visible and the user could defer while saving on A. Voice output is tracked in A11Y-08. |
 | SW-06 | PASS | CI exercised an actual pending IndexedDB write, a native abort and the same-draft retry into B. |
