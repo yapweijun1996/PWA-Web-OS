@@ -1,40 +1,13 @@
-// STUB owned by the storage workstream: replace with the IndexedDB implementation.
-import { StorageError, type Note, type Storage } from '../contracts';
+// Notes and JSON backups stay local. Each storage instance opens IndexedDB lazily.
+import type { Storage } from '../contracts';
+import { createBackupService } from './backup';
+import { createNotesTransactionRunner } from './database';
+import { createNoteRepository } from './repository';
 
-export function createStorage(): Storage {
-  const notes = new Map<string, Note>();
+export function createStorage({ now = Date.now }: { now?: () => number } = {}): Storage {
+  const run = createNotesTransactionRunner();
   return {
-    repository: {
-      async list() {
-        return [...notes.values()];
-      },
-      async get(id) {
-        return notes.get(id);
-      },
-      async create(draft) {
-        const note = { id: crypto.randomUUID(), ...draft, revision: 1 };
-        notes.set(note.id, note);
-        return note;
-      },
-      async update(id, expectedRevision, draft) {
-        const cur = notes.get(id);
-        if (!cur) throw new StorageError('not_found', 'missing');
-        if (cur.revision !== expectedRevision) throw new StorageError('conflict', 'stale');
-        const next = { id, ...draft, revision: cur.revision + 1 };
-        notes.set(id, next);
-        return next;
-      },
-    },
-    backup: {
-      async exportBackup() {
-        throw new Error('not implemented');
-      },
-      async previewImport() {
-        throw new Error('not implemented');
-      },
-      async commitImport() {
-        throw new Error('not implemented');
-      },
-    },
+    repository: createNoteRepository(run, now),
+    backup: createBackupService(run),
   };
 }
