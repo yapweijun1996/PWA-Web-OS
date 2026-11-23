@@ -49,7 +49,7 @@ def browser(name, profile, downloads, offline):
         # Use this profile in place so the next process can open the same IndexedDB.
         options.add_argument("-profile")
         options.add_argument(str(profile))
-        options.add_argument("-remote-allow-system-access")
+        options.enable_bidi = True
         options.set_preference("intl.accept_languages", "en-US")
         driver = webdriver.Firefox(options=options, service=FirefoxService(os.environ["GECKODRIVER_PATH"]))
     try:
@@ -57,8 +57,7 @@ def browser(name, profile, downloads, offline):
             if name == "chrome":
                 driver.set_network_conditions(offline=True, latency=0, download_throughput=0, upload_throughput=0)
             else:
-                with driver.context(driver.CONTEXT_CHROME):
-                    driver.execute_script("Services.io.offline = true")
+                driver.emulation.set_network_conditions(offline=True)
         return driver
     except Exception:
         driver.quit()
