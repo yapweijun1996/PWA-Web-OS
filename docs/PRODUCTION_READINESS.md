@@ -82,7 +82,7 @@ Use the [platform matrix](PRODUCT_SPEC.md#platform-support) for authoritative la
 
 ## G3: Performance
 
-- [ ] Measure the production build on agreed devices and profiles. Check cold launch, offline reopen, and editor responsiveness against the recorded budgets.
+- [ ] Measure the production build on the [desktop lab profiles](PERFORMANCE.md#release-lab-baselines) and [physical mobile profiles](PERFORMANCE.md#physical-mobile-lab). Check cold launch, offline reopen, and editor responsiveness against the recorded budgets.
 - [ ] Record lab results separately from field p75 metrics. When field samples are insufficient, record `INSUFFICIENT_DATA` and use the agreed launch policy.
 
 ## Browser evidence on each Pages push

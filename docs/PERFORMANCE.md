@@ -26,6 +26,31 @@ node scripts/measure-performance.mjs /tmp/retained-notes-performance.json /path/
 
 Use a new output filename for each run. The report records the source SHA, build ID, compiled worker digest, environment, raw timings and summary. The worker embeds the release asset hashes. Use a clean checkout for release evidence.
 
+## Release lab baselines
+
+Use these desktop profiles for the Notes lab. The measured candidate is `b-mwth4sjcb9dcafa`. Both passing reports identify the same retained manifest and worker. The full [platform matrix](PRODUCT_SPEC.md#platform-support) still applies to compatibility qualification.
+
+| Desktop profile | CPU and RAM | Candidate p75 in ms (cold launch / offline reopen / editor response) |
+| --- | --- | --- |
+| Physical macOS 27.2 with Chrome 158.0.8127.37 | Apple M4, 10 logical CPUs, 32 GiB | 172 / 281 / 53. [Passing batch](evidence/performance-macos-b9dcafa-repeat.json) · [Earlier batch with 259 ms editor p75](evidence/performance-macos-b9dcafa-first.json) |
+| Hosted Windows 11 Enterprise 25H2 Arm64 with Chrome 157.0.8103.79 | Cobalt 200, 4 logical CPUs, 16 GiB | 122 / 208 / 38. [Passing batch](evidence/performance-windows11-b9dcafa.json) |
+
+Keep the Chrome viewport, seven-attempt requirement and p75 ceilings above when rechecking these profiles. Record the actual OS and browser patch for each run. Run the baseline batches without other release workloads on the same host, and keep any failed batch with its conditions.
+
+## Physical mobile lab
+
+Use a physical iPhone and Android phone at the [minimum-version qualification targets](PRODUCT_SPEC.md#minimum-version-qualification-targets). Measure the Safari Home Screen app and the Chrome install or Home Screen launch on the respective devices. Record the actual model, OS patch, browser version, launch mode, network and exact release manifest. The other required launch modes are exercised in compatibility acceptance.
+
+Use seven serial journeys for each phone with a fresh synthetic note of about 1.5 KB per journey. Prepare offline use once before the batch. Use the existing desktop p75 ceilings as the initial mobile lab budgets. Time from observed user input to visible app response using a trace or video with both endpoints. Record the timing method and keep every attempt, including failures.
+
+| Mobile measure | Start and finish | Mobile p75 ceiling |
+| --- | --- | --- |
+| Online cold launch | Close the app, then time the Home Screen launch through opening Notes and seeing New note. | 2,500 ms |
+| Offline cold reopen | Save the synthetic note, turn on airplane mode with Wi-Fi off, and close the app. Time the Home Screen launch through opening the saved note and seeing its body. | 2,000 ms |
+| Editor response | With the native keyboard open, time a tap on one printable key through the first visible frame containing the new character. | 200 ms |
+
+For each attempt, verify the build footer, the offline status during both offline launches, the save confirmation and an exact-body match after closing and reopening offline again. Require seven successful journeys and compare the sixth fastest time for each metric to its ceiling. Retain the seven timing rows and their evidence references. Timing results are still pending for both phones.
+
 ## Field policy
 
 Record field LCP, INP and CLS at p75 separately when a representative dataset exists. The first Notes release uses local-only storage and the field result is `INSUFFICIENT_DATA`. For initial rollout, use a passing lab run on each declared desktop and physical mobile baseline, bound to the same release artifact. Pair those runs with synthetic launch, save and offline-reopen checks on the published build. The rest of the [full release gates](PRODUCTION_READINESS.md) apply. Report the measured lab and field outcomes separately in the release decision.
