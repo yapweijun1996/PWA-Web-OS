@@ -18,6 +18,8 @@ test('the app handles missing IndexedDB without uncaught errors and still persis
   await expect(notesList(page).getByRole('button', { name: 'Retry loading notes', exact: true })).toBeVisible();
   await expect(noteButtons(page)).toHaveCount(0);
 
+  const workspaceMenu = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+  await workspaceMenu.click();
   const theme = page.getByRole('group', { name: 'Theme', exact: true });
   await expect(theme.getByRole('radio', { name: 'System', exact: true })).toBeChecked();
   const dark = theme.getByRole('radio', { name: 'Dark theme', exact: true });
@@ -26,8 +28,10 @@ test('the app handles missing IndexedDB without uncaught errors and still persis
   expect(await page.evaluate((key) => localStorage.getItem(key), THEME_KEY)).toBe('dark');
 
   await page.reload();
+  await workspaceMenu.click();
   await expect(dark).toBeChecked();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.keyboard.press('Escape'); // close the Workspace menu so it does not cover the launcher
   await openNotes(page);
   await expect(message).toBeVisible();
   expect(pageErrors).toEqual([]);

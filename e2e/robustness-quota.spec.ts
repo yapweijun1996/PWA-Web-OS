@@ -10,7 +10,7 @@ test('Chromium native quota rejection keeps the draft and last revision; Retry c
   const original = { title: 'Quota sample', body: 'Synthetic text saved before reaching quota. ' };
   const draft = { ...original, body: 'q'.repeat(LIMITS.bodyBytes) };
   await page.goto('./');
-  const connection = page.getByRole('region', { name: 'Connection status and backup', exact: true });
+  const connection = page.locator('.connection');
   await expect(connection.getByText('Available offline', { exact: true })).toBeVisible();
   const fixture = await openIdbFixturePage(context, page.url());
   const session = await context.newCDPSession(page);
