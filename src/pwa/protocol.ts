@@ -1,5 +1,5 @@
 export type WorkerRequest =
-  | { type: 'inspect'; documentBuildId?: string } // Older documents do not confirm their build.
+  | { type: 'inspect'; documentBuildId?: string; repairMissing?: boolean } // Older documents do not confirm their build.
   | { type: 'activate'; buildId: string; readyClients: string[] };
 
 export interface WorkerInspection {

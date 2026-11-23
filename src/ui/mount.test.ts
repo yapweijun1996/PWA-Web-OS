@@ -80,6 +80,7 @@ function fixture(backupOverride?: Partial<BackupService>) {
       retry,
       setFlush(flush) { activeFlush = flush; return () => { activeFlush = undefined; }; },
       isOfflineReady: () => offlineReady,
+      checkOfflineReadiness: async () => {},
       onOfflineReadyChange(listener) { readiness.add(listener); return () => { readiness.delete(listener); }; },
     },
   });

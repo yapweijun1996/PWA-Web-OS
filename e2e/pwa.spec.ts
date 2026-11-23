@@ -1,3 +1,5 @@
+import { cp, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { serveReleases } from '../scripts/pwa-test-server';
 
@@ -95,6 +97,83 @@ test('detects an unavailable origin with a working network and keeps offline edi
     await page.getByRole('button', { name: 'Reachability test', exact: true }).click();
     await expect(body).toHaveValue('Saved while the origin was unavailable');
   } finally {
+    await server.close();
+  }
+});
+
+test('withdraws offline readiness after eviction and restores only integrity-checked missing files', async ({ page, context }, info) => {
+  const server = await serveReleases('dist');
+  const damaged = info.outputPath('bad-assets');
+  const files = ['icons/icon-192.png', 'icons/icon-512.png'];
+  try {
+    await cp('dist', damaged, { recursive: true });
+    await writeFile(join(damaged, files[1]), 'Different bytes from the verified release');
+    await page.goto(server.url);
+    await waitForOfflineReady(page);
+    await page.locator('.launcher-tile').click();
+    await page.getByRole('button', { name: 'New note' }).click();
+    await page.getByLabel('Title', { exact: true }).fill('Cache recovery note');
+    await page.getByLabel('Body', { exact: true }).fill('Committed before eviction');
+    await expect(page.locator('.save-status')).toHaveText('Saved on this device');
+
+    const cacheName = await page.evaluate(() => 'pwa-web-os:release:' + window.__pwaUpdate!.buildId);
+    const digests = () => page.evaluate(async ({ cacheName, files }) => {
+      const cache = await caches.open(cacheName);
+      return Promise.all(files.map(async file => {
+        const entry = await cache.match(new URL(file, location.href));
+        if (!entry) return null;
+        return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', await entry.arrayBuffer())));
+      }));
+    }, { cacheName, files });
+    const original = await digests();
+    expect(original.every(hash => hash?.length === 32)).toBe(true);
+    server.deploy(damaged);
+    await context.setOffline(true);
+    await page.evaluate(async ({ cacheName, files }) => {
+      const cache = await caches.open(cacheName);
+      for (const file of files) await cache.delete(new URL(file, location.href));
+    }, { cacheName, files });
+    await page.reload();
+    await expect(page.locator('.network-status')).toHaveText('Offline');
+    await expect(page.locator('.offline-ready')).toBeHidden();
+    await context.setOffline(false);
+
+    // Wait for a complete repair attempt against the wrong bytes before checking atomic rejection.
+    const ready = await page.evaluate(() => new Promise<boolean>(resolve => {
+      const channel = new MessageChannel();
+      channel.port1.onmessage = ({ data }) => { channel.port1.close(); resolve(data.ready); };
+      navigator.serviceWorker.controller!.postMessage({
+        type: 'inspect', documentBuildId: window.__pwaUpdate!.buildId, repairMissing: true,
+      }, [channel.port2]);
+    }));
+    expect(ready).toBe(false);
+    // A direct subresource read must also reject wrong bytes while the cache is incomplete.
+    expect(await page.evaluate(file => fetch(file).then(() => false, () => true), files[1])).toBe(true);
+    expect(await digests()).toEqual([null, null]);
+    await expect(page.locator('.offline-ready')).toBeHidden();
+
+    server.deploy('dist');
+    await context.setOffline(true);
+    await expect(page.locator('.network-status')).toHaveText('Offline');
+    await context.setOffline(false);
+    await waitForOfflineReady(page);
+    expect(await digests()).toEqual(original);
+
+    // The origin still serves this release. Recover even when the shell, script and entire cache are gone.
+    expect(await page.evaluate(name => caches.delete(name), cacheName)).toBe(true);
+    await page.reload();
+    await waitForOfflineReady(page);
+    expect(await digests()).toEqual(original);
+    await page.close();
+    await context.setOffline(true);
+    const reopened = await context.newPage();
+    await reopened.goto(server.url);
+    await waitForOfflineReady(reopened);
+    await reopened.locator('.launcher-tile').click();
+    await reopened.getByRole('button', { name: 'Cache recovery note', exact: true }).click();
+    await expect(reopened.getByLabel('Body', { exact: true })).toHaveValue('Committed before eviction');
+  } finally {
+    await context.setOffline(false);
     await server.close();
   }
 });

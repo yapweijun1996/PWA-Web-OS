@@ -33,6 +33,7 @@ export function createUpdateController(): UpdateController {
   let flush: (() => Promise<FlushResult>) | undefined;
   let state: UpdateState = { status: 'idle' };
   let offlineReady = false;
+  let readinessCheck = 0;
   const listeners = new Set<(state: UpdateState) => void>();
   const offlineListeners = new Set<(ready: boolean) => void>();
 
@@ -49,12 +50,18 @@ export function createUpdateController(): UpdateController {
   }
 
   async function refreshOffline() {
+    const check = ++readinessCheck;
     const worker = sw?.controller;
     if (!worker) return setOffline(false);
     const info = await inspectWorker(worker);
-    if (sw?.controller !== worker) return;
+    if (sw?.controller !== worker || check !== readinessCheck) return;
     if (info) clientId = info.clientId;
     setOffline(info?.ready === true && info.buildId === __BUILD_ID__);
+    if (info?.buildId === __BUILD_ID__ && !info.ready && navigator.onLine) {
+      const repaired = await inspectWorker(worker, undefined, true);
+      if (sw?.controller !== worker || check !== readinessCheck) return;
+      setOffline(repaired?.ready === true && repaired.buildId === __BUILD_ID__);
+    }
     if (!attempt && !registration?.waiting && info?.ready && info.buildId !== __BUILD_ID__) {
       publish({ status: 'failed', detail: 'reload_pending' });
     }
@@ -302,6 +309,7 @@ export function createUpdateController(): UpdateController {
       return () => { if (flush === save) flush = undefined; };
     },
     isOfflineReady: () => offlineReady && !!sw?.controller,
+    checkOfflineReadiness: refreshOffline,
     onOfflineReadyChange(listener) {
       offlineListeners.add(listener);
       return () => { offlineListeners.delete(listener); };

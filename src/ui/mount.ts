@@ -186,6 +186,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   }
 
   function renderConnection(state: ConnectionState): void {
+    if (state === 'online') void deps.updates.checkOfflineReadiness();
     const label = `shell.${state}` as const;
     ui.text(network, label);
     network.toggleAttribute('data-offline', state !== 'online');

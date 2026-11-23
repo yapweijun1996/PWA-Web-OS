@@ -44,7 +44,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | OFF-04 | Preserve acknowledged work across process or update boundaries | [Offline reread](../e2e/data-persistence.spec.ts), [pending update flush](../e2e/update-notes.spec.ts). An unsaved input remains in the open editor until its IndexedDB transaction commits. |
 | OFF-05 | Recover from a full local store | [Native Chromium quota rejection](../e2e/robustness-quota.spec.ts). Obtain Firefox quota evidence separately. |
 | OFF-06 | Preserve stored notes when schema handling fails | [Blocked upgrade](../e2e/robustness-blocked.spec.ts), [newer schema and version change](../e2e/robustness-schema.spec.ts). Version 1 is the first shipped schema. Test real old-to-new migrations when the schema changes. |
-| OFF-07 | Recover when cached release assets are evicted | Remove a required cache entry after setup, verify readiness is withdrawn, then restore readiness online and reopen offline. Record IndexedDB content before and after. |
+| OFF-07 | Recover when cached release assets are evicted | [Eviction and verified repair](../e2e/pwa.spec.ts) removes two real cache entries, rejects mismatched server bytes atomically and restores the exact files after reconnecting. It also deletes the entire asset cache while the same release is hosted and rereads the saved note after a fresh offline launch. Verify boot recovery separately if the previous entry script has been evicted and the origin has already replaced that release. |
 | OFF-08 | Keep note and backup content out of network caches | [Exact cache inventory, bytes and request observations](../e2e/security-local-data.spec.ts). |
 
 ## Mobile behavior

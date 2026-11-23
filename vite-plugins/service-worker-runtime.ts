@@ -51,6 +51,29 @@ declare const release: {
     return (await Promise.all([...assets.keys()].map(cached))).every(Boolean);
   }
 
+  function releaseRequest(url: string, integrity: string, signal?: AbortSignal) {
+    return new Request(url, { cache: 'reload', redirect: 'error', integrity, signal });
+  }
+
+  let repairing: Promise<boolean> | undefined;
+  async function restoreMissing(): Promise<boolean> {
+    const abort = new AbortController();
+    const deadline = worker.setTimeout(() => abort.abort(), 7_000);
+    try {
+      const cache = await caches.open(cacheName);
+      const missing = await Promise.all([...assets].map(async ([url, integrity]) =>
+        await cache.match(url) ? undefined : releaseRequest(url, integrity, abort.signal)
+      ));
+      // Add missing files atomically. A partial or newer hosted release must not replace healthy entries.
+      await cache.addAll(missing.filter((request): request is Request => request !== undefined));
+      return await complete();
+    } catch {
+      return false;
+    } finally {
+      worker.clearTimeout(deadline);
+    }
+  }
+
   async function install(): Promise<void> {
     // Never touch the active release's cache when preparing a distinct build.
     try {
@@ -58,9 +81,7 @@ declare const release: {
       const old = (await caches.keys()).filter(isOtherRelease);
       const cache = await caches.open(cacheName);
       // addAll commits atomically, and integrity rejects stale deployment files and HTML fallbacks.
-      await cache.addAll([...assets].map(([url, integrity]) =>
-        new Request(url, { cache: 'reload', redirect: 'error', integrity }),
-      ));
+      await cache.addAll([...assets].map(([url, integrity]) => releaseRequest(url, integrity)));
       if (!await complete()) throw new Error('Incomplete release');
       await cache.put(retentionKey, new Response(JSON.stringify(old)));
     } catch (error) {
@@ -84,8 +105,12 @@ declare const release: {
     if (request.method !== 'GET' || !inScope(url)) return;
     // Pin navigations to the controlling build, even if the origin now serves a new release.
     const key = request.mode === 'navigate' ? index : request.url;
-    if (assets.has(key)) event.respondWith(cached(key).then((response) => response ?? fetch(request)));
-    else if (url.pathname.startsWith(release.base + 'assets/') || url.pathname.startsWith(release.base + 'wallpapers/')) {
+    const integrity = assets.get(key);
+    if (integrity) {
+      event.respondWith(cached(key).then(response =>
+        response ?? fetch(request.mode === 'navigate' ? request : releaseRequest(key, integrity))
+      ));
+    } else if (url.pathname.startsWith(release.base + 'assets/') || url.pathname.startsWith(release.base + 'wallpapers/')) {
       event.respondWith(versionedAsset(request));
     }
   });
@@ -97,8 +122,12 @@ declare const release: {
     if (!port || !source || !('id' in source) || !inScope(new URL(source.url)) || !message) return;
     const reply = (data: WorkerReply) => port.postMessage(data);
     event.waitUntil((async () => {
-      const ready = await complete();
       const onCurrentBuild = message.type === 'inspect' && message.documentBuildId === release.buildId;
+      let ready = await complete();
+      if (!ready && onCurrentBuild && message.repairMissing) {
+        repairing ??= restoreMissing().finally(() => { repairing = undefined; });
+        ready = await repairing;
+      }
       if (onCurrentBuild) currentClients.add(source.id);
       const windows = (await worker.clients.matchAll({ type: 'window', includeUncontrolled: true }))
         .filter((client) => inScope(new URL(client.url)));

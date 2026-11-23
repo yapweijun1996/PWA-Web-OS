@@ -130,6 +130,7 @@ export interface UpdateController {
   setFlush(flush: () => Promise<FlushResult>): () => void;
   /** Offline readiness: true only when a worker controls the page and required assets are cached. */
   isOfflineReady(): boolean;
+  checkOfflineReadiness(): Promise<void>;
   onOfflineReadyChange(listener: (ready: boolean) => void): () => void;
 }
 

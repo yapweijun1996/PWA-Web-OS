@@ -34,8 +34,8 @@ export async function requestWorker(worker: ServiceWorker, request: WorkerReques
   }
 }
 
-export async function inspectWorker(worker: ServiceWorker, signal?: AbortSignal): Promise<WorkerInspection | undefined> {
-  const reply = await requestWorker(worker, { type: 'inspect', documentBuildId: __BUILD_ID__ }, signal)
+export async function inspectWorker(worker: ServiceWorker, signal?: AbortSignal, repairMissing = false): Promise<WorkerInspection | undefined> {
+  const reply = await requestWorker(worker, { type: 'inspect', documentBuildId: __BUILD_ID__, repairMissing }, signal)
     .catch(() => undefined);
   return reply?.type === 'inspection' ? reply : undefined;
 }
