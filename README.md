@@ -18,4 +18,8 @@ Track implementation and verification in the [development task checklist](Task.m
 
 See the [modular development plan](docs/MODULAR_WEB_OS_PLAN.md) for module boundaries, failure handling, and milestone gates.
 
+See the [delivery plan](docs/DELIVERY_PLAN.md) for parallel work and integration, and the [UI/UX anchor](docs/UI_UX_ANCHOR.md) for the proposed responsive Notes workspace.
+
+See the [upstream reuse plan](docs/UPSTREAM_REUSE.md) for reusable icons, the update loader, the Public-API candidate, and lessons from Blender 3D Gallery.
+
 Start with the [first-release acceptance criteria](docs/PRODUCT_SPEC.md#acceptance-criteria). The first implementation should prove a complete Notes workflow from offline editing through update and data transfer. Add local setup, build, and test commands to the repository once those commands have been verified.

@@ -17,7 +17,7 @@ The first release targets an individual user who wants to open a note, keep edit
 - Export notes as a versioned JSON backup and import it on another device. Validate the backup before writing records. Keep existing notes intact when a backup contains conflicting records or invalid data.
 - Design for iOS safe areas, readable contrast, keyboard operation on desktop, visible focus, and useful labels and status messages for assistive technology.
 
-Cloud sync, accounts, third-party apps, multiple floating windows, and AI automation are outside the first release.
+Cloud sync, accounts, third-party apps, multiple floating windows, AI automation, and online tools from Public-API are outside the first release.
 
 ## Platform support
 

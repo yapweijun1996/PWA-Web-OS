@@ -4,6 +4,10 @@ Status: Planned. Check each task after its outcome has been verified. See the [f
 
 Use the [modular development plan](docs/MODULAR_WEB_OS_PLAN.md) for implementation details, failure cases, and milestone gates.
 
+Use the [delivery plan](docs/DELIVERY_PLAN.md) to assign parallel work and coordinate handoffs. Review the [UI/UX anchor](docs/UI_UX_ANCHOR.md) before implementing the workspace and Notes layout.
+
+Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verifying assets and evaluating the Public-API candidate.
+
 ## M0: Development baseline
 
 - [ ] Record minimum Windows, macOS, iOS, and Android versions and required browser versions using the [platform matrix](docs/PRODUCT_SPEC.md#platform-support).
@@ -13,6 +17,7 @@ Use the [modular development plan](docs/MODULAR_WEB_OS_PLAN.md) for implementati
 ## M1: Local Notes
 
 - [ ] Build a responsive workspace with a launcher that opens Notes on mobile and desktop.
+- [ ] Select the workspace and Notes SVG icons from [SVG-Icon-Studio](https://github.com/yapweijun1996/SVG-Icon-Studio). Record source revisions and applicable notices, bundle the selected icons locally, and verify accessible control names.
 - [ ] Implement note creation, editing, and reopening using IndexedDB. Confirm the saved state appears only after the write transaction completes.
 - [ ] Persist the theme in localStorage and verify it survives a reload. Verify invalid preferences or unavailable localStorage fall back to defaults while Notes remains usable.
 - [ ] Simulate an IndexedDB write failure. Verify the editor reports the failure, retains the draft for retry or copy, and preserves the last saved revision.
@@ -36,8 +41,10 @@ For each item below, launch Notes online once to complete setup. Then disconnect
 
 - [ ] Show an update when a new worker is ready and keep the editor usable while the user defers.
 - [ ] Preserve pending edits before activation, announce progress, and reopen once in the new build.
+- [ ] Select and bundle a [Loader Studio](https://github.com/yapweijun1996/Vanilla-HTML-Loader) loader for update progress. Verify readable status text, a static reduced-motion state, and recovery after timeout or failure.
 - [ ] Verify draft preservation across two builds. Exercise a failed activation and verify recovery.
 - [ ] Verify update deferral when another client cannot flush pending edits. Exercise a blocked IndexedDB migration and verify that saved data survives.
+- [ ] Reproduce a previous-build asset request after deployment and verify graceful recovery using the [Gallery reuse plan](docs/BLENDER_GALLERY_REUSE.md#apply-to-the-first-release).
 
 ## M4: Portability
 
@@ -50,3 +57,8 @@ For each item below, launch Notes online once to complete setup. Then disconnect
 - [ ] Run the complete Notes workflow against the supported device and browser matrix.
 - [ ] Record the tested build, devices, results, and any exceptions to `pwa:product-standard` v1.1.0.
 - [ ] Confirm that README and development commands match the tested implementation.
+
+## Post-release candidates
+
+- [ ] Evaluate [Public-API](https://github.com/yapweijun1996/Public-API) as a source of optional online tools. Verify provider terms, browser access, request limits, and offline behavior before selecting any demo. Keep requests independent of Notes data.
+- [ ] Evaluate the [one-model Viewer pilot](docs/BLENDER_GALLERY_REUSE.md#after-m5-one-model-viewer-pilot) with a cleared GLB, fallback, and device budget.
