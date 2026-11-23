@@ -2,7 +2,7 @@
 
 ## Pending release tasks
 
-**Full production decision on 2026-11-24 is HOLD.** GitHub Pages serves the verified Notes demo `b-mwth4sjcb9dcafa`. See the [60 recorded case outcomes](docs/DEMO_ACCEPTANCE_B9DCAFA.md) and the [candidate checklist](docs/PRODUCTION_READINESS.md).
+**Full production decision on 2026-11-24 is HOLD.** GitHub Pages serves the verified Notes demo `b-mwtnv4pp37ad1b4`. See the [60 recorded case outcomes](docs/DEMO_ACCEPTANCE_37AD1B4.md) and the [candidate checklist](docs/PRODUCTION_READINESS.md).
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
@@ -11,12 +11,17 @@
 | 3 | Complete the iPhone and Android launch matrix. | The Android 16 emulator passed the Chrome tab save and offline cold-launch journey. Qualify iOS 18 and Android 10 on physical phones, including each required launch mode, native keyboard, safe areas and rotation. [Qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) · [Android emulator evidence](docs/evidence/android16-emulator-b9dcafa.json) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
 | 5 | Verify iPhone VoiceOver and complete the reader acceptance. | NVDA passed nine speech checks. macOS VoiceOver passed ten checks, including the editor region, both field labels, save states and update prompts. Record iPhone VoiceOver reading labels, save results and update states. [Reader evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
-| 6 | Complete candidate performance and recovery acceptance. | The declared physical Mac and hosted Windows 11 Arm64 desktop profiles pass the lab on the current demo. The same build passed HTTPS staging rollback in Chromium and Firefox. Measure the two physical phone profiles and apply the field-data policy. [Lab baselines](docs/PERFORMANCE.md#release-lab-baselines) · [Mobile procedure](docs/PERFORMANCE.md#physical-mobile-lab) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
-| 7 | Update the release decision after the device and reader checks. | Reconcile the remaining [case outcomes](docs/DEMO_ACCEPTANCE_B9DCAFA.md) and decide whether all full-release gates are met. The current demo passed live SHA-256 verification and the synthetic offline note smoke check. |
+| 6 | Complete candidate performance and recovery acceptance. | The declared physical Mac and hosted Windows 11 Arm64 desktop profiles passed on `b9dcafa`. Recheck them on `37ad1b4`, measure the two physical phone profiles and apply the field-data policy. The current demo passed HTTPS staging rollback in Chromium and Firefox. [Lab baselines](docs/PERFORMANCE.md#release-lab-baselines) · [Mobile procedure](docs/PERFORMANCE.md#physical-mobile-lab) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md#rehearsal-for-the-startup-theme-build) |
+| 7 | Update the release decision after the device and reader checks. | Reconcile the remaining [case outcomes](docs/DEMO_ACCEPTANCE_37AD1B4.md) and decide whether all full-release gates are met. The current demo passed live SHA-256 verification and the synthetic offline note smoke check. |
 
 The top bar checks the hosting origin when visible. A real Chromium and Firefox regression covers OFF-02: the server stops serving its release while the OS remains online, local editing and saving continue, and the next successful check restores the online status. [Origin outage test](e2e/pwa.spec.ts)
 
 ### Current demo evidence from 2026-11-24
+
+- Source `37ad1b4`, build `b-mwtnv4pp37ad1b4`. Pages passed 150 browser tests with zero skips, then verified the launch URL and 12 hosted files. The saved theme applies before the workspace script loads. Stable Chrome followed the live custom 404 link and retained Dark and the exact note body through two offline process restarts. [Candidate evidence](docs/DEMO_ACCEPTANCE_37AD1B4.md)
+- Chromium and Firefox preserved the note through `b9dcafa → 37ad1b4 → b9dcafa` on HTTPS staging after rejecting a mixed candidate. [Recovery evidence](docs/evidence/recovery-mixed-37ad1b4.json)
+
+### Update focus demo evidence from 2026-11-24
 
 - Source `b9dcafa`, build `b-mwth4sjcb9dcafa`. Pages passed 91 unit tests and 146 browser tests with zero skips, then verified the launch URL and 12 hosted files. Stable Chrome followed the live custom 404 link and reopened an offline edit. [Pages run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979)
 - The active release passed nine NVDA Speech Viewer checks and ten macOS VoiceOver checks. Both readers captured the pending-save update progress and the synthetic edit survived activation. [Candidate record](docs/DEMO_ACCEPTANCE_B9DCAFA.md)

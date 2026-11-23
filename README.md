@@ -6,7 +6,7 @@ The long-term design goal is to let people keep working across devices, browser 
 
 ## Project status
 
-[Open the public demo](https://yapweijun1996.github.io/PWA-Web-OS/). The current target is the **Windows demo**. The full release remains on hold until the required Windows, macOS, iOS and Android launch modes pass with a specific build. Track the [pending release tasks](Task.md#pending-release-tasks), [platform matrix](docs/PRODUCT_SPEC.md#platform-support) and [earlier Windows demo results](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md).
+[Open the public demo](https://yapweijun1996.github.io/PWA-Web-OS/). The current target is the **Windows demo**. The full release remains on hold until the required Windows, macOS, iOS and Android launch modes pass with a specific build. Track the [pending release tasks](Task.md#pending-release-tasks), [platform matrix](docs/PRODUCT_SPEC.md#platform-support) and [current demo results](docs/DEMO_ACCEPTANCE_37AD1B4.md).
 
 ## Install and use Notes offline
 

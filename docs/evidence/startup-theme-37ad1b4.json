@@ -1,0 +1,95 @@
+{
+  "candidate": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "pagesRun": 45249652707,
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+    "verifiedHostedFileCount": 12
+  },
+  "liveChrome": {
+    "startedAt": "2026-11-23T19:39:03.588Z",
+    "site": "https://yapweijun1996.github.io/PWA-Web-OS/",
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "sessions": [
+      {
+        "phase": "online create",
+        "browser": "Chrome/158.0.8127.37",
+        "originProbeStatus": 404,
+        "offline": false,
+        "exactBuild": true,
+        "exactSyntheticBody": true,
+        "theme": "dark",
+        "outcome": "PASS"
+      },
+      {
+        "phase": "offline edit",
+        "browser": "Chrome/158.0.8127.37",
+        "originProbeStatus": 0,
+        "offline": true,
+        "exactBuild": true,
+        "exactSyntheticBody": true,
+        "theme": "dark",
+        "outcome": "PASS"
+      },
+      {
+        "phase": "offline reread",
+        "browser": "Chrome/158.0.8127.37",
+        "originProbeStatus": 0,
+        "offline": true,
+        "exactBuild": true,
+        "exactSyntheticBody": true,
+        "theme": "dark",
+        "outcome": "PASS"
+      }
+    ],
+    "outcome": "PASS",
+    "finishedAt": "2026-11-23T19:39:13.384Z",
+    "environment": {
+      "os": "macOS 27.2",
+      "architecture": "arm64",
+      "launchMode": "Branded Chrome with a disposable profile; separate browser processes"
+    }
+  },
+  "loopbackWebKit": {
+    "environment": {
+      "system": "macOS 27.2",
+      "browser": "Playwright WebKit",
+      "version": "27.2"
+    },
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "startedAt": "2026-11-23T19:38:20.475Z",
+    "cases": [
+      {
+        "system": "light",
+        "stored": "dark",
+        "expected": "dark",
+        "beforeMount": "dark",
+        "outcome": "PASS"
+      },
+      {
+        "system": "dark",
+        "stored": "light",
+        "expected": "light",
+        "beforeMount": "light",
+        "outcome": "PASS"
+      },
+      {
+        "system": "dark",
+        "stored": "invalid",
+        "expected": "dark",
+        "beforeMount": "dark",
+        "outcome": "PASS"
+      },
+      {
+        "system": "dark",
+        "stored": null,
+        "expected": "dark",
+        "beforeMount": "dark",
+        "outcome": "PASS"
+      }
+    ],
+    "outcome": "PASS"
+  }
+}
