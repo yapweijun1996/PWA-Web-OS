@@ -1,6 +1,6 @@
 # PWA Web OS Production Readiness Checklist
 
-Status: Planned. No release candidate or runtime results are recorded here. Use a fresh copy of this checklist for each candidate. The [product specification](PRODUCT_SPEC.md#acceptance-criteria) defines acceptance, and the [delivery plan](DELIVERY_PLAN.md#verification-and-release) defines release gates and evidence.
+Use a fresh copy of this checklist for each candidate. The [pending release tasks](../Task.md#pending-release-tasks) link to recorded results and remaining evidence. The [product specification](PRODUCT_SPEC.md#acceptance-criteria) defines acceptance, and the [delivery plan](DELIVERY_PLAN.md#verification-and-release) defines release gates and evidence.
 
 ## First milestone: Windows browser tabs
 

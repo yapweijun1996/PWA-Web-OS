@@ -1,6 +1,8 @@
 # Windows Demo Release Evidence (candidate 1)
 
-Status: **Provisional.** This records what was run for the Windows demo track defined in [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). It does not clear the full production release, which needs every row of the [platform matrix](PRODUCT_SPEC.md#platform-support). The visual redesign decided in [M0_DECISIONS.md](M0_DECISIONS.md) (Aurora look) has not been implemented, so the current interface does not yet match the Aurora anchor images.
+**Historical candidate.** See the [pending release tasks](../Task.md#pending-release-tasks) for the current release decision.
+
+Status at the time of testing: **Provisional.** This records what was run for the Windows demo track defined in [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). It does not clear the full production release, which needs every row of the [platform matrix](PRODUCT_SPEC.md#platform-support). The visual redesign decided in [M0_DECISIONS.md](M0_DECISIONS.md) (Aurora look) has not been implemented, so the current interface does not yet match the Aurora anchor images.
 
 ## Candidate
 

@@ -1,6 +1,6 @@
 # PWA Web OS M0 Decisions
 
-Status: Draft for owner review. Decisions marked **Owner-confirmed** or **Owner-approved** were chosen by the owner on 2026-11-23. Everything marked **Proposed** comes from read-only drafts by pi workers (gpt-6.2-sol) and is not yet approved. Nothing here has been implemented or tested.
+Status: Draft for owner review. Decisions marked **Owner-confirmed** or **Owner-approved** were chosen by the owner on 2026-11-23. Everything marked **Proposed** comes from read-only drafts by pi workers (gpt-6.2-sol) and is not yet approved. This introduction records the planning session. The [task tracker](../Task.md#pending-release-tasks) records current implementation and verification.
 
 The [product specification](PRODUCT_SPEC.md) owns scope. [Task.md](../Task.md) tracks M0 completion. M0 stays open until the commands and contracts below are verified.
 
@@ -26,7 +26,7 @@ The [product specification](PRODUCT_SPEC.md) owns scope. [Task.md](../Task.md) t
 | Audience | Public demo on GitHub Pages. | State clearly on the page that it is a demo and that notes stay on the visitor's device and are not uploaded. Use synthetic sample content only. Review the Content Security Policy and never commit secrets or personal data to the repository. |
 | Visual anchor | The Notes-only release follows the Aurora look from [AURORA_WORKSPACE_PLAN.md](AURORA_WORKSPACE_PLAN.md) (dark wallpaper, top bar, bottom Dock, a floating Notes window with a list and editor; full-screen on phones). Decided 2026-11-23 after the first deployed UI did not match the anchor images. | A dedicated visual pass runs after the wave-2 workstreams merge. Workers must open the anchor images, and acceptance includes side-by-side screenshots of the running app at 1280x800 and 390x844 against the anchors. Functional behaviour and the approved storage and accessibility rules stay unchanged. Only Notes and the workspace launcher are real; Files and other Aurora apps stay out of the first release. |
 
-## Storage and backup contracts (Owner-approved 2026-11-23, unimplemented)
+## Storage and backup contracts (Owner-approved 2026-11-23)
 
 The numeric limits below were approved as drafted but are not measured against browser quotas.
 
@@ -35,17 +35,18 @@ The numeric limits below were approved as drafted but are not measured against b
 
 ### IndexedDB
 - Database `pwa-web-os-notes`, schema version `1`, one store `notes` keyed by `id`, no secondary indexes.
-- Record fields: `id` (lowercase UUID v4, immutable), `title`, `body` (plain text, may be empty), `revision` (positive safe integer).
+- Record fields: `id` (lowercase UUID v4, immutable), `title`, `body` (plain text, may be empty), `revision` (positive safe integer), and `updatedAt` (epoch milliseconds).
 - Insert only if the ID is absent, at revision `1`. Update only if the expected revision matches, then commit `revision + 1`. A stale revision, an existing ID on insert or a missing record on update returns a conflict and writes nothing.
 - Report "Saved on this device" only after the transaction commits for the current editor snapshot. Uncommitted text lives in the open editor only.
 - First migration is `0 → 1`. Never delete or recreate the database to recover from a blocked or failed upgrade. A newer schema than the build understands is reported and left untouched.
 
 ### localStorage
-- One key, `pwa-web-os:preferences:theme`, values `system`, `light`, `dark`; default `system`.
+- Theme key `pwa-web-os:preferences:theme` accepts `system`, `light` and `dark`. The default is `system`.
+- Language key `pwa-web-os:preferences:locale` accepts `en` and `zh-Hans`. With no valid stored value, use the first supported browser language and fall back to English.
 - Invalid or unreadable values use the default. A failed write applies the choice for the session only. No notes or drafts in localStorage.
 
 ### Backup format
-- UTF-8 JSON object with exactly `format` (`pwa-web-os.notes`), `version` (`1`) and `notes`. Each note has exactly `id`, `title`, `body`. Revisions are not exported; imported notes get revision `1`.
+- UTF-8 JSON object with exactly `format` (`pwa-web-os.notes`), `version` (`1`) and `notes`. Each note has exactly `id`, `title`, `body` and `updatedAt`. Revisions are not exported; imported notes get revision `1`.
 - Limits: 10 MiB per file, 100 notes per backup and per database, 256 UTF-8 bytes per title, 16,384 UTF-8 bytes per body. These numbers are proposals and unmeasured against browser quotas.
 - Reject the whole file for malformed JSON, oversize, unsupported format or version, unknown fields, or any repeated ID. Preview before writing.
 - On confirm, check inside one transaction: identical existing record is a no-op, a same-ID record with different content aborts the whole import. Importing the same backup twice changes nothing.

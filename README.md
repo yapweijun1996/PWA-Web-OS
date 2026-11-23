@@ -6,11 +6,11 @@ The long-term design goal is to let people keep working across devices, browser 
 
 ## Project status
 
-[Open the public demo](https://yapweijun1996.github.io/PWA-Web-OS/). The current target is the **Windows demo**. The full release remains on hold until the required Windows, macOS, iOS and Android launch modes pass with a specific build. See the [platform matrix](docs/PRODUCT_SPEC.md#platform-support) and [release evidence](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md).
+[Open the public demo](https://yapweijun1996.github.io/PWA-Web-OS/). The current target is the **Windows demo**. The full release remains on hold until the required Windows, macOS, iOS and Android launch modes pass with a specific build. Track the [pending release tasks](Task.md#pending-release-tasks), [platform matrix](docs/PRODUCT_SPEC.md#platform-support) and [earlier Windows demo results](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md).
 
 ## Install and use Notes offline
 
-Open the demo online in the browser or installed app you plan to use. Wait for **Available offline**, then create a note and wait for **Saved on this device** before closing. The first status confirms the app files are ready. The second confirms the note was written. Use **Workspace → Backup and restore** before changing devices, switching browser profiles, or clearing site data.
+Open the demo online in the browser or installed app you plan to use. Open **Workspace → Install and use offline** for directions for your device. Wait for **Available offline**, then create a note and wait for **Saved on this device** before closing. The first status confirms the app files are ready. The second confirms the note was written. Use **Workspace → Backup and restore** before changing devices, switching browser profiles, or clearing site data.
 
 | Platform | How to launch |
 | --- | --- |

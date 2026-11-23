@@ -1,12 +1,22 @@
 # PWA Web OS Development Tasks
 
-Status: Planned. Check each task after its outcome has been verified. See the [feature map](docs/FEATURE_MAP.md) for scope and the [product specification](docs/PRODUCT_SPEC.md#acceptance-criteria) for release acceptance criteria.
+## Pending release tasks
 
-Use the [modular development plan](docs/MODULAR_WEB_OS_PLAN.md) for implementation details, failure cases, and milestone gates.
+**Full production decision on 2026-11-23: HOLD.** The public Pages deployment serves the Notes demo. A checked implementation item below records the named behavior only. Use the [candidate checklist](docs/PRODUCTION_READINESS.md) for release sign-off.
 
-Use the [delivery plan](docs/DELIVERY_PLAN.md) to assign parallel work and coordinate handoffs. Review the [UI/UX anchor](docs/UI_UX_ANCHOR.md) before implementing the workspace and Notes layout.
+| Priority | Remaining task | Completion evidence |
+| --- | --- | --- |
+| 1 | Freeze the Notes candidate and declare the minimum OS and browser versions the release will support. | Record the owner, source SHA, build ID, artifact digest, HTTPS URL and tested lower bounds. |
+| 2 | Run the Windows milestone in normal Chrome and Firefox tabs, followed by Chrome installed and the Firefox web app window. | On one candidate, verify offline cold launch, edit/save/reopen, update deferral and recovery, transfer between profiles, both languages and all three appearance settings. The [earlier Windows report](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md) covers Playwright on an earlier SHA. |
+| 3 | Complete macOS Chrome tab/installed and Firefox tab, the four iPhone contexts and the four Android contexts. | Record each browser and launch mode against the same build. Use physical phones for keyboard, safe areas and offline relaunch. Record desktop screen reader and iPhone VoiceOver announcements. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md) |
+| 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
+| 5 | Close the wallpaper provenance and Firefox accessibility evidence gaps. | Obtain the distribution record for the shipped wallpaper pair or replace it with cleared assets. Run the affected Firefox checks on a working configuration and review manual contrast findings. [Asset register](docs/UPSTREAM_REUSE.md) · [Firefox accessibility evidence](docs/FIREFOX_AXE.md) |
+| 6 | Run the candidate performance and recovery gates. | Capture cold launch, offline reopen and editor latency on the declared desktop and mobile baselines. Record the field-data decision. Rehearse retained release bytes on the intended staging host and verify note integrity after rollback. [Lab results](docs/PERFORMANCE.md) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
+| 7 | Close the release record and verify the deployed artifact. | Map applicable STATIC_OFFLINE cases to dated results, record exceptions, obtain rollout authorization, verify the live build identity and repeat the offline note smoke check. |
 
-Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verifying assets and evaluating the Public-API candidate.
+The clean macOS check at `02b296d` passed type checking, the production build, 87 unit tests and 128 Chromium/Firefox end-to-end tests. Eight browser cases were skipped, including the seven documented [Firefox axe exceptions](docs/FIREFOX_AXE.md). The subsequent install-guide and asset changes have their own focused checks. Repeat the complete run on the selected release candidate.
+
+The first release covers Notes. The [feature map](docs/FEATURE_MAP.md), [UI anchor](docs/UI_UX_ANCHOR.md) and [delivery plan](docs/DELIVERY_PLAN.md) define its scope. See [post-release candidates](#post-release-candidates) for Files, Weather and Viewer.
 
 ## M0: Development baseline
 
@@ -22,10 +32,10 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 
 - [ ] Start integrated verification in regular Windows Chrome and Firefox tabs. Complete the [Windows browser milestone](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs) across M1–M4 before extending runtime verification to installed modes and other platforms.
 
-- [ ] Build a responsive workspace with a launcher that opens Notes on mobile and desktop.
-- [ ] Select the workspace and Notes SVG icons from [SVG-Icon-Studio](https://github.com/yapweijun1996/SVG-Icon-Studio). Record source revisions and applicable notices, bundle the selected icons locally, and verify accessible control names.
+- [x] Build a responsive workspace with a launcher that opens Notes on mobile and desktop.
+- [x] Select the workspace and Notes SVG icons from [SVG-Icon-Studio](https://github.com/yapweijun1996/SVG-Icon-Studio). Record source revisions and applicable notices, bundle the selected icons locally, and verify accessible control names.
 - [x] Implement note creation, editing, and reopening using IndexedDB. Confirm the saved state appears only after the write transaction completes.
-- [ ] Persist the theme in localStorage and verify it survives a reload. Verify invalid preferences or unavailable localStorage fall back to defaults while Notes remains usable.
+- [x] Persist the theme in localStorage and verify it survives a reload. Verify invalid preferences or unavailable localStorage fall back to defaults while Notes remains usable.
 - [x] Simulate an IndexedDB write failure. Verify the editor reports the failure, retains the draft for retry or copy, and preserves the last saved revision.
 - [x] Edit the same note in two clients and verify a stale write cannot overwrite the newer revision.
 - [x] Show saving, saved, and failed states. Keep failed edits available for retry while the editor remains open.
@@ -33,8 +43,8 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 
 ## M2: Install and offline
 
-- [ ] Configure production HTTPS, the Web App Manifest, and icons.
-- [ ] Use a Service Worker to make the workspace and Notes available offline after initial setup.
+- [x] Configure production HTTPS, the Web App Manifest, and icons.
+- [x] Use a Service Worker to make the workspace and Notes available offline after initial setup.
 
 For each item below, launch Notes online once to complete setup. Then disconnect, edit and save a note, close the workspace, reopen it offline in the same mode, and confirm the saved content. Use physical devices for mobile checks. The [platform matrix](docs/PRODUCT_SPEC.md#platform-support) defines the required modes.
 
@@ -47,18 +57,18 @@ Run the Windows tab checks first. Run installed-mode and other platform checks a
 
 ## M3: Safe updates
 
-- [ ] Show an update when a new worker is ready and keep the editor usable while the user defers.
-- [ ] Preserve pending edits before activation, announce progress, and reopen once in the new build.
-- [ ] Select and bundle a [Loader Studio](https://github.com/yapweijun1996/Vanilla-HTML-Loader) loader for update progress. Verify readable status text, a static reduced-motion state, and recovery after timeout or failure.
-- [ ] Verify draft preservation across two builds. Exercise a failed activation and verify recovery.
-- [ ] Verify update deferral when another client cannot flush pending edits. Exercise a blocked IndexedDB migration and verify that saved data survives.
-- [ ] Reproduce a previous-build asset request after deployment and verify graceful recovery using the [Gallery reuse plan](docs/BLENDER_GALLERY_REUSE.md#apply-to-the-first-release).
+- [x] Show an update when a new worker is ready and keep the editor usable while the user defers.
+- [x] Preserve pending edits before activation, announce progress, and reopen once in the new build.
+- [x] Select and bundle a [Loader Studio](https://github.com/yapweijun1996/Vanilla-HTML-Loader) loader for update progress. Verify readable status text, a static reduced-motion state, and recovery after timeout or failure.
+- [x] Verify draft preservation across two builds. Exercise a failed activation and verify recovery.
+- [x] Verify update deferral when another client cannot flush pending edits. Exercise a blocked IndexedDB migration and verify that saved data survives.
+- [x] Reproduce a previous-build asset request after deployment and verify graceful recovery using the [Gallery reuse plan](docs/BLENDER_GALLERY_REUSE.md#apply-to-the-first-release).
 
 ## M4: Portability
 
-- [ ] Export saved notes as versioned JSON and validate imports before writing.
+- [x] Export saved notes as versioned JSON and validate imports before writing.
 - [ ] Verify transfer on a separate device by comparing note titles and bodies.
-- [ ] Verify that malformed backups and conflicting records leave existing notes intact.
+- [x] Verify that malformed backups and conflicting records leave existing notes intact.
 
 ## M5: Release readiness
 

@@ -1,6 +1,8 @@
 # Handoff for the next work session
 
-Status: **DRAFT written 2026-11-23 while the wave-3 workers were still running.** Sections marked `TO FILL` are completed after wave 3 is merged and verified. Do not treat a `TO FILL` section as a result.
+For current work, start with the [pending release tasks](../Task.md#pending-release-tasks). This handoff records the earlier Windows session.
+
+Historical status: **DRAFT written 2026-11-23 while the wave-3 workers were still running.** Sections marked `TO FILL` are completed after wave 3 is merged and verified. Do not treat a `TO FILL` section as a result.
 
 ## Where the project stands
 

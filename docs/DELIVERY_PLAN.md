@@ -1,6 +1,6 @@
 # PWA Web OS First-Release Delivery Plan
 
-This plan is proposed. The repository contains specifications and a concept explainer. Application setup, implementation, device testing, and release are pending.
+The Notes implementation is deployed as a public demo. This plan defines the milestone sequence. The [pending release tasks](../Task.md#pending-release-tasks) track outstanding implementation and device evidence.
 
 The first release delivers one workflow across Windows, macOS, iOS, and Android. A user opens Notes from the launcher, edits offline after initial online setup, reopens the saved note, accepts an update without losing work, and transfers the note to a second device by JSON backup. IndexedDB owns note data. localStorage holds small interface preferences.
 
