@@ -17,7 +17,7 @@
     "scope": "/PWA-Web-OS/",
     "display": "standalone"
   },
-  "startedAt": "2026-11-23T17:52:40.040182+00:00",
+  "startedAt": "2026-11-23T17:59:39.317478+00:00",
   "outcome": "PASS",
   "version": "160.0",
   "updatedInApp": "PASS",
@@ -27,5 +27,5 @@
     "reopenedBuild": "b-mwth4sjcb9dcafa"
   },
   "savedEditAfterShortcutLaunch": "PASS",
-  "finishedAt": "2026-11-23T17:53:11.805628+00:00"
+  "finishedAt": "2026-11-23T18:00:13.994853+00:00"
 }
