@@ -5,6 +5,8 @@ const baseURL = `http://127.0.0.1:${port}/PWA-Web-OS/`;
 
 export default defineConfig({
   testDir: './e2e',
+  // Both browser projects reuse the IPv6 PW_PORT listener for the two-release test.
+  workers: 1,
   use: { baseURL },
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
