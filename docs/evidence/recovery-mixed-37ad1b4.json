@@ -1,0 +1,98 @@
+{
+  "macOS": "27.2",
+  "result": "PASS",
+  "sourceRuns": {
+    "a": 45215666979,
+    "b": 45249652707
+  },
+  "assertions": [
+    "Mixed B rejected before activation",
+    "Committed edit in A after rejection",
+    "Healthy B accepted",
+    "Committed note survived rollback and saved again"
+  ],
+  "browserRuns": [
+    {
+      "startedAt": "2026-11-23T19:32:43.864Z",
+      "a": {
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "buildId": "b-mwth4sjcb9dcafa",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+      },
+      "b": {
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "origin": "https://guests-culture-revelation-lou.trycloudflare.com",
+      "browser": {
+        "name": "chromium",
+        "version": "156.0.8078.4"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:34:10.594Z"
+        },
+        {
+          "release": "mixed B",
+          "fileCount": 12,
+          "replacedFile": "assets/index-XziyHlyV.js",
+          "verifiedAt": "2026-11-23T19:34:12.320Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:34:13.357Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:34:15.480Z"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-11-23T19:34:20.635Z",
+      "a": {
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "buildId": "b-mwth4sjcb9dcafa",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+      },
+      "b": {
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "origin": "https://dress-mechanism-superintendent-secretariat.trycloudflare.com",
+      "browser": {
+        "name": "firefox",
+        "version": "157.0"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:35:56.679Z"
+        },
+        {
+          "release": "mixed B",
+          "fileCount": 12,
+          "replacedFile": "assets/index-XziyHlyV.js",
+          "verifiedAt": "2026-11-23T19:35:58.810Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:36:00.690Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T19:36:03.750Z"
+        }
+      ]
+    }
+  ]
+}

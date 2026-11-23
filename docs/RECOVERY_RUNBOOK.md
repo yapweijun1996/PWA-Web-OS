@@ -77,3 +77,7 @@ On November 23, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 ran the sa
 ## Rehearsal for the update focus build
 
 On November 24 in Singapore, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 verified the HTTPS rehearsal with `d620665` as A and `b9dcafa` as B. Both rejected the mixed response and preserved the committed synthetic note through accepting healthy B and rolling back. The test saved again on A. The B manifest digest matches the Pages deployment. A has the recorded desktop announcement defect. [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45207524392) · [Release B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979) · [Baseline announcement failure](DEMO_ACCEPTANCE_D620665.md)
+
+## Rehearsal for the startup theme build
+
+On November 24 in Singapore, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 ran `b9dcafa → 37ad1b4 → b9dcafa` on disposable HTTPS staging. Both browsers checked 12 served files in each phase. They rejected B with one mismatched script, saved on A, accepted verified B, and saved a synthetic edit. Both reopened the exact edit after rollback and saved again on A. [Rehearsal evidence](evidence/recovery-mixed-37ad1b4.json) · [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979) · [Candidate B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45249652707)
