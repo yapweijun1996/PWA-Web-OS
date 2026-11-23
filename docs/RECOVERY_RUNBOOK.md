@@ -81,3 +81,7 @@ On November 24 in Singapore, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27
 ## Rehearsal for the startup theme build
 
 On November 24 in Singapore, Chromium 156.0.8078.4 and Firefox 157.0 on macOS 27.2 ran `b9dcafa → 37ad1b4 → b9dcafa` on disposable HTTPS staging. Both browsers checked 12 served files in each phase. They rejected B with one mismatched script, saved on A, accepted verified B, and saved a synthetic edit. Both reopened the exact edit after rollback and saved again on A. [Rehearsal evidence](evidence/recovery-mixed-37ad1b4.json) · [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45215666979) · [Candidate B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45249652707)
+
+## Rehearsal for the forced colors demo
+
+Chromium 156.0.8078.4 and Firefox 157.0 each verified 12 files across A, mixed B, verified B and rollback to A on disposable HTTPS origins. Both rejected the mixed release, saved on A, accepted B, and read the exact saved record and committed another edit after rollback. A was `37ad1b4` and B was `237f188`. [Retained identities and four phases per browser](evidence/recovery-mixed-237f188.json)

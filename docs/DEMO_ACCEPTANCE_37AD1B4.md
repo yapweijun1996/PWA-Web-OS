@@ -1,6 +1,6 @@
 # Startup theme demo acceptance
 
-**Full production decision is HOLD.** The verified startup theme build is live on the Notes demo. The full release still requires device compatibility at the selected minimum versions, physical mobile performance, transfer between two physical devices, and iPhone VoiceOver.
+**Full production decision is HOLD.** This record covers the startup theme build deployed on November 24. See the [current demo evidence](DEMO_ACCEPTANCE_237F188.md). The full release still requires device compatibility at the selected minimum versions, physical mobile performance, transfer between two physical devices, and iPhone VoiceOver.
 
 | Release field | Verified value |
 | --- | --- |

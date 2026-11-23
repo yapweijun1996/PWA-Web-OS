@@ -32,8 +32,8 @@ Use these desktop profiles for the Notes lab. Each passing observation identifie
 
 | Desktop profile | CPU and RAM | Measured candidate | Candidate p75 in ms (cold launch / offline reopen / editor response) |
 | --- | --- | --- | --- |
-| Physical macOS 27.2 with Chrome 158.0.8127.37 | Apple M4, 10 logical CPUs, 32 GiB | `37ad1b4` | 523 / 763 / 102. [Passing batch](evidence/performance-macos-37ad1b4.json) |
-| Hosted Windows 11 Enterprise 25H2 Arm64 with Chrome 157.0.8103.79 | Cobalt 200, 4 logical CPUs, 16 GiB | `37ad1b4` | 184 / 268 / 53. [Passing batch](evidence/performance-windows11-37ad1b4.json) |
+| Physical macOS 27.2 with Chrome 158.0.8127.37 | Apple M4, 10 logical CPUs, 32 GiB | `237f188` | 545 / 448 / 53. [Passing batch](evidence/performance-macos-237f188.json) |
+| Hosted Windows 11 Enterprise 25H2 Arm64 with Chrome 157.0.8103.79 | Cobalt 100, 4 logical CPUs, 16 GiB | `237f188` | 166 / 240 / 54. [Passing batch](evidence/performance-windows11-237f188.json) |
 
 Keep the Chrome viewport, seven-attempt requirement and p75 ceilings above when rechecking these profiles. Record the actual OS and browser patch for each run. Prefer isolated batches for comparable timings. Record concurrent workloads and retain any failed batch with its conditions.
 

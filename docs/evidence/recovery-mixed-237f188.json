@@ -1,0 +1,98 @@
+{
+  "macOS": "27.2",
+  "result": "PASS",
+  "sourceRuns": {
+    "a": 45249652707,
+    "b": 45285620980
+  },
+  "assertions": [
+    "Mixed B rejected before activation",
+    "Committed edit in A after rejection",
+    "Healthy B accepted",
+    "Committed note survived rollback and saved again"
+  ],
+  "browserRuns": [
+    {
+      "startedAt": "2026-11-23T23:18:31.902Z",
+      "a": {
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "b": {
+        "commit": "237f1888593ce23e557483308049599dae984f66",
+        "buildId": "b-mwtvj2ds237f188",
+        "manifestSha256": "7a94c326a9d6768b9e02ea9c1dfaaaee7d19263b2b6c16ddd5bcc1771611a349"
+      },
+      "origin": "https://gold-calm-christopher-please.trycloudflare.com",
+      "browser": {
+        "name": "chromium",
+        "version": "156.0.8078.4"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:19:59.504Z"
+        },
+        {
+          "release": "mixed B",
+          "fileCount": 12,
+          "replacedFile": "assets/index-B1FmHhRk.js",
+          "verifiedAt": "2026-11-23T23:20:00.896Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:20:01.949Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:20:04.625Z"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-11-23T23:20:08.366Z",
+      "a": {
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "b": {
+        "commit": "237f1888593ce23e557483308049599dae984f66",
+        "buildId": "b-mwtvj2ds237f188",
+        "manifestSha256": "7a94c326a9d6768b9e02ea9c1dfaaaee7d19263b2b6c16ddd5bcc1771611a349"
+      },
+      "origin": "https://evanescence-capabilities-surprised-subsidiaries.trycloudflare.com",
+      "browser": {
+        "name": "firefox",
+        "version": "157.0"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:21:36.786Z"
+        },
+        {
+          "release": "mixed B",
+          "fileCount": 12,
+          "replacedFile": "assets/index-B1FmHhRk.js",
+          "verifiedAt": "2026-11-23T23:21:40.312Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:21:41.887Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T23:21:44.643Z"
+        }
+      ]
+    }
+  ]
+}
