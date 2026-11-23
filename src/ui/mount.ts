@@ -5,6 +5,7 @@ import type { AppDeps, UpdateState } from '../contracts';
 import { createBackupMenu } from './backup';
 import { button, createFeedback, element } from './dom';
 import { icon } from './icons';
+import { createInstallGuide } from './install-guide';
 import { updateCopy } from './messages';
 import { createNotes } from './notes';
 import { createWorkspaceMenu } from './workspace-menu';
@@ -68,7 +69,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
 
   const notes = createNotes(ui, deps.storage.repository, feedback, openLauncher);
   const backup = createBackupMenu(ui, deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback, menu.show);
-  menu.panel.append(backup.menu, ui.label('p', 'shell.demo', 'menu-disclosure'));
+  menu.panel.append(backup.menu, createInstallGuide(ui), ui.label('p', 'shell.demo', 'menu-disclosure'));
 
   const notesWindow = element('div', undefined, 'notes-window');
   notesWindow.id = 'notes-window';

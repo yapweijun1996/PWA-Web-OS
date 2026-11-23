@@ -129,7 +129,7 @@ svg { flex: none; vertical-align: middle; }
   box-shadow: 0 12px 32px #08072155;
 }
 .theme-control { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
-.theme-control legend, .backup-menu summary { font-weight: 650; }
+.theme-control legend, .workspace-menu summary { font-weight: 650; }
 .theme-control legend { margin-block-end: 0.35rem; }
 .theme-control label {
   display: flex;
@@ -152,8 +152,12 @@ svg { flex: none; vertical-align: middle; }
   font-weight: 650;
 }
 .locale-control select { min-block-size: 44px; padding-inline: 0.6rem; }
-.backup-menu, .menu-disclosure { margin-block-start: 0.6rem; border-block-start: 1px solid var(--border-subtle); }
-.backup-menu summary { min-block-size: 44px; padding: 0.6rem; }
+.workspace-menu details, .menu-disclosure { margin-block-start: 0.6rem; border-block-start: 1px solid var(--border-subtle); }
+.workspace-menu summary { min-block-size: 44px; padding: 0.6rem; }
+.install-guide label, .install-guide select { display: block; }
+.install-guide select { inline-size: 100%; min-block-size: 44px; margin-block-start: 0.25rem; padding-inline: 0.6rem; }
+.install-guide p { margin-block-start: 0.6rem; }
+.install-guide p:empty { margin: 0; }
 .menu-disclosure { padding: 0.65rem 0.55rem 0; color: var(--text-muted); font-size: var(--type-small); }
 
 .workspace-stage {
