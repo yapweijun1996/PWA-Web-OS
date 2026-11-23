@@ -2,6 +2,14 @@
 
 **Historical candidate.** See the [pending release tasks](../Task.md#pending-release-tasks) for the current release decision.
 
+## Subsequent hosted Windows tab run
+
+On 2026-11-23, a Windows Server 2025 runner (10.0.26100) served the retained `4ef0b87` build `b-mwtat7jh4ef0b87` on loopback. Headed Google Chrome 157.0.8103.79 and Mozilla Firefox 160.0 each started three times using dedicated persistent profiles. After online setup, each browser started offline twice. An uncached request returned HTTP 404 online and failed to reach the server offline. Each browser read back its previous offline edit. Firefox restored the backup downloaded by Chrome and a repeated import left one note with the expected title and body. [Browser sessions and digests](evidence/windows-tabs-4ef0b87.json) · [Windows run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45185428531) · [Source artifact](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45183715617)
+
+Consumer Windows minimum versions, installed windows, screen readers, the broader Windows workflow and transfer between physical devices remain open.
+
+## Earlier Windows candidate
+
 Status at the time of testing: **Provisional.** This records what was run for the Windows demo track defined in [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). It does not clear the full production release, which needs every row of the [platform matrix](PRODUCT_SPEC.md#platform-support). The visual redesign decided in [M0_DECISIONS.md](M0_DECISIONS.md) (Aurora look) has not been implemented, so the current interface does not yet match the Aurora anchor images.
 
 ## Candidate
