@@ -1,0 +1,307 @@
+{
+  "actionsRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45286370229",
+  "workflowCommit": "8420402cf47daac2057650f34aae2b204b1c4761",
+  "artifactId": 14872631363,
+  "artifactDigest": "sha256:d4dee45eca92ecf841a845b72a96b0bf54b11ba3d10a4faae710ed8ecdbf5165",
+  "source": {
+    "pagesStatus": "in_progress",
+    "archive": "candidate-237f1888593ce23e557483308049599dae984f66-45285620980-1",
+    "pagesConclusion": null,
+    "archiveDigest": "sha256:f2339af99bb684bed3a200f971e4f65d3128eb6d8243b65e21f977d400e11584",
+    "pagesRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45285620980"
+  },
+  "environment": {
+    "caption": "Microsoft Windows 11 Enterprise",
+    "displayVersion": "25H2",
+    "installationType": "Client",
+    "edition": "Enterprise",
+    "architecture": "ARM 64-bit Processor",
+    "updateBuildRevision": 9974,
+    "version": "10.0.26200"
+  },
+  "commit": "237f1888593ce23e557483308049599dae984f66",
+  "buildId": "b-mwtvj2ds237f188",
+  "manifestSha256": "7a94c326a9d6768b9e02ea9c1dfaaaee7d19263b2b6c16ddd5bcc1771611a349",
+  "startedAt": "2026-11-23T23:10:36.573535+00:00",
+  "finishedAt": "2026-11-23T23:12:04.375962+00:00",
+  "windows": {
+    "baseline": {
+      "active": false,
+      "flags": 126,
+      "palette": {
+        "window": [
+          255,
+          255,
+          255
+        ],
+        "windowText": [
+          0,
+          0,
+          0
+        ],
+        "buttonFace": [
+          240,
+          240,
+          240
+        ],
+        "buttonText": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "configuredScheme": "",
+    "forced": {
+      "active": true,
+      "flags": 63,
+      "palette": {
+        "window": [
+          32,
+          32,
+          32
+        ],
+        "windowText": [
+          255,
+          255,
+          255
+        ],
+        "buttonFace": [
+          32,
+          32,
+          32
+        ],
+        "buttonText": [
+          255,
+          255,
+          255
+        ]
+      }
+    },
+    "restored": {
+      "active": false,
+      "flags": 62,
+      "palette": {
+        "window": [
+          255,
+          255,
+          255
+        ],
+        "windowText": [
+          0,
+          0,
+          0
+        ],
+        "buttonFace": [
+          240,
+          240,
+          240
+        ],
+        "buttonText": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "checks": [
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "buildId": "b-mwtvj2ds237f188",
+      "themes": [
+        {
+          "theme": "light",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "hoveredNewNote": {
+            "background": "rgb(32, 32, 32)",
+            "devicePixelRatio": 1,
+            "isHovered": true,
+            "label": {
+              "height": 21,
+              "width": 72.75,
+              "x": 208.484375,
+              "y": 151.859375
+            },
+            "matchesSystemColors": true,
+            "text": "rgb(255, 255, 255)",
+            "wallpaperHidden": true,
+            "screenshotSample": {
+              "pixelBounds": [
+                208,
+                151,
+                282,
+                173
+              ],
+              "foregroundRgb": [
+                255,
+                255,
+                255
+              ],
+              "backgroundRgb": [
+                32,
+                32,
+                32
+              ],
+              "contrastRatio": 16.29,
+              "requiredMinimum": 4.5
+            }
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "chrome-light-forced-colors.png"
+        },
+        {
+          "theme": "dark",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "hoveredNewNote": {
+            "background": "rgb(32, 32, 32)",
+            "devicePixelRatio": 1,
+            "isHovered": true,
+            "label": {
+              "height": 21,
+              "width": 72.75,
+              "x": 208.484375,
+              "y": 151.859375
+            },
+            "matchesSystemColors": true,
+            "text": "rgb(255, 255, 255)",
+            "wallpaperHidden": true,
+            "screenshotSample": {
+              "pixelBounds": [
+                208,
+                151,
+                282,
+                173
+              ],
+              "foregroundRgb": [
+                255,
+                255,
+                255
+              ],
+              "backgroundRgb": [
+                32,
+                32,
+                32
+              ],
+              "contrastRatio": 16.29,
+              "requiredMinimum": 4.5
+            }
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "chrome-dark-forced-colors.png"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "buildId": "b-mwtvj2ds237f188",
+      "themes": [
+        {
+          "theme": "light",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "hoveredNewNote": {
+            "background": "rgb(32, 32, 32)",
+            "devicePixelRatio": 1,
+            "isHovered": true,
+            "label": {
+              "height": 21,
+              "width": 72.73332214355469,
+              "x": 302.16668701171875,
+              "y": 172.1999969482422
+            },
+            "matchesSystemColors": true,
+            "text": "rgb(255, 255, 255)",
+            "wallpaperHidden": true,
+            "screenshotSample": {
+              "pixelBounds": [
+                302,
+                172,
+                375,
+                194
+              ],
+              "foregroundRgb": [
+                255,
+                255,
+                255
+              ],
+              "backgroundRgb": [
+                32,
+                32,
+                32
+              ],
+              "contrastRatio": 16.29,
+              "requiredMinimum": 4.5
+            }
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "firefox-light-forced-colors.png"
+        },
+        {
+          "theme": "dark",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "hoveredNewNote": {
+            "background": "rgb(32, 32, 32)",
+            "devicePixelRatio": 1,
+            "isHovered": true,
+            "label": {
+              "height": 21,
+              "width": 72.73332214355469,
+              "x": 302.16668701171875,
+              "y": 172.1999969482422
+            },
+            "matchesSystemColors": true,
+            "text": "rgb(255, 255, 255)",
+            "wallpaperHidden": true,
+            "screenshotSample": {
+              "pixelBounds": [
+                302,
+                172,
+                375,
+                194
+              ],
+              "foregroundRgb": [
+                255,
+                255,
+                255
+              ],
+              "backgroundRgb": [
+                32,
+                32,
+                32
+              ],
+              "contrastRatio": 16.29,
+              "requiredMinimum": 4.5
+            }
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "firefox-dark-forced-colors.png"
+        }
+      ],
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS"
+}

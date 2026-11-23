@@ -16,6 +16,10 @@
 
 The top bar checks the hosting origin when visible. A real Chromium and Firefox regression covers OFF-02: the server stops serving its release while the OS remains online, local editing and saving continue, and the next successful check restores the online status. [Origin outage test](e2e/pwa.spec.ts)
 
+### Forced colors candidate from 2026-11-24
+
+- Source `237f188`, build `b-mwtvj2ds237f188`. Native Windows screenshots measured **16.29:1** for the hovered New note label in Chrome and Firefox, with both app themes. Both browsers retained visible editor focus and reopened the exact English and Chinese sample. [Candidate evidence](docs/DEMO_ACCEPTANCE_237F188.md)
+
 ### Current demo evidence from 2026-11-24
 
 - Source `37ad1b4`, build `b-mwtnv4pp37ad1b4`. Pages passed 150 browser tests with zero skips, then verified the launch URL and 12 hosted files. The saved theme applies before the workspace script loads. Stable Chrome followed the live custom 404 link and retained Dark and the exact note body through two offline process restarts. [Candidate evidence](docs/DEMO_ACCEPTANCE_37AD1B4.md)
@@ -23,7 +27,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 - Chromium and Firefox preserved the note through `b9dcafa → 37ad1b4 → b9dcafa` on HTTPS staging after rejecting a mixed candidate. [Recovery evidence](docs/evidence/recovery-mixed-37ad1b4.json)
 - Windows 11 25H2 Arm64 Chrome and Firefox passed the two-tab stale-write and backup rejection checks. Both recovered the draft as a separate note and retained the exact saved records after rejecting a malformed file and a conflicting batch. [Data safety report](docs/evidence/windows-data-safety-37ad1b4.json)
 - Windows 11 25H2 Arm64 Chrome and Firefox passed the Notes keyboard journey at 100% and 200% browser page zoom. Both showed focus, fit the horizontal viewport, and reopened the exact title and body after saving. [Keyboard and zoom report](docs/evidence/windows-keyboard-zoom-37ad1b4.json)
-- Windows 11 25H2 Arm64 Chrome and Firefox detected the native contrast palette. Both passed editor focus, mixed English and Chinese text, saving and exact reopening in the app's Light and Dark themes. Firefox's hovered New note label measured 1.42:1 in both themes and needs a contrast fix. [Forced colors report](docs/evidence/windows-forced-colors-37ad1b4.json)
+- Windows 11 25H2 Arm64 Chrome and Firefox detected the native contrast palette. Both passed editor focus, mixed English and Chinese text, saving and exact reopening in the app's Light and Dark themes. Firefox's hovered New note label measured 1.42:1 in both themes. The correction passed on candidate `237f188`. [Forced colors report](docs/evidence/windows-forced-colors-37ad1b4.json)
 
 ### Update focus demo evidence from 2026-11-24
 
