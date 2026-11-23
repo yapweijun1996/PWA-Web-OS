@@ -18,6 +18,12 @@ From the repository root with Node 24, the lockfile dependencies and Google Chro
 node scripts/measure-performance.mjs /tmp/notes-performance.json
 ```
 
+To measure an extracted Pages recovery artifact, pass its directory as the second argument. The harness verifies a private copy against the manifest and checks the observed browser build on all seven attempts. The Windows desktop acceptance workflow uses this mode. Its report records the Pages commit, browser build, manifest digest and harness commit.
+
+```sh
+node scripts/measure-performance.mjs /tmp/retained-notes-performance.json /path/to/extracted-release
+```
+
 Use a new output filename for each run. The report records the source SHA, build ID, compiled worker digest, environment, raw timings and summary. The worker embeds the release asset hashes. Use a clean checkout for release evidence.
 
 ## Field policy
@@ -27,3 +33,5 @@ Record field LCP, INP and CLS at p75 separately when a representative dataset ex
 ## Recorded desktop run
 
 On November 23, 2026 the clean `de2c73c` build passed all seven journeys on an Apple M4, macOS 27.2 and Google Chrome 158.0.8127.37. The nearest-rank p75s were 570 ms for cold launch, 548 ms for offline reopen and 69 ms for editor response. The host ran concurrent workloads. These results cover the local desktop browser session only. Field metrics remain INSUFFICIENT_DATA. [Raw samples and build identity](evidence/performance-macos-de2c73c.json)
+
+A separate run of the retained Pages build `b-mwtadq5ya437c29` on macOS 27.2 completed all seven functional journeys. The p75 times were 2,604 ms cold, 2,535 ms offline and 313 ms for editor response. All exceeded the desktop ceilings on this heavily loaded host. The previous local-build sample remains a distinct result. Recheck the release on the agreed baseline before signing the performance gate. [Retained-build measurements](evidence/performance-macos-a437c29-retained.json)

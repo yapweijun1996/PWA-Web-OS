@@ -52,6 +52,11 @@ jobs:
           $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
           $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
           python scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json
+      - name: Measure the retained release in desktop Chrome
+        run: |
+          npm ci
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node scripts/measure-performance.mjs desktop-evidence/windows-performance.json retained
       - name: Retain desktop evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

@@ -1,21 +1,22 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import os from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { chromium, expect } from '@playwright/test';
 import { build, preview } from 'vite';
 
 const require = createRequire(import.meta.url);
-const output = process.argv[2];
+const [output, retained] = process.argv.slice(2);
 if (!output) throw new Error('Provide a new JSON evidence file path.');
 const count = 7;
 const budgetsMs = { coldLaunch: 2500, offlineReopen: 2000, editFrame: 200 };
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const commit = git('rev-parse', 'HEAD');
-const dir = await mkdtemp(join(os.tmpdir(), 'web-os-perf-'));
+const temporary = await mkdtemp(join(os.tmpdir(), 'web-os-perf-'));
+const dir = join(temporary, 'dist');
 const report = {
   protocol: 'notes-desktop-lab-v1', commit, trackedChanges: git('status', '--short', '--untracked-files=no') !== '',
   startedAt: new Date().toISOString(), attempts: count, budgetsMs,
@@ -87,7 +88,22 @@ async function measure(context, url, sample) {
 
 let server, browser;
 try {
-  await build({ build: { outDir: dir }, logLevel: 'warn' });
+  if (retained) {
+    const manifest = join(temporary, 'manifest.json');
+    await cp(join(retained, 'dist'), dir, { recursive: true });
+    await cp(join(retained, 'manifest.json'), manifest);
+    execFileSync(process.execPath, [resolve('scripts/release-evidence.mjs'), 'verify', dir, manifest]);
+    const bytes = await readFile(manifest);
+    const identity = JSON.parse(bytes);
+    report.source = 'retained-artifact';
+    report.harnessCommit = commit;
+    report.commit = identity.commit;
+    report.buildId = identity.buildId;
+    report.manifestSha256 = createHash('sha256').update(bytes).digest('hex');
+  } else {
+    report.source = 'checkout';
+    await build({ build: { outDir: dir }, logLevel: 'warn' });
+  }
   report.workerSha256 = createHash('sha256').update(await readFile(join(dir, 'sw.js'))).digest('hex');
   server = await preview({ build: { outDir: dir }, preview: { host: '127.0.0.1', port: 0 } });
   const url = new URL(server.config.base, 'http://127.0.0.1:' + server.httpServer.address().port).href;
@@ -126,7 +142,7 @@ try {
 } finally {
   await browser?.close();
   await server?.close();
-  await rm(dir, { recursive: true, force: true });
+  await rm(temporary, { recursive: true, force: true });
 }
 report.endedAt = new Date().toISOString();
 await writeFile(output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
