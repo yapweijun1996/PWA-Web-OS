@@ -5,6 +5,7 @@ declare const release: {
   buildId: string;
   base: string;
   files: [path: string, integrity: string][];
+  startup: string[];
 };
 
 {
@@ -18,6 +19,7 @@ declare const release: {
   // Worker-only metadata, outside the routes served from CacheStorage.
   const retentionKey = absolute('.pwa-previous-releases');
   const assets = new Map(release.files.map(([path, integrity]) => [absolute(path), integrity]));
+  const startup = release.startup.map(absolute);
   const inScope = (url: URL) => url.origin === worker.location.origin && url.pathname.startsWith(release.base);
   const cached = (url: string) => caches.match(url, { cacheName });
   const currentClients = new Set<string>();
@@ -56,6 +58,11 @@ declare const release: {
   }
 
   let repairing: Promise<boolean> | undefined;
+  function repairRelease(): Promise<boolean> {
+    repairing ??= restoreMissing().finally(() => { repairing = undefined; });
+    return repairing;
+  }
+
   async function restoreMissing(): Promise<boolean> {
     const abort = new AbortController();
     const deadline = worker.setTimeout(() => abort.abort(), 7_000);
@@ -72,6 +79,36 @@ declare const release: {
     } finally {
       worker.clearTimeout(deadline);
     }
+  }
+
+  async function navigate(): Promise<Response> {
+    // Keep a bootable cached document on its own build while any update waits.
+    const [shell, ...dependencies] = await Promise.all([index, ...startup].map(cached));
+    if (shell && dependencies.every(Boolean)) return shell;
+    if (await repairRelease()) {
+      const restored = await cached(index);
+      if (restored) return restored;
+    }
+
+    // The old shell may point to files no longer present on the host after a deployment.
+    const abort = new AbortController();
+    const deadline = worker.setTimeout(() => abort.abort(), 5_000);
+    try {
+      const hosted = await fetch(index, { cache: 'no-store', redirect: 'error', signal: abort.signal });
+      if (hosted.ok) return hosted;
+    } catch { /* The recovery page works without any release assets. */ }
+    finally { worker.clearTimeout(deadline); }
+
+    const chinese = worker.navigator.language.toLowerCase().startsWith('zh');
+    const title = chinese ? '工作区暂时无法打开' : 'Workspace temporarily unavailable';
+    const instructions = chinese ? '连接网络后，重新打开工作区。' : 'Connect to the internet, then reopen the workspace.';
+    const reopen = chinese ? '重新打开工作区' : 'Reopen workspace';
+    return new Response(`<!doctype html><html lang="${chinese ? 'zh-Hans' : 'en'}"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title}</title><main><h1>${title}</h1><p>${instructions}</p><a href="${release.base}">${reopen}</a></main></html>`, {
+      status: 503,
+      headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+    });
   }
 
   async function install(): Promise<void> {
@@ -103,12 +140,14 @@ declare const release: {
     const request = event.request;
     const url = new URL(request.url);
     if (request.method !== 'GET' || !inScope(url)) return;
-    // Pin navigations to the controlling build, even if the origin now serves a new release.
-    const key = request.mode === 'navigate' ? index : request.url;
-    const integrity = assets.get(key);
+    if (request.mode === 'navigate') {
+      event.respondWith(navigate());
+      return;
+    }
+    const integrity = assets.get(request.url);
     if (integrity) {
-      event.respondWith(cached(key).then(response =>
-        response ?? fetch(request.mode === 'navigate' ? request : releaseRequest(key, integrity))
+      event.respondWith(cached(request.url).then(response =>
+        response ?? fetch(releaseRequest(request.url, integrity))
       ));
     } else if (url.pathname.startsWith(release.base + 'assets/') || url.pathname.startsWith(release.base + 'wallpapers/')) {
       event.respondWith(versionedAsset(request));
@@ -125,8 +164,7 @@ declare const release: {
       const onCurrentBuild = message.type === 'inspect' && message.documentBuildId === release.buildId;
       let ready = await complete();
       if (!ready && onCurrentBuild && message.repairMissing) {
-        repairing ??= restoreMissing().finally(() => { repairing = undefined; });
-        ready = await repairing;
+        ready = await repairRelease();
       }
       if (onCurrentBuild) currentClients.add(source.id);
       const windows = (await worker.clients.matchAll({ type: 'window', includeUncontrolled: true }))

@@ -123,7 +123,63 @@ test('defers B while Notes stays editable and commits another edit on A', async 
   expect(navigations()).toBe(0);
 });
 
-test('accepts with a pending IndexedDB write, shows progress, then reloads once into editable Notes on B', async ({
+test('recovers from an evicted A entry script after B is hosted without switching a live editor automatically', async ({
+  page, context, releases,
+}) => {
+  await start(page, releases.url, releases.a);
+  await createNote(page, 'Startup recovery note', 'Saved on A before eviction');
+  const navigations = countNavigations(page);
+
+  const evicted = await page.evaluate(async (id) => {
+    const script = document.querySelector<HTMLScriptElement>('script[type="module"][src]')!.src;
+    const cache = await caches.open('pwa-web-os:release:' + id);
+    return { script, present: !!await cache.match(script), removed: await cache.delete(script) };
+  }, releases.a);
+  expect(evicted).toMatchObject({ present: true, removed: true });
+  releases.deployB();
+  expect((await page.request.get(evicted.script)).status()).toBe(404);
+
+  const recovery = await context.newPage();
+  // Make the origin unavailable to worker-owned requests as well as document requests.
+  releases.takeOffline();
+  await context.setOffline(true);
+  try {
+    expect((await recovery.goto(releases.url))?.status()).toBe(503);
+    await expect(recovery.getByRole('heading', { name: 'Workspace temporarily unavailable' })).toBeVisible();
+    await expect(recovery.getByRole('link', { name: 'Reopen workspace' })).toHaveAttribute('href', new URL(releases.url).pathname);
+  } finally {
+    releases.deployB();
+    await context.setOffline(false);
+  }
+  await recovery.getByRole('link', { name: 'Reopen workspace' }).click();
+  await expect(buildId(recovery)).toHaveText(`Build ID: ${releases.b}`);
+  await expect(connection(recovery).getByText('Available offline', { exact: true })).toBeHidden();
+  await expect(available(recovery)).toBeVisible();
+  await expect(available(page)).toBeVisible();
+  await expect(buildId(page)).toHaveText(`Build ID: ${releases.a}`);
+  expect(navigations()).toBe(0);
+  await body(page).fill('Saved by the live A editor');
+  await saved(page);
+  const before = await committedNotes(page);
+
+  await update(recovery).click();
+  await reopenOnB(recovery, releases.b, before[0].title, before[0].body);
+  await ready(page, releases.b);
+  expect(navigations()).toBe(1);
+  expect(await committedNotes(recovery)).toEqual(before);
+  await recovery.close();
+  await page.close();
+  await context.setOffline(true);
+  try {
+    const cold = await context.newPage();
+    await cold.goto(releases.url);
+    await reopenOnB(cold, releases.b, before[0].title, before[0].body);
+  } finally {
+    await context.setOffline(false);
+  }
+});
+
+test('reloads only once into B after rapid repeated Update clicks during a pending write', async ({
   page, releases, browserName,
 }, testInfo) => {
   await start(page, releases.url, releases.a);
@@ -137,9 +193,13 @@ test('accepts with a pending IndexedDB write, shows progress, then reloads once 
   try {
     await body(page).fill('Pending edit at the moment of acceptance');
     await expect(saveStatus(page)).toHaveText(/^(Unsaved changes|Saving…)$/);
-    await update(page).click();
+    await update(page).evaluate((button: HTMLButtonElement) => {
+      button.click();
+      button.click();
+    });
     const progress = page.locator('.update-notice').getByText('Saving changes before update…', { exact: true });
     await expect(progress).toBeVisible();
+    await expect(update(page)).toBeHidden();
     await expect(page.locator('#app')).toHaveAttribute('inert', '');
     await expectStillWaiting(page, releases.a);
     expect(navigations()).toBe(0);

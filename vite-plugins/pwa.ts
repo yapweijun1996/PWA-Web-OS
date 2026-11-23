@@ -36,8 +36,11 @@ export function pwaPlugins(buildId: string): Plugin[] {
         order: 'post',
         async handler(_output, bundle) {
           if (!bundle['index.html']) throw new Error('Offline release requires index.html');
-          const files: [string, string][] = Object.values(bundle).filter((file) => !file.fileName.endsWith('.map'))
-            .map((file) => [file.fileName, integrity(file.type === 'asset' ? file.source : file.code)]);
+          const outputs = Object.values(bundle).filter((file) => !file.fileName.endsWith('.map'));
+          const startup = outputs.map(({ fileName }) => fileName).filter((path) => path !== 'index.html');
+          const files: [string, string][] = outputs.map((file) =>
+            [file.fileName, integrity(file.type === 'asset' ? file.source : file.code)],
+          );
           for (const path of [manifestPath, ...(await manifest()).icons.map((icon) => icon.src), ...publicAssets]) {
             files.push([path, integrity(await readPublic(path))]);
           }
@@ -47,7 +50,7 @@ export function pwaPlugins(buildId: string): Plugin[] {
           this.emitFile({
             type: 'asset',
             fileName: 'sw.js',
-            source: `const release = ${JSON.stringify({ buildId, base: config.base, files })};\n${runtime.code}`,
+            source: `const release = ${JSON.stringify({ buildId, base: config.base, files, startup })};\n${runtime.code}`,
           });
         },
       },

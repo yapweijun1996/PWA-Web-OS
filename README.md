@@ -10,7 +10,7 @@ The long-term design goal is to let people keep working across devices, browser 
 
 ## Install and use Notes offline
 
-Open the demo online in the browser or installed app you plan to use. Open **Workspace → Install and use offline** for directions for your device. Wait for **Available offline**, then create a note and wait for **Saved on this device** before closing. The first status confirms the app files are ready. The second confirms the note was written. **Site unreachable** means the browser has a network connection but could not reach the app. You can keep editing saved notes after offline setup. If the browser removes cached app files, reconnect and reopen the workspace. Wait for **Available offline** again before disconnecting. Use **Workspace → Backup and restore** before changing devices, switching browser profiles, or clearing site data.
+Open the demo online in the browser or installed app you plan to use. Open **Workspace → Install and use offline** for directions for your device. Wait for **Available offline**, then create a note and wait for **Saved on this device** before closing. The first status confirms the app files are ready. The second confirms the note was written. **Site unreachable** means the browser has a network connection but could not reach the app. You can keep editing saved notes after offline setup. If the browser removes cached app files, reconnect and reopen the workspace. If an update is offered, accept it to prepare the current version for offline use. Wait for **Available offline** again before disconnecting. Use **Workspace → Backup and restore** before changing devices, switching browser profiles, or clearing site data.
 
 | Platform | How to launch |
 | --- | --- |

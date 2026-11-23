@@ -81,7 +81,8 @@ export function createUpdateController(): UpdateController {
     if (!info?.ready) {
       candidate = undefined;
       publish({ status: 'failed', detail: 'activation_failed' });
-    } else if (info.buildId !== __BUILD_ID__) {
+    } else if (info.buildId !== __BUILD_ID__ || (sw?.controller && sw.controller !== worker)) {
+      // A recovery navigation can already be running these bytes under the older worker.
       const unchanged = candidate?.worker === worker;
       candidate = { worker, buildId: info.buildId };
       if (!unchanged) worker.addEventListener('statechange', () => {

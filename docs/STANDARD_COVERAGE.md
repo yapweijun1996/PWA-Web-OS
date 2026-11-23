@@ -28,7 +28,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | SW-05 | Announce the waiting update and let the user defer | [Real update notice](../e2e/a11y-update.spec.ts), [defer while editing](../e2e/update-notes.spec.ts). |
 | SW-06 | Protect dirty edits before activation | [Pending write, real abort and retry](../e2e/update-notes.spec.ts). |
 | SW-07 | Coordinate all active Notes tabs | [Second client cannot flush](../e2e/update-notes.spec.ts), [both tabs reload once](../e2e/pwa-update.spec.ts). |
-| SW-08 | Repeated acceptance cannot start a second switch | [Update and reload checks](../e2e/update-notes.spec.ts) cover a single accepted switch. Exercise rapid repeated acceptance while the write is pending. |
+| SW-08 | Repeated acceptance cannot start a second switch | [Rapid repeated clicks](../e2e/update-notes.spec.ts) activate the same control twice while an IndexedDB transaction blocks the save. The app commits the pending edit once, waits for the verified worker and reloads once. |
 | SW-09 | Announce progress and reload only into the expected controller | [Real progress and one reload](../e2e/update-notes.spec.ts), [controller timeout](../src/pwa/update-controller.test.ts). |
 | SW-10 | Failed update retains the usable offline editor | [Candidate rejection, offline save and reread](../e2e/update-notes.spec.ts). |
 | SW-11 | Recover with a retained build and preserve editability | [Retained release rehearsal](RECOVERY_RUNBOOK.md). Repeat on the intended staging host with the candidate pair. |
@@ -44,7 +44,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | OFF-04 | Preserve acknowledged work across process or update boundaries | [Offline reread](../e2e/data-persistence.spec.ts), [pending update flush](../e2e/update-notes.spec.ts). An unsaved input remains in the open editor until its IndexedDB transaction commits. |
 | OFF-05 | Recover from a full local store | [Native Chromium quota rejection](../e2e/robustness-quota.spec.ts). Obtain Firefox quota evidence separately. |
 | OFF-06 | Preserve stored notes when schema handling fails | [Blocked upgrade](../e2e/robustness-blocked.spec.ts), [newer schema and version change](../e2e/robustness-schema.spec.ts). Version 1 is the first shipped schema. Test real old-to-new migrations when the schema changes. |
-| OFF-07 | Recover when cached release assets are evicted | [Eviction and verified repair](../e2e/pwa.spec.ts) removes two real cache entries, rejects mismatched server bytes atomically and restores the exact files after reconnecting. It also deletes the entire asset cache while the same release is hosted and rereads the saved note after a fresh offline launch. Verify boot recovery separately if the previous entry script has been evicted and the origin has already replaced that release. |
+| OFF-07 | Recover when cached release assets are evicted | [Same-release repair](../e2e/pwa.spec.ts) rejects mismatched server bytes atomically, restores verified assets and rereads the saved note after offline launch. [Recovery across releases](../e2e/update-notes.spec.ts) covers eviction of A's entry script, a recovery page while the host is unavailable, opening hosted B and confirming a safe switch while an A editor remains open. |
 | OFF-08 | Keep note and backup content out of network caches | [Exact cache inventory, bytes and request observations](../e2e/security-local-data.spec.ts). |
 
 ## Mobile behavior

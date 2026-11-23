@@ -31,6 +31,7 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
   distB: string;
   deployA(): void;
   deployB(): void;
+  takeOffline(): void;
 } }>({
   retainedArtifacts: [false, { option: true }],
   releases: async ({ retainedArtifacts }, use, testInfo) => {
@@ -51,6 +52,7 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
       await use({
         url: server.url, a: a.buildId, b: b.buildId, distB: b.dist,
         deployA: () => server.deploy(a.dist), deployB: () => server.deploy(b.dist),
+        takeOffline: () => server.deploy(testInfo.outputPath('unavailable-release')),
       });
     } finally {
       await server.close();
