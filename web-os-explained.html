@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is a Web OS?</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #101827; color: #eaf0fa; font: 1.05rem/1.65 system-ui, sans-serif; }
+  main { max-width: 52rem; margin: auto; padding: clamp(1rem, 5vw, 4rem); }
+  h1 { font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.05; margin: .65em 0 .35em; }
+  h2 { line-height: 1.25; margin-top: 2rem; }
+  .lead { font-size: 1.25rem; }
+  p { color: #c9d6e8; }
+  button { min-height: 44px; padding: .4rem 1rem; font: inherit; background: #202e45; color: inherit; border: 1px solid #8499b5; border-radius: .5rem; cursor: pointer; }
+  button[aria-pressed="true"] { background: #a6f1d9; color: #10261f; }
+  button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  ol { padding-left: 2.5rem; background: #19253a; border: 1px solid #44546e; border-radius: 1rem; }
+  li { padding: .7rem .8rem .7rem 0; }
+  li + li { border-top: 1px solid #44546e; }
+  strong { color: #a6f1d9; }
+</style>
+<body>
+<main>
+  <div id="languages" hidden>
+    <button type="button" lang="en" data-language="en" aria-pressed="true">English</button>
+    <button type="button" lang="zh-Hans" data-language="zh-Hans" aria-pressed="false">简体中文</button>
+  </div>
+  <article id="en" aria-labelledby="heading-en">
+    <h1 id="heading-en">What is a Web OS?</h1>
+    <p class="lead">A Web OS is a web app that gives you a desktop-like workspace. You can open tools from a launcher and switch between them from one screen.</p>
+    <h2>Where it runs</h2>
+    <ol>
+      <li><strong>Device OS.</strong> Windows, macOS or another operating system manages the device and its hardware.</li>
+      <li><strong>Browser.</strong> The browser runs the web app and controls which device features it can access.</li>
+      <li><strong>Web OS.</strong> The web app manages its own workspace, such as a launcher, windows and settings.</li>
+    </ol>
+    <h2>Example</h2>
+    <p>Imagine opening a notes tool and a calculator side by side inside a browser tab. The Web OS arranges those two windows. Both tools are still running in the browser.</p>
+    <h2>How does it relate to a PWA?</h2>
+    <p><strong>Web OS</strong> describes the workspace experience. <strong>PWA</strong> describes a way to deliver a web app, with features such as installation or offline access when implemented and supported. A Web OS can be delivered as a PWA and open in its own window.</p>
+  </article>
+  <article id="zh-Hans" lang="zh-Hans" aria-labelledby="heading-zh" hidden>
+    <h1 id="heading-zh">什么是 Web OS？</h1>
+    <p class="lead">Web OS 是一种提供桌面式工作区的网页应用。你可以从启动器打开工具，在同一个界面里切换使用。</p>
+    <h2>它在哪里运行？</h2>
+    <ol>
+      <li><strong>设备操作系统。</strong> Windows、macOS 或其他操作系统负责管理设备及其硬件。</li>
+      <li><strong>浏览器。</strong> 浏览器负责运行网页应用，并控制应用可以访问哪些设备功能。</li>
+      <li><strong>Web OS。</strong> 网页应用负责管理自己的工作区，例如启动器、窗口和设置。</li>
+    </ol>
+    <h2>举个例子</h2>
+    <p>想象一下，你在同一个浏览器标签页里并排打开便签和计算器。Web OS 负责排列这两个窗口，两个工具都在浏览器中运行。</p>
+    <h2>它和 PWA 有什么关系？</h2>
+    <p><strong>Web OS</strong> 描述的是工作区体验。<strong>PWA（渐进式网页应用）</strong> 描述的是一种网页应用交付方式。在应用实现且平台支持时，可以提供安装、离线访问等功能。Web OS 可以做成 PWA，安装后在独立窗口里打开。</p>
+  </article>
+</main>
+<script>
+  const languageControls = document.querySelector('#languages');
+  const languageButtons = [...languageControls.querySelectorAll('button')];
+  for (const button of languageButtons) {
+    button.addEventListener('click', () => {
+      const selectedLanguage = button.dataset.language;
+      for (const option of languageButtons) {
+        const isSelected = option === button;
+        option.setAttribute('aria-pressed', String(isSelected));
+        document.getElementById(option.dataset.language).hidden = !isSelected;
+      }
+      document.documentElement.lang = selectedLanguage;
+      document.title = document.getElementById(selectedLanguage).querySelector('h1').textContent;
+    });
+  }
+  languageControls.hidden = false;
+</script>
+</body>
+</html>
