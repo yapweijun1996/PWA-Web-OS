@@ -16,27 +16,25 @@ async function tabTo(page: Page, target: Locator): Promise<void> {
   await expect(target).toBeFocused();
 }
 
-// These tests use the built app with its in-memory storage stub, not IndexedDB.
-test('desktop panes sit side by side; the in-memory write shows Saving… then Saved and the page can reload', async ({ page }) => {
+test('desktop Notes panes sit side by side above the Dock; the IndexedDB write shows Saving… then Saved and the page can reload', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('./');
   await openNotes(page);
-  const rail = page.getByRole('navigation', { name: 'Workspace' });
+  const dock = page.getByRole('navigation', { name: 'Dock' });
   const list = page.getByRole('region', { name: 'Notes', exact: true });
   const editor = page.getByRole('region', { name: 'Note editor' });
   await expect(list.getByText('No notes yet. Create a note to get started.')).toBeVisible();
-  await expect(rail).toBeVisible();
+  await expect(dock).toBeVisible();
   await expect(list).toBeVisible();
   await expect(editor).toBeVisible();
-  const [left, middle, right] = await Promise.all([rail.boundingBox(), list.boundingBox(), editor.boundingBox()]);
-  expect(left && middle && right && left.x + left.width < middle.x && middle.x + middle.width < right.x).toBe(true);
-  expect(left?.y).toBe(middle?.y);
-  expect(middle?.y).toBe(right?.y);
+  const [left, right, bottom] = await Promise.all([list.boundingBox(), editor.boundingBox(), dock.boundingBox()]);
+  expect(left && right && bottom && left.x < right.x && left.x + left.width <= right.x && left.y + left.height < bottom.y).toBe(true);
+  expect(left?.y).toBe(right?.y);
 
   await list.getByRole('button', { name: 'New note' }).click();
   const status = editor.locator('.save-status');
   await expect(status).toHaveText('Saved on this device');
-  // The stub completes in a microtask; observe DOM transitions without slowing or replacing storage.
+  // Observe DOM transitions without slowing or replacing IndexedDB.
   await status.evaluate((node) => {
     const observer = new MutationObserver((records) => {
       if (records.some((record) => Array.from(record.addedNodes).some((text) => text.textContent === 'Saving…'))) {
@@ -53,7 +51,6 @@ test('desktop panes sit side by side; the in-memory write shows Saving… then S
   await expect(list.getByRole('button', { name: 'Synthetic desktop note' })).toBeVisible();
   await page.reload();
   await expect(launcher(page)).toBeVisible();
-  // No note persistence assertion: reloading reconstructs the in-memory stub.
 });
 
 test('390×844 shows one pane, retains the draft across resize, and offers both back routes', async ({ page }) => {
@@ -73,7 +70,7 @@ test('390×844 shows one pane, retains the draft across resize, and offers both 
   await expect(body).toHaveValue('Synthetic mobile draft');
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(body).toHaveValue('Synthetic mobile draft');
-  const backToNotes = editor.getByRole('button', { name: 'Notes list' });
+  const backToNotes = editor.getByRole('button', { name: 'Back to Notes list' });
   expect((await backToNotes.boundingBox())?.height).toBeGreaterThanOrEqual(44);
   await backToNotes.click();
   await expect(list).toBeVisible();
@@ -110,15 +107,18 @@ test('System follows browser appearance and Dark theme persists through a real r
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('./');
   const html = page.locator('html');
+  const menu = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
   const dark = page.getByRole('radio', { name: 'Dark theme' });
   await expect(html).toHaveCSS('color-scheme', 'light');
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(237, 242, 247)');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(238, 235, 250)');
   await page.emulateMedia({ colorScheme: 'dark' });
   await expect(html).toHaveCSS('color-scheme', 'dark');
+  await menu.click();
   await dark.check();
   await page.emulateMedia({ colorScheme: 'light' });
   await page.reload();
+  await menu.click();
   await expect(dark).toBeChecked();
   await expect(html).toHaveCSS('color-scheme', 'dark');
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(17, 25, 35)');
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(16, 19, 52)');
 });

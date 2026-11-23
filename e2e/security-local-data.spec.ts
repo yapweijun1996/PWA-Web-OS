@@ -115,15 +115,19 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
     await cdp.detach();
   }
 
+  const workspace = page.getByRole('banner').getByRole('button', { name: 'Workspace' });
+  await workspace.click();
   await page.getByRole('radio', { name: 'Dark theme' }).check();
+  await workspace.click();
   await openNotes(page);
   await page.getByRole('button', { name: 'New note' }).click();
   await page.getByRole('textbox', { name: 'Title' }).fill(draft.title);
   await page.getByRole('textbox', { name: 'Body' }).fill(draft.body);
   await expect(page.locator('.save-status')).toHaveText('Saved on this device');
-  await expect(noteButton(page, draft.title)).toHaveText(draft.title);
+  await expect(noteButton(page, draft.title).locator('.note-row-title')).toHaveText(draft.title);
   await expectLiteralEditor(page, draft);
 
+  await workspace.click();
   await page.getByText('Backup and restore', { exact: true }).click();
   const exported = await exportBackup(page);
   expect(exported).toEqual({ format: BACKUP_FORMAT, version: BACKUP_VERSION, notes: [expect.objectContaining(draft)] });
@@ -139,7 +143,7 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
 
   await page.reload();
   await openNotes(page);
-  await expect(noteButton(page, imported.title)).toHaveText(imported.title);
+  await expect(noteButton(page, imported.title).locator('.note-row-title')).toHaveText(imported.title);
   await noteButton(page, imported.title).click();
   await expectLiteralEditor(page, imported);
   await noteButton(page, draft.title).click();
@@ -147,7 +151,8 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
   expect(await page.evaluate(() => Object.entries(localStorage))).toEqual([[THEME_KEY, 'dark']]);
 
   const cachePaths = ['index.html', 'manifest.webmanifest', ...manifest.icons.map(({ src }) => src),
-    ...(await readdir('dist/assets')).map((name) => `assets/${name}`)];
+    ...(await readdir('dist/assets')).map((name) => `assets/${name}`),
+    'wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
   await expectReleaseCache(page, appUrl, cachePaths);
   const allowed = new Set(['', 'sw.js', ...cachePaths].map((path) => new URL(path, appUrl).href));
   const browserRequests = await Promise.all(requests.map(async (request) => ({

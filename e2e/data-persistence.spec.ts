@@ -13,14 +13,15 @@ test('persists exact text across reloads and orders two notes by most recent edi
   await openNote(page, first);
 
   await createNote(page, second);
-  await expect(noteButtons(page)).toHaveText([second.title, first.title]);
+  const rowTitles = noteButtons(page).locator('.note-row-title');
+  await expect(rowTitles).toHaveText([second.title, first.title]);
   await openNote(page, first);
   await editor(page).getByLabel('Body', { exact: true }).fill(edited.body);
   await expect(saveStatus(page)).toHaveText('Saved on this device');
-  await expect(noteButtons(page)).toHaveText([first.title, second.title]);
+  await expect(rowTitles).toHaveText([first.title, second.title]);
 
   await reloadNotes(page);
-  await expect(noteButtons(page)).toHaveText([first.title, second.title]);
+  await expect(rowTitles).toHaveText([first.title, second.title]);
   await openNote(page, edited);
   await openNote(page, second);
 });

@@ -46,7 +46,9 @@ test('axe scans a real waiting release notice at all three sizes and in both the
   for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }, { width: 1280, height: 800 }]) {
     await page.setViewportSize(viewport);
     for (const theme of ['light', 'dark']) {
+      await page.locator('.workspace-toggle').click();
       await page.locator(`input[name="theme"][value="${theme}"]`).check();
+      await page.locator('.workspace-toggle').click();
       await expect(page.locator('html')).toHaveCSS('color-scheme', theme);
       await expect(notice).toBeVisible();
       const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'best-practice']).analyze();

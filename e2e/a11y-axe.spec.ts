@@ -25,9 +25,12 @@ test.describe('production Notes accessibility', () => {
         };
         await page.setViewportSize(viewport);
         await page.goto('./');
+        await page.locator('.workspace-toggle').click();
         await page.locator(`input[name="theme"][value="${theme === 'Light' ? 'light' : 'dark'}"]`).check();
         await expect(page.locator('html')).toHaveCSS('color-scheme', theme === 'Light' ? 'light' : 'dark');
         await expect(page.locator('.connection').getByText('Available offline', { exact: true })).toBeVisible();
+        await audit('workspace menu');
+        await page.locator('.workspace-toggle').click();
         await audit('launcher');
 
         await openNotes(page);
@@ -39,7 +42,7 @@ test.describe('production Notes accessibility', () => {
         await saved(page);
         await audit('editor');
 
-        if (viewport.width < 704) await page.locator('.list-back').click();
+        if (viewport.width <= 600) await page.locator('.list-back').click();
         const note = page.locator('.note-items button').filter({ hasText: 'Synthetic accessibility note' });
         await expect(note).toBeVisible();
         await audit('populated Notes');
@@ -83,6 +86,7 @@ test.describe('production Notes accessibility', () => {
         await discard.locator('button').filter({ hasText: /^Discard and reload$/ }).click();
         await expect(body).toHaveValue('Synthetic newer revision');
 
+        await page.locator('.workspace-toggle').click();
         await page.locator('.backup-menu summary').click();
         await expect(page.locator('.backup-menu button').filter({ hasText: /^Export backup$/ })).toBeVisible();
         await audit('backup disclosure');

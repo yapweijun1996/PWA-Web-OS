@@ -270,14 +270,14 @@ test('connection, offline readiness and fake update states do not change editor 
   await createNote();
   const online = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
   window.dispatchEvent(new Event('offline'));
-  expect(node('.connection span:first-child').hidden).toBe(false);
-  expect(node('.connection span:last-child').hidden).toBe(true);
+  expect(node('.network-status').textContent).toBe('Offline');
+  expect(node('.offline-ready').hidden).toBe(true);
   app.setReady(true);
-  expect(node('.connection span:last-child').hidden).toBe(false);
+  expect(node('.offline-ready').hidden).toBe(false);
   online.mockReturnValue(true);
   window.dispatchEvent(new Event('online'));
-  expect(node('.connection span:first-child').hidden).toBe(true);
-  expect(node('.connection span:last-child').hidden).toBe(false);
+  expect(node('.network-status').textContent).toBe('Online');
+  expect(node('.offline-ready').hidden).toBe(false);
 
   const title = node<HTMLTextAreaElement>('#note-title');
   title.focus();

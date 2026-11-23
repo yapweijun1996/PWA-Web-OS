@@ -27,7 +27,7 @@ for (const { field, label, maxBytes } of [
     await expect(saveStatus(page)).toHaveText('Saved on this device');
     const saved = { ...original, [field]: atLimit };
     await reloadNotes(page);
-    await expect(noteButtons(page)).toHaveText([saved.title]);
+    await expect(noteButtons(page).locator('.note-row-title')).toHaveText([saved.title]);
     await openNote(page, saved);
   });
 }
