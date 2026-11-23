@@ -61,7 +61,7 @@ The first release covers Notes. The [feature map](docs/FEATURE_MAP.md), [UI anch
 
 ## M1: Local Notes
 
-- [ ] Integrate English and Simplified Chinese catalogs, System/Light/Dark, and semantic CSS tokens on the first Notes screen. Verify both Windows browsers before expanding coverage.
+- [x] Integrate English and Simplified Chinese catalogs, System/Light/Dark, and semantic CSS tokens on the first Notes screen. Verify the integrated screen in both Windows browsers. [Windows 11 Chrome and Firefox evidence](docs/evidence/windows11-37ad1b4.json)
 
 - [ ] Start integrated verification in regular Windows Chrome and Firefox tabs. Complete the [Windows browser milestone](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs) across M1–M4 before extending runtime verification to installed modes and other platforms.
 
