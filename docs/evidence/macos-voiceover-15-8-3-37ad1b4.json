@@ -1,0 +1,59 @@
+{
+  "environment": {
+    "os": "15.8.3",
+    "build": "24H241",
+    "architecture": "arm64",
+    "hostType": "Disposable Tart guest on Apple Silicon",
+    "browser": "Google Chrome 158.0.8127.89",
+    "browserBundleSignature": {
+      "identifier": "com.google.Chrome",
+      "teamIdentifier": "EQHXZ8M8AV",
+      "outcome": "PASS"
+    },
+    "reader": "Native macOS VoiceOver",
+    "capture": "Distinct screenshots of the guest VoiceOver Caption Panel via the local virtual desktop with visual confirmation of the two targeted frames"
+  },
+  "a": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+  },
+  "b": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "startedAt": "2026-11-23T22:27:18.252Z",
+  "finishedAt": "2026-11-23T22:28:13.586Z",
+  "outcome": "PASS",
+  "launcherCaption": "Notes, button, Workspace launcher, region",
+  "checks": [
+    {
+      "id": "note-saving",
+      "phrase": "Saving...",
+      "confirmedSavedCaption": "Saved on this device",
+      "outcome": "PASS"
+    },
+    {
+      "id": "update-available",
+      "phrase": "Update available",
+      "politeRegionInOrder": [
+        "Update available"
+      ],
+      "updateProgressText": "Saving changes before update…",
+      "exactBodyAfterUpdate": true,
+      "outcome": "PASS"
+    }
+  ],
+  "comparisons": {
+    "nativeScreenshotProbe": "The Notes launcher caption was unobserved in the guest-native screenshots.",
+    "longerEditOnChrome89": "Two samples missed the saving caption. The visible and polite live-region saving state passed, and the exact edit was read back.",
+    "matchedEditOnChrome37": {
+      "browser": "158.0.8127.37",
+      "savingCaption": "Saving...",
+      "exactBodyAfterReload": true,
+      "startedAt": "2026-11-23T22:25:56.828Z",
+      "finishedAt": "2026-11-23T22:26:43.701Z"
+    }
+  }
+}

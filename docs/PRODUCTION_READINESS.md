@@ -45,6 +45,8 @@ Run [Windows desktop screen reader](https://github.com/yapweijun1996/PWA-Web-OS/
 
 Keep the pointer outside Speech Viewer so it continues appending text. The runner pins the published NVDA checksum and checks its Windows signature before starting it. On macOS, accept the VoiceOver welcome window and verify playback in an isolated Chrome profile. In a disposable desktop session, use `Control+Option+Shift+C` to copy the latest spoken phrase after each action. Allow the initial automatic save and editor focus announcements to finish before starting the next action. Hold and release an IndexedDB write to observe saving and success separately. Reject one write, confirm the failure announcement, retry, and reread the committed edit. Test update availability and updating with a pending write, then reopen the note on the staged build. Record iPhone VoiceOver separately. [NV Access release and checksum](https://www.nvaccess.org/post/nvda-2026-3-1/) · [Apple VoiceOver commands](https://support.apple.com/guide/voiceover/repeat-copy-or-save-the-last-spoken-phrase-vo2725/mac) · [Recorded macOS journey](MAC_COMPATIBILITY_EVIDENCE.md#voiceover-notes-journey)
 
+When the clipboard or guest screenshots miss the Notes launcher control, inspect the VoiceOver Caption Panel in the isolated virtual desktop. Confirm the launcher caption before testing saving or update availability. Use a short edit for the held write and let existing page speech finish before staging the update. [Sequoia 15.8.3 caption report](evidence/macos-voiceover-15-8-3-37ad1b4.json)
+
 ## Candidate and release scope
 
 - [ ] Record the release owner, intended audience, commit SHA, build ID, staging URL, production URL, and artifact digest.
