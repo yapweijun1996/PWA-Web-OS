@@ -1,0 +1,74 @@
+{
+  "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+  "buildId": "b-mwtnv4pp37ad1b4",
+  "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+  "startedAt": "2026-11-23T19:58:58.812697+00:00",
+  "os": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+  "mode": "Headed desktop browser tabs in isolated profiles on one host",
+  "sessions": [
+    {
+      "browser": "chrome",
+      "browserVersion": "158.0.8127.37",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "158.0.8127.37",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "chrome",
+      "browserVersion": "158.0.8127.37",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0.1",
+      "phase": 1,
+      "browserOffline": false,
+      "networkControlHttpStatus": 404,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0.1",
+      "phase": 2,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0.1",
+      "phase": 3,
+      "browserOffline": true,
+      "networkControlHttpStatus": 0,
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "PASS",
+  "transferSha256": "b7fb7da682427c1a0225b2a5e1cc84314dacb30f6ac8aa7147bf86e619d7eb53",
+  "finishedAt": "2026-11-23T19:59:40.978636+00:00",
+  "runId": 45252595358,
+  "environment": {
+    "os": "15.8.2",
+    "build": "24H232",
+    "architecture": "arm64",
+    "runnerImage": "20261118.0550.1"
+  }
+}
