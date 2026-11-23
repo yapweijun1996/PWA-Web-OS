@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-const port = 41730;
+const port = Number(process.env.PW_PORT ?? 41730);
 const baseURL = `http://127.0.0.1:${port}/PWA-Web-OS/`;
 
 export default defineConfig({
