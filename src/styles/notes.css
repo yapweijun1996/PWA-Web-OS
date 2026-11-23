@@ -5,10 +5,6 @@
   block-size: max(420px, 55dvh);
 }
 .notes-window[data-maximized] { inline-size: 100%; block-size: 100%; min-block-size: min(420px, 70dvh); }
-@media (prefers-reduced-motion: no-preference) {
-  .notes-window { animation: reveal-window 150ms ease-out; }
-}
-@keyframes reveal-window { from { opacity: 0; } }
 
 .window-bar {
   display: flex;
