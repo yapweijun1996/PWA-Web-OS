@@ -6,7 +6,7 @@
 
 | Priority | Remaining task | Completion evidence |
 | --- | --- | --- |
-| 1 | Declare and verify minimum supported OS and browser versions. | The [candidate record](docs/DEMO_ACCEPTANCE_B9DCAFA.md) freezes the source, build, digest, owner and URL. Record supported lower bounds from the device checks. |
+| 1 | Verify the lower-end platform targets and publish supported versions. | The [qualification targets](docs/PRODUCT_SPEC.md#minimum-version-qualification-targets) identify the OS baselines and browser channels. Record exact browser versions and the required launch results on each target before publishing. |
 | 2 | Complete Windows client support qualification. | Windows 11 Enterprise 25H2 Arm64 passed all four launch modes, same-host backup, both languages and all three appearance settings. Both tab updates recovered from a failed write and both original app shortcuts reopened the upgraded build with the saved note. Verify the declared support floors. Windows x64 client coverage remains unverified. [Candidate evidence](docs/DEMO_ACCEPTANCE_B9DCAFA.md) |
 | 3 | Complete the iPhone and Android launch matrix. | All three macOS 26.6.2 launch modes passed on this build. Use physical phones for native keyboard, safe areas, rotation and offline relaunch. [macOS observations](docs/MAC_COMPATIBILITY_EVIDENCE.md#update-focus-demo-launches) |
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
