@@ -29,6 +29,9 @@ The [product specification](PRODUCT_SPEC.md) owns scope. [Task.md](../Task.md) t
 
 The numeric limits below were approved as drafted but are not measured against browser quotas.
 
+**Amendment (owner-approved 2026-11-23):** records also carry `updatedAt` (epoch milliseconds, set by the repository on every committed create or update). `list()` returns the most recently updated note first, then by id. Backup notes are exactly `id`, `title`, `body`, `updatedAt` (required non-negative safe integer; no revisions). Import still treats a same-id note as identical when title and body match, ignoring `updatedAt`, and a same-id note with different title or body is a conflict. The database stays at schema version 1 because nothing had shipped.
+
+
 ### IndexedDB
 - Database `pwa-web-os-notes`, schema version `1`, one store `notes` keyed by `id`, no secondary indexes.
 - Record fields: `id` (lowercase UUID v4, immutable), `title`, `body` (plain text, may be empty), `revision` (positive safe integer).
