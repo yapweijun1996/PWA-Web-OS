@@ -26,6 +26,16 @@ PLAYWRIGHT_HTML_OPEN=never npx playwright test --config=playwright.recovery.conf
 
 Set the four variables to actual values before running. The recovery configuration copies each artifact into the test output, verifies every distributed file against its manifest, checks its worker build ID and expected commit, and requires distinct commits and build IDs. Each browser uses an isolated loopback origin and disposable profile for the entire A → B → A sequence. The test asserts the schema, content and ability to save after returning to A. The HTML report includes a `recovery-identities` attachment with the actual build IDs, commits, manifest SHA-256 digests and origin. Keep that report with the two workflow run links and record the browser and OS versions. This rehearsal supplies evidence for the two downloaded builds in the tested browser modes. A staging or production hosting rehearsal is a separate check.
 
+## Rehearse on disposable HTTPS staging
+
+Install `cloudflared` and set the same four release variables. The HTTPS mode publishes the two verified static releases through an isolated Quick Tunnel. The browser keeps one HTTPS origin across A → B → A, and the fixture compares every served file against the retained manifest after each switch. Use public release artifacts and synthetic notes. The fixture stops the tunnel and loopback origin when the test ends. [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)
+
+```sh
+RECOVERY_HTTPS=1 PLAYWRIGHT_HTML_OPEN=never npx playwright test --config=playwright.recovery.config.ts --reporter=html
+```
+
+`staging-byte-checks` records the time and file count for each verified phase. Tunnel DNS provisioning can take over a minute. If it fails, review the transport diagnostics in the local report. This mode exercises the project subpath, publicly trusted HTTPS and a real network release transition. A rollback on GitHub Pages uses its own hosting procedure.
+
 ## During an incident
 
 Stop rollout and preserve current release artifacts and evidence. Verify the retained artifact against its manifest and establish schema compatibility before any rollback. Publish the exact retained artifact only under the approved incident and deployment procedure; do not rebuild it. Wait for the previous worker to be discovered and users to accept the update. Confirm build ID, launch, and synthetic-note persistence in the target environment. Existing tabs can continue to run the current build until updated; a server-side file replacement alone does not move every client. Record deployment identity, decisions and results. If old code cannot read the schema, prepare a forward fix instead; never delete or reset IndexedDB to force recovery.
@@ -43,3 +53,5 @@ Both Playwright Chromium and Firefox passed the complete A → B → A case on m
 ## Rehearsal with the November 23 demo
 
 On macOS 26.6.2, Playwright 1.64.0 Chromium and Firefox both passed A → B → A using the retained `4ef0b87` release and the pre-deployment `54e9662` artifact. The manifest SHA-256 digests were `f2d7044d4fe020f32b38c6662a69e2fa0ef91b3e0922e8da123ec4de9c3bdc3d` and `7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05`. In both browsers the committed version from B survived rollback and a new edit saved on A. The rehearsal used disposable loopback origins. A subsequent live demo check matched all 12 hosted files to B's manifest and reread a synthetic edit after an offline restart. [Release A](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45183715617) · [Release B](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45195685417)
+
+A second rehearsal used the same artifacts through temporary HTTPS staging on macOS 27.2. Chromium 156.0.8078.4 and Firefox 157.0 both verified all files in each phase, successfully upgraded, rolled back, reopened the saved note and saved again. Early attempts reached the tunnel connector while the assigned DNS names still returned no address. With a bounded readiness wait, the complete check passed in both browsers. [HTTPS staging evidence](evidence/recovery-https-54e9662.json)

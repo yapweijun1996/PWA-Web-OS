@@ -24,9 +24,12 @@ export async function prepareRecoveryPair(output: string, env: NodeJS.ProcessEnv
     await cp(join(source, 'manifest.json'), manifest, { errorOnExist: true, force: false });
     await exec(process.execPath, [resolve('scripts/release-evidence.mjs'), 'verify', dist, manifest]);
     const bytes = await readFile(manifest);
-    const metadata = JSON.parse(bytes.toString('utf8')) as { commit: string; buildId: string };
+    const metadata = JSON.parse(bytes.toString('utf8')) as { commit: string; buildId: string; files: Record<string, string> };
     if (metadata.commit !== commit) throw new Error(`Artifact ${side} manifest does not match the selected workflow commit`);
-    return { dist, commit, buildId: metadata.buildId, manifestSha256: createHash('sha256').update(bytes).digest('hex') };
+    return {
+      dist, commit, buildId: metadata.buildId, manifestSha256: createHash('sha256').update(bytes).digest('hex'),
+      files: metadata.files,
+    };
   }
 
   const [a, b] = await Promise.all([prepare('A'), prepare('B')]);

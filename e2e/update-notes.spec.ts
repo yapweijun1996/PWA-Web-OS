@@ -81,7 +81,7 @@ test('rehearses A to B to retained A with compatible schema and synthetic notes'
     request.onsuccess = () => { const version = request.result.version; request.result.close(); resolve(version); };
   }));
   expect(await schema()).toBe(1);
-  releases.deployB();
+  await releases.deployB();
   await checkForUpdate(page);
   await expect(available(page)).toBeVisible();
   await update(page).click();
@@ -90,7 +90,7 @@ test('rehearses A to B to retained A with compatible schema and synthetic notes'
   await saved(page);
   const onB = await committedNotes(page);
   expect(await schema()).toBe(1);
-  releases.deployA();
+  await releases.deployA();
   await checkForUpdate(page);
   await expect(available(page)).toBeVisible();
   await update(page).click();

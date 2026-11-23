@@ -1,16 +1,17 @@
 import { execFile } from 'node:child_process';
 import { resolve } from 'node:path';
 import { promisify } from 'node:util';
-import { test, type Page, type TestInfo } from '@playwright/test';
+import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { DB_NAME, type Note } from '../src/contracts';
 import { prepareRecoveryPair } from './recovery-artifacts';
 import { serveReleases } from './pwa-test-server';
+import { startRecoveryTunnel, verifyHostedRelease } from './recovery-tunnel';
 
 const exec = promisify(execFile);
 const releaseA = 'notes-update-a';
 const releaseB = 'notes-update-b';
 
-export interface RecoveryOptions { retainedArtifacts: boolean }
+export interface RecoveryOptions { retainedArtifacts: boolean; httpsRecovery: boolean }
 
 async function buildFixturePair(testInfo: TestInfo) {
   const build = async (buildId: string, name: string) => {
@@ -29,33 +30,59 @@ export const updateTest = test.extend<RecoveryOptions & { releases: {
   a: string;
   b: string;
   distB: string;
-  deployA(): void;
-  deployB(): void;
+  deployA(): void | Promise<void>;
+  deployB(): void | Promise<void>;
   takeOffline(): void;
 } }>({
   retainedArtifacts: [false, { option: true }],
-  releases: async ({ retainedArtifacts }, use, testInfo) => {
+  httpsRecovery: [false, { option: true }],
+  releases: async ({ retainedArtifacts, httpsRecovery, browser }, use, testInfo) => {
     const retained = retainedArtifacts
       ? await prepareRecoveryPair(testInfo.outputPath('verified-artifacts'))
       : undefined;
     const { a, b } = retained ?? await buildFixturePair(testInfo);
     const server = await serveReleases(a.dist);
+    let tunnel: Awaited<ReturnType<typeof startRecoveryTunnel>> | undefined;
+    const hosted: { release: 'A' | 'B'; fileCount: number; verifiedAt: string }[] = [];
     try {
+      if (httpsRecovery) {
+        if (!retained) throw new Error('HTTPS recovery requires verified retained release artifacts');
+        tunnel = await startRecoveryTunnel(server.url, testInfo.outputPath('tunnel.yml'));
+      }
+      const url = tunnel?.url ?? server.url;
+      const verify = async (release: 'A' | 'B') => {
+        if (!tunnel || !retained) return;
+        const { files } = release === 'A' ? retained.a : retained.b;
+        await verifyHostedRelease(url, files);
+        hosted.push({ release, fileCount: Object.keys(files).length, verifiedAt: new Date().toISOString() });
+      };
+      if (tunnel) await expect(() => verify('A')).toPass({ timeout: 90_000, intervals: [2000, 4000] });
       if (retained) {
-        const { dist: _a, ...identityA } = retained.a;
-        const { dist: _b, ...identityB } = retained.b;
+        const identity = ({ commit, buildId, manifestSha256 }: typeof retained.a) => ({ commit, buildId, manifestSha256 });
         await testInfo.attach('recovery-identities', {
           contentType: 'application/json',
-          body: JSON.stringify({ a: identityA, b: identityB, origin: new URL(server.url).origin }),
+          body: JSON.stringify({
+            a: identity(retained.a), b: identity(retained.b), origin: new URL(url).origin,
+            browser: { name: browser.browserType().name(), version: browser.version() },
+          }),
         });
       }
       await use({
-        url: server.url, a: a.buildId, b: b.buildId, distB: b.dist,
-        deployA: () => server.deploy(a.dist), deployB: () => server.deploy(b.dist),
+        url, a: a.buildId, b: b.buildId, distB: b.dist,
+        deployA: () => { server.deploy(a.dist); if (tunnel) return verify('A'); },
+        deployB: () => { server.deploy(b.dist); if (tunnel) return verify('B'); },
         takeOffline: () => server.deploy(testInfo.outputPath('unavailable-release')),
       });
+    } catch (error) {
+      if (tunnel) await testInfo.attach('staging-tunnel-diagnostics', { contentType: 'text/plain', body: tunnel.diagnostics() });
+      throw error;
     } finally {
-      await server.close();
+      try {
+        if (tunnel) await testInfo.attach('staging-byte-checks', { contentType: 'application/json', body: JSON.stringify(hosted) });
+      } finally {
+        try { await tunnel?.close(); }
+        finally { await server.close(); }
+      }
     }
   },
 });

@@ -1,0 +1,77 @@
+{
+  "startedAt": "2026-11-23T14:57:59.691Z",
+  "macOS": "27.2",
+  "transport": "Cloudflare Quick Tunnel over HTTPS",
+  "browserRuns": [
+    {
+      "outcome": "passed",
+      "a": {
+        "commit": "4ef0b87e0ff05f85c519fb8c3b0ba37c91d28e11",
+        "buildId": "b-mwtat7jh4ef0b87",
+        "manifestSha256": "f2d7044d4fe020f32b38c6662a69e2fa0ef91b3e0922e8da123ec4de9c3bdc3d"
+      },
+      "b": {
+        "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+        "buildId": "b-mwtdek2h54e9662",
+        "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05"
+      },
+      "origin": "https://land-repository-unlock-involving.trycloudflare.com",
+      "browser": {
+        "name": "chromium",
+        "version": "156.0.8078.4"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 11,
+          "verifiedAt": "2026-11-23T14:58:10.337Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T14:58:12.683Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 11,
+          "verifiedAt": "2026-11-23T14:58:15.422Z"
+        }
+      ]
+    },
+    {
+      "outcome": "passed",
+      "a": {
+        "commit": "4ef0b87e0ff05f85c519fb8c3b0ba37c91d28e11",
+        "buildId": "b-mwtat7jh4ef0b87",
+        "manifestSha256": "f2d7044d4fe020f32b38c6662a69e2fa0ef91b3e0922e8da123ec4de9c3bdc3d"
+      },
+      "b": {
+        "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+        "buildId": "b-mwtdek2h54e9662",
+        "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05"
+      },
+      "origin": "https://airports-fires-councils-sao.trycloudflare.com",
+      "browser": {
+        "name": "firefox",
+        "version": "157.0"
+      },
+      "phases": [
+        {
+          "release": "A",
+          "fileCount": 11,
+          "verifiedAt": "2026-11-23T14:59:46.472Z"
+        },
+        {
+          "release": "B",
+          "fileCount": 12,
+          "verifiedAt": "2026-11-23T14:59:48.678Z"
+        },
+        {
+          "release": "A",
+          "fileCount": 11,
+          "verifiedAt": "2026-11-23T14:59:50.814Z"
+        }
+      ]
+    }
+  ]
+}
