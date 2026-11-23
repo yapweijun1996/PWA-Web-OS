@@ -31,6 +31,13 @@ jobs:
           cp -R dist recovery-artifact/dist
           node scripts/release-evidence.mjs create recovery-artifact/dist recovery-artifact/manifest.json "$GITHUB_SHA"
           node scripts/release-evidence.mjs verify recovery-artifact/dist recovery-artifact/manifest.json
+      - name: Retain candidate for platform acceptance
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidate-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: recovery-artifact
+          retention-days: 90
+          if-no-files-found: error
       - name: Install test browsers
         run: npx playwright install --with-deps chromium firefox
       - name: Run browser acceptance

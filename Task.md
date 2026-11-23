@@ -12,7 +12,7 @@
 | 4 | Transfer a backup between two physical devices. | Export on device A, import on B, compare titles and bodies, and verify a repeat import adds no duplicates. Browser profiles on one machine cover a separate test. |
 | 5 | Close the Firefox accessibility evidence gap. | Run the affected Firefox checks on a working configuration and review manual contrast findings. [Firefox accessibility evidence](docs/FIREFOX_AXE.md) |
 | 6 | Run the candidate performance and recovery gates. | Capture cold launch, offline reopen and editor latency on the declared desktop and mobile baselines. Record the field-data decision. Rehearse retained release bytes on the intended staging host and verify note integrity after rollback. [Lab results](docs/PERFORMANCE.md) · [Recovery rehearsal](docs/RECOVERY_RUNBOOK.md) |
-| 7 | Close the release record and verify the deployed artifact. | Bind the [60-case coverage index](docs/STANDARD_COVERAGE.md) to dated results, record exceptions, obtain rollout authorization, verify the live build identity and repeat the offline note smoke check. |
+| 7 | Close the release record and verify the deployed artifact. | Bind the [60-case coverage index](docs/STANDARD_COVERAGE.md) to dated results, record exceptions, and verify the live build identity and offline note smoke check after rollout. The owner has [authorized deployment](docs/M0_DECISIONS.md#direction-and-audience-owner-confirmed-2026-11-23). |
 
 The top bar checks the hosting origin when visible. A real Chromium and Firefox regression covers OFF-02: the server stops serving its release while the OS remains online, local editing and saving continue, and the next successful check restores the online status. [Origin outage test](e2e/pwa.spec.ts)
 

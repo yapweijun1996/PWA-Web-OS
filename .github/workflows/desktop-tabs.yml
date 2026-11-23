@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       pages_run:
-        description: Successful Pages workflow run ID for the retained release
+        description: Completed Pages run ID with a retained release or candidate
         required: true
         type: string
 
@@ -29,12 +29,13 @@ jobs:
         run: |
           if ($env:PAGES_RUN -notmatch '^[1-9][0-9]*$') { throw "Expected a numeric run ID" }
           $run = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:PAGES_RUN" | ConvertFrom-Json
-          if ($run.path -ne '.github/workflows/pages.yml' -or $run.conclusion -ne 'success' -or $run.head_branch -ne 'main') {
-            throw "Select a successful Pages run for main"
+          if ($run.path -ne '.github/workflows/pages.yml' -or $run.conclusion -notin @('success', 'failure') -or $run.head_branch -ne 'main') {
+            throw "Select a completed Pages run for main with a retained artifact"
           }
           $artifacts = gh api "repos/$env:GITHUB_REPOSITORY/actions/runs/$env:PAGES_RUN/artifacts" | ConvertFrom-Json
-          $prefix = "recovery-$($run.head_sha)-$env:PAGES_RUN-"
-          $artifact = $artifacts.artifacts | Where-Object { !$_.expired -and $_.name.StartsWith($prefix) } | Sort-Object id -Descending | Select-Object -First 1
+          $kind = if ($run.conclusion -eq 'success') { 'recovery' } else { 'candidate' }
+          $name = "$kind-$($run.head_sha)-$env:PAGES_RUN-$($run.run_attempt)"
+          $artifact = $artifacts.artifacts | Where-Object { !$_.expired -and $_.name -eq $name }
           if (!$artifact) { throw "No retained release available" }
           gh run download $env:PAGES_RUN --name $artifact.name --dir retained
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -43,7 +44,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           New-Item -ItemType Directory -Path desktop-evidence
           Copy-Item retained/manifest.json desktop-evidence
-          @{ pagesRun = $run.html_url; archive = $artifact.name; archiveDigest = $artifact.digest } | ConvertTo-Json | Set-Content desktop-evidence/source.json
+          @{ pagesRun = $run.html_url; pagesConclusion = $run.conclusion; archive = $artifact.name; archiveDigest = $artifact.digest } | ConvertTo-Json | Set-Content desktop-evidence/source.json
       - name: Install Selenium
         run: python -m pip install --disable-pip-version-check selenium==4.54.0
       - name: Test installed Chrome and Firefox in desktop tabs

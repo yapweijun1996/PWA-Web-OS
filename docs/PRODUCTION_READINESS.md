@@ -19,7 +19,7 @@ This is an engineering milestone. The Windows demo and full release retain their
 
 ### Windows hosted browser check
 
-Run the **Windows desktop browser acceptance** workflow with the numeric ID of a successful main-branch Pages run that still has its recovery artifact. It verifies the artifact manifest, opens the retained build in installed retail Chrome and Firefox using dedicated profiles, and exits the browser between each online or offline session. It exports a synthetic note from Chrome, imports it twice in Firefox and compares its contents after offline edits. The JSON report records each completed session and actual browser version. This covers regular browser tabs on a hosted Windows Server machine. Installed windows, the minimum supported consumer Windows version, screen readers and transfer between physical devices still require their own observations.
+Run the **Windows desktop browser acceptance** workflow with the numeric ID of a completed main-branch Pages run. Use the recovery artifact from a successful run or the candidate artifact from a failed run, if available. The workflow verifies the manifest, opens the retained build in installed retail Chrome and Firefox using dedicated profiles, and exits the browser between each online or offline session. It exports a synthetic note from Chrome, imports it twice in Firefox and compares its contents after offline edits. The reports record the source run's conclusion, completed sessions and browser versions. This covers regular browser tabs on a hosted Windows Server machine. Installed windows, the minimum supported consumer Windows version, screen readers and transfer between physical devices require their own observations.
 
 ## Candidate and release scope
 
@@ -65,7 +65,7 @@ Use the [platform matrix](PRODUCT_SPEC.md#platform-support) for authoritative la
 
 ## Browser evidence on each Pages push
 
-The Pages build runs the complete Chromium and Firefox Playwright suite on its Ubuntu runner before deployment. Download the `browser-evidence-<sha>-<run>-<attempt>` artifact from the workflow run. It contains the Playwright JSON results, browser and runner versions, and the release manifest used to verify the tested files. An unsuccessful suite stops deployment and preserves available diagnostics. Record skips by test and platform. The Windows, macOS and physical mobile requirements above retain their own evidence.
+The Pages build retains the verified `candidate-<sha>-<run>-<attempt>` archive before running the Chromium and Firefox Playwright suite on Ubuntu. The `browser-evidence-<sha>-<run>-<attempt>` artifact contains the Playwright JSON results, browser and runner versions, and the release manifest. SHA-256 verification after Playwright checks that the tested files are the ones sent for deployment. A failed suite stops deployment while allowing independent platform and performance checks on the same candidate bytes. Record the source run conclusion and skips by test and platform. Choose rollback inputs from successful deployments as described in the [recovery runbook](RECOVERY_RUNBOOK.md).
 
 ## G4: Evidence and recovery
 

@@ -14,6 +14,8 @@ On 2026-11-23, the Pages Ubuntu 26 x64 runner at `e6797af` ran the full suite. T
 
 A supplementary macOS 26.6.2 test of the bundled Firefox performed direct axe-core checks in separate real page contexts. The 390 px Light workspace-menu check completed. The conflict and waiting-update checks returned no usable audit. A headed retail Firefox 160.0.1 attempt also failed to finish the multi-state journey. Those observations remain diagnostic. Keep the gate open until the required views and rule set have complete results. The production demo remains at its most recent successful deployment.
 
+At `9599c6e`, the Ubuntu Pages suite recorded 134 passes, the same seven Firefox axe failures and one quota skip. On a separate Ubuntu 24.04 arm64 workstation, a clean `3f85d8b` checkout ran the unchanged Firefox 159.0 suite headed under Xvfb. All seven scans ended with `frame.evaluate: Page crashed`. The reduced-motion update test passed. The audit failure therefore also occurs in headed mode. [Pages run 45190418790](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45190418790)
+
 ## Retest the exception
 
 Use a clean install, build the production assets and install the project Firefox browser as in the README. Choose a free port and run the original scan with the override enabled, then run the remaining matrix if that succeeds.
