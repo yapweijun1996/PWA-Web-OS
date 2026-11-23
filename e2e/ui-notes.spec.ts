@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { committedNotes, holdNoteWrites } from '../scripts/notes-update-fixture';
 
 function launcher(page: Page): Locator {
   return page.getByRole('region', { name: 'Workspace launcher', exact: true });
@@ -34,20 +35,20 @@ test('desktop Notes panes sit side by side above the Dock; the IndexedDB write s
   await list.getByRole('button', { name: 'New note' }).click();
   const status = editor.locator('.save-status');
   await expect(status).toHaveText('Saved on this device');
-  // Observe DOM transitions without slowing or replacing IndexedDB.
-  await status.evaluate((node) => {
-    const observer = new MutationObserver((records) => {
-      if (records.some((record) => Array.from(record.addedNodes).some((text) => text.textContent === 'Saving…'))) {
-        (node as HTMLElement).dataset.observedSaving = 'true';
-        observer.disconnect();
-      }
-    });
-    observer.observe(node, { childList: true });
-  });
-  await editor.getByLabel('Title').fill('Synthetic desktop note');
-  await editor.getByLabel('Body').fill('Local browser demo text');
-  await expect(status).toHaveAttribute('data-observed-saving', 'true');
+  // Hold a real write transaction open so the in-flight status is observable.
+  const releaseWrites = await holdNoteWrites(page);
+  try {
+    await editor.getByLabel('Title').fill('Synthetic desktop note');
+    await editor.getByLabel('Body').fill('Local browser demo text');
+    await expect(status).toBeVisible();
+    await expect(status).toHaveText('Saving…');
+  } finally {
+    await releaseWrites();
+  }
   await expect(status).toHaveText('Saved on this device');
+  expect(await committedNotes(page)).toMatchObject([{
+    title: 'Synthetic desktop note', body: 'Local browser demo text',
+  }]);
   await expect(list.getByRole('button', { name: 'Synthetic desktop note' })).toBeVisible();
   await page.reload();
   await expect(launcher(page)).toBeVisible();

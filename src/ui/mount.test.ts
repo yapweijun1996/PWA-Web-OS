@@ -341,3 +341,24 @@ test('the theme control reports a session-only choice when storage throws', () =
   expect(document.documentElement.dataset.theme).toBe('dark');
   expect(lastStatus()).toBe('Theme changed for this session only.');
 });
+
+test('translates an existing update alert and backup error without changing the open menu', async () => {
+  const app = fixture();
+  app.setUpdate({ status: 'paused', detail: 'other_client' });
+  expect(lastAlert()).toContain('Save changes in other Notes tabs');
+  node<HTMLButtonElement>('.workspace-toggle').click();
+  const language = node<HTMLSelectElement>('.locale-control select');
+  language.focus();
+  language.value = 'zh-Hans';
+  language.dispatchEvent(new Event('change'));
+  expect(document.activeElement).toBe(language);
+  expect(node('.update-notice h2').textContent).toBe('更新已暂停');
+  expect(lastAlert()).toBe('更新已暂停。请保存其他笔记标签页中的更改，或关闭那些标签页，然后重试更新。');
+  expect(node('.workspace-menu').hidden).toBe(false);
+  click('导出备份', node('.backup-menu'));
+  await tick();
+  expect(lastAlert()).toContain('无法导出备份');
+  language.value = 'en';
+  language.dispatchEvent(new Event('change'));
+  expect(node('.backup-menu .feedback').textContent).toContain('Could not export the backup.');
+});

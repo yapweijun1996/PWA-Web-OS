@@ -1,64 +1,65 @@
+import type { Copy, MessageKey } from '../i18n';
 import { BackupError, StorageError, type BackupErrorCode, type StorageErrorCode, type UpdateState } from '../contracts';
 
 export function storageErrorCode(error: unknown): StorageErrorCode {
   return error instanceof StorageError ? error.code : 'unknown';
 }
 
-export const storageHelp: Record<StorageErrorCode, string> = {
-  conflict: 'Reload the saved version or save your draft as a new note.',
-  not_found: 'The saved note could not be found. Copy your draft before leaving the editor.',
-  limit_exceeded: 'Shorten the draft or make room in Notes, then try again. Titles allow up to 256 bytes and bodies up to 16,384 bytes.',
-  invalid: 'Check the title and body, then try again.',
-  quota: 'Device storage is full. Free some browser storage and try again, or copy your draft.',
-  blocked: 'Close other Notes tabs, then try again.',
-  unavailable: 'Allow browser storage for this site, then try again.',
-  incompatible_schema: 'This build cannot read the saved Notes data. Open a newer build before trying again.',
-  unknown: 'Try again. If the problem continues, copy your draft before leaving the editor.',
+export const storageHelp: Record<StorageErrorCode, MessageKey> = {
+  conflict: 'storage.conflict',
+  not_found: 'storage.not_found',
+  limit_exceeded: 'storage.limit_exceeded',
+  invalid: 'storage.invalid',
+  quota: 'storage.quota',
+  blocked: 'storage.blocked',
+  unavailable: 'storage.unavailable',
+  incompatible_schema: 'storage.incompatible_schema',
+  unknown: 'storage.unknown',
 };
 
-const backupHelp: Record<BackupErrorCode, string> = {
-  invalid_file: 'This file is not a valid Notes backup. Choose a Notes backup file.',
-  too_large: 'This backup is larger than 10 MiB. Choose a smaller Notes backup file.',
-  unsupported_version: 'This Notes backup version is not supported. Use a compatible version of Notes to open it.',
-  duplicate_ids: 'This backup contains duplicate note IDs. Choose a different Notes backup file.',
-  conflict: 'This backup contains a note that conflicts with a saved note. No notes were restored.',
-  limit_exceeded: 'This backup exceeds the Notes limits for note count or text size. Choose a smaller backup.',
-  write_failed: 'Could not restore the backup. No notes were restored. Check browser storage and try again.',
+const backupHelp: Record<BackupErrorCode, MessageKey> = {
+  invalid_file: 'backup.invalid_file',
+  too_large: 'backup.too_large',
+  unsupported_version: 'backup.unsupported_version',
+  duplicate_ids: 'backup.duplicate_ids',
+  conflict: 'backup.conflict',
+  limit_exceeded: 'backup.limit_exceeded',
+  write_failed: 'backup.write_failed',
 };
 
-export function backupMessage(error: unknown, fallback: BackupErrorCode): string {
+export function backupMessage(error: unknown, fallback: BackupErrorCode): MessageKey {
   return backupHelp[error instanceof BackupError ? error.code : fallback];
 }
 
-export function updateCopy({ status, detail }: UpdateState): { heading: string; message: string } {
+export function updateCopy({ status, detail }: UpdateState): { heading: Copy; message: Copy } {
   switch (status) {
     case 'idle':
-      return { heading: '', message: '' };
+      return { heading: () => '', message: () => '' };
     case 'available':
-      return { heading: 'Update available', message: 'Keep editing or update when you’re ready.' };
+      return { heading: 'update.available', message: 'update.defer' };
     case 'saving':
-      return { heading: 'Updating Notes', message: 'Saving changes before update…' };
+      return { heading: 'update.progress', message: 'update.saving' };
     case 'activating':
-      return { heading: 'Updating Notes', message: 'Applying update…' };
+      return { heading: 'update.progress', message: 'update.activating' };
     case 'reloading':
-      return { heading: 'Updating Notes', message: 'Reloading Notes…' };
+      return { heading: 'update.progress', message: 'update.reloading' };
     case 'paused':
       return {
-        heading: 'Update paused',
+        heading: 'update.paused',
         message: detail === 'other_client'
-          ? 'Save changes in other Notes tabs or close those tabs, then retry the update.'
+          ? 'update.otherClient'
           : detail === 'reload_pending'
-            ? 'Save your changes, then retry to reload Notes.'
-            : 'Save your changes before retrying the update.',
+            ? 'update.reloadPending'
+            : 'update.saveFirst',
       };
     case 'failed':
       return {
-        heading: 'Update failed',
+        heading: 'update.failed',
         message: detail === 'timeout'
-          ? 'The update took too long. Retry the update when you’re ready.'
+          ? 'update.timeout'
           : detail === 'reload_pending'
-            ? 'The update is ready to finish. Retry to reload Notes safely.'
-            : 'Could not apply the update. Retry the update when you’re ready.',
+            ? 'update.readyReload'
+            : 'update.activationFailed',
       };
   }
 }

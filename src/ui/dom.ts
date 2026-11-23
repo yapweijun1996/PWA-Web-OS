@@ -1,3 +1,5 @@
+import type { Copy } from '../i18n';
+import type { LocalizedUi } from './localized';
 export function element<K extends keyof HTMLElementTagNameMap>(
   tag: K, text?: string, className?: string,
 ): HTMLElementTagNameMap[K] {
@@ -19,18 +21,18 @@ export function setText(node: HTMLElement, text: string): void {
 }
 
 export interface Feedback {
-  announce(message: string): void;
-  alert(message: string): void;
+  announce(message: Copy): void;
+  alert(message: Copy): void;
 }
 
-export function createFeedback() {
+export function createFeedback(ui: LocalizedUi) {
   const polite = element('div', undefined, 'visually-hidden');
   polite.setAttribute('role', 'status');
   const assertive = element('div', undefined, 'visually-hidden');
   assertive.setAttribute('role', 'alert');
   const feedback: Feedback = {
-    announce: (message) => { polite.textContent = message; },
-    alert: (message) => { assertive.textContent = message; },
+    announce: (message) => { ui.text(polite, message); },
+    alert: (message) => { ui.text(assertive, message); },
   };
   return { polite, assertive, feedback };
 }

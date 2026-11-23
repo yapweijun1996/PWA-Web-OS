@@ -1,3 +1,5 @@
+import type { Copy, MessageKey } from '../i18n';
+import type { LocalizedUi } from './localized';
 import type { FlushResult, Note, NoteRepository } from '../contracts';
 import { button, element, openDialog, setText, type Feedback } from './dom';
 import { DraftSession } from './draft';
@@ -5,10 +7,10 @@ import { icon } from './icons';
 import { storageErrorCode, storageHelp } from './messages';
 
 type NotesRoute = 'list' | 'editor';
-const displayTitle = (title: string) => title.trim() ? title : 'Untitled note';
 const noopFlush: FlushResult = { ok: true };
 
 export function createNotes(
+  ui: LocalizedUi,
   repository: NoteRepository,
   feedback: Feedback,
   backToLauncher: () => void,
@@ -30,18 +32,18 @@ export function createNotes(
   panes.dataset.view = view;
   const listPane = element('section', undefined, 'notes-list');
   listPane.setAttribute('aria-labelledby', 'notes-heading');
-  const heading = element('h2', 'Notes');
+  const heading = ui.label('h2', 'notes.name');
   heading.id = 'notes-heading';
   heading.tabIndex = -1;
   const list = element('ul', undefined, 'note-items');
-  const empty = element('p', 'No notes yet. Create a note to get started.', 'empty-state');
+  const empty = ui.label('p', 'notes.empty', 'empty-state');
   empty.hidden = true;
   const listStatus = element('p', undefined, 'muted');
-  const refreshButton = button('Retry loading notes', () => { void refresh(); });
+  const refreshButton = ui.action('notes.retryLoading', () => { void refresh(); });
   refreshButton.hidden = true;
-  const launcherBack = button('Workspace launcher', backToLauncher, 'launcher-back');
+  const launcherBack = ui.action('shell.launcher', backToLauncher, 'launcher-back');
   launcherBack.prepend(icon('back'));
-  const add = button('New note', () => run('Could not create a note.', async () => {
+  const add = ui.action('notes.new', () => run('notes.createFailed', async () => {
     if (!await canSwitch()) return;
     const note = await repository.create({ title: '', body: '' });
     remember(note);
@@ -53,21 +55,21 @@ export function createNotes(
   const editorPane = element('section', undefined, 'editor');
   editorPane.setAttribute('aria-labelledby', 'editor-heading');
   editorPane.tabIndex = -1;
-  const editorHeading = element('h2', 'Note editor', 'visually-hidden');
+  const editorHeading = ui.label('h2', 'notes.editor', 'visually-hidden');
   editorHeading.id = 'editor-heading';
-  const listBack = button('Back to Notes list', () => focusList(true), 'list-back');
+  const listBack = ui.action('notes.back', () => focusList(true), 'list-back');
   listBack.prepend(icon('back'));
-  const placeholder = element('p', 'Select a note or create a new one.', 'empty-state');
+  const placeholder = ui.label('p', 'notes.select', 'empty-state');
   const title = element('textarea');
   title.id = 'note-title';
   title.rows = 1;
-  title.placeholder = 'Untitled note';
+  ui.attr(title, 'placeholder', 'notes.untitled');
   const body = element('textarea');
   body.id = 'note-body';
   body.rows = 8;
-  const titleLabel = element('label', 'Title', 'visually-hidden');
+  const titleLabel = ui.label('label', 'notes.title', 'visually-hidden');
   titleLabel.htmlFor = title.id;
-  const bodyLabel = element('label', 'Body', 'visually-hidden');
+  const bodyLabel = ui.label('label', 'notes.body', 'visually-hidden');
   bodyLabel.htmlFor = body.id;
   const fields = element('div', undefined, 'editor-fields');
   const editorHeader = element('div', undefined, 'editor-header');
@@ -80,13 +82,13 @@ export function createNotes(
   const storageDetail = element('p');
   const clipboardDetail = element('p');
   clipboardDetail.hidden = true;
-  const retry = button('Retry', () => {
+  const retry = ui.action('notes.retry', () => {
     if (blocked()) return;
     editorPane.focus();
     void session?.flush(true);
   });
-  const copy = button('Copy draft', () => { void copyDraft(); });
-  const saveAsNew = button('Save as new', () => run('Could not save the draft as a new note.', async () => {
+  const copy = ui.action('notes.copy', () => { void copyDraft(); });
+  const saveAsNew = ui.action('notes.saveAsNew', () => run('notes.copyFailed', async () => {
     if (!session) return;
     savingCopy = true;
     paintEditor();
@@ -99,30 +101,30 @@ export function createNotes(
     }
   }));
   const discard = element('dialog');
-  const discardTitle = element('h2', 'Discard unsaved draft?');
+  const discardTitle = ui.label('h2', 'notes.discardTitle');
   discardTitle.id = 'discard-heading';
   discard.setAttribute('aria-labelledby', discardTitle.id);
-  const cancel = button('Cancel', () => discard.close());
-  const confirm = button('Discard and reload', () => {
+  const cancel = ui.action('common.cancel', () => discard.close());
+  const confirm = ui.action('notes.discard', () => {
     if (blocked() || !session) return;
     discard.close();
-    run('Could not reload the saved version.', async () => {
+    run('notes.reloadFailed', async () => {
       if (!session) return;
       const saved = await repository.get(session.committed.id);
       if (!saved) {
-        report('The saved note could not be found. Save your draft as a new note or copy it.');
+        report('notes.missing');
         return;
       }
       remember(saved);
       showNote(saved, false);
     });
   });
-  const reload = button('Reload saved version', () => {
+  const reload = ui.action('notes.reload', () => {
     if (!blocked()) openDialog(discard, cancel, reload);
   });
   const discardActions = element('div', undefined, 'actions');
   discardActions.append(cancel, confirm);
-  discard.append(discardTitle, element('p', 'This replaces your unsaved text with the latest saved version.'), discardActions);
+  discard.append(discardTitle, ui.label('p', 'notes.discardInfo'), discardActions);
   const recoveryActions = element('div', undefined, 'actions');
   recoveryActions.append(retry, saveAsNew, reload, copy);
   recovery.append(recoveryDetail, storageDetail, recoveryActions, clipboardDetail);
@@ -135,13 +137,13 @@ export function createNotes(
 
   function blocked(): boolean { return locked || operation !== undefined; }
 
-  function report(message: string): void {
+  function report(message: Copy): void {
     issue.hidden = false;
-    setText(issue, message);
+    ui.text(issue, message);
     feedback.alert(message);
   }
 
-  function run(label: string, action: () => Promise<void>): void {
+  function run(label: MessageKey, action: () => Promise<void>): void {
     if (blocked()) return;
     issue.hidden = true;
     operation = Promise.resolve().then(action).catch((error: unknown) => {
@@ -155,9 +157,9 @@ export function createNotes(
     paintList();
   }
 
-  function feedbackForAction(label: string, error: unknown): void {
+  function feedbackForAction(label: MessageKey, error: unknown): void {
     const code = storageErrorCode(error);
-    report(`${label} ${code === 'conflict' ? 'Try again.' : storageHelp[code]}`);
+    report(t => `${t(label)} ${t(code === 'conflict' ? 'notes.retryHelp' : storageHelp[code])}`);
   }
 
   function navigate(route: NotesRoute): void {
@@ -195,7 +197,7 @@ export function createNotes(
   }
 
   function openNote(id: string): void {
-    run('Could not open the note.', async () => {
+    run('notes.openFailed', async () => {
       if (session?.committed.id === id && session.dirty) {
         focusEditor();
         return;
@@ -203,7 +205,7 @@ export function createNotes(
       if (!await canSwitch()) return;
       const note = await repository.get(id);
       if (!note) {
-        report('This note is no longer saved. Choose another note.');
+        report('notes.gone');
         void refresh();
         return;
       }
@@ -223,7 +225,7 @@ export function createNotes(
     ready = false;
     refreshButton.hidden = true;
     empty.hidden = true;
-    setText(listStatus, 'Loading notes…');
+    ui.text(listStatus, 'notes.loading');
     try {
       const records = await repository.list();
       if (request !== listRequest) return;
@@ -236,12 +238,12 @@ export function createNotes(
       }
       notes = fresh;
       ready = true;
-      setText(listStatus, '');
+      ui.text(listStatus, () => '');
       paintList();
     } catch (error) {
       if (request !== listRequest) return;
-      const message = `Could not load notes. ${storageHelp[storageErrorCode(error)]}`;
-      setText(listStatus, message);
+      const message: Copy = t => `${t('notes.loadFailed')} ${t(storageHelp[storageErrorCode(error)])}`;
+      ui.text(listStatus, message);
       refreshButton.hidden = false;
       feedback.alert(message);
     }
@@ -282,8 +284,8 @@ export function createNotes(
       const control = row.firstElementChild as HTMLButtonElement;
       const name = control.querySelector<HTMLElement>('.note-row-title')!;
       const updated = control.querySelector('time')!;
-      setText(name, displayTitle(note.title));
-      paintDate(updated, note.updatedAt);
+      setText(name, note.title.trim() ? note.title : ui.language.t('notes.untitled'));
+      paintDate(ui, updated, note.updatedAt);
       control.setAttribute('aria-disabled', String(blocked()));
       if (note.id === session?.committed.id) control.setAttribute('aria-current', 'true');
       else control.removeAttribute('aria-current');
@@ -305,15 +307,15 @@ export function createNotes(
     fields.hidden = !session;
     title.readOnly = blocked();
     body.readOnly = blocked();
-    const saveFailed = 'Save failed. Your changes are not saved.';
-    const status = state === 'saving' ? 'Saving…'
-      : state === 'saved' ? 'Saved on this device'
-      : state === 'dirty' ? 'Unsaved changes'
+    const saveFailed = 'notes.failed';
+    const status = state === 'saving' ? 'notes.saving'
+      : state === 'saved' ? 'notes.saved'
+      : state === 'dirty' ? 'notes.dirty'
       : state === 'failed' && !conflict ? saveFailed : '';
-    setText(saveStatus, status);
+    ui.text(saveStatus, status || (() => ''));
     saveStatus.dataset.state = state ?? '';
-    statusChip.hidden = status === '';
-    if ((state === 'saving' || state === 'saved') && announcedSave !== status) {
+    statusChip.hidden = !status;
+    if ((state === 'saving' || state === 'saved') && status && announcedSave !== status) {
       announcedSave = status;
       feedback.announce(status);
     } else if (state === 'failed') {
@@ -328,13 +330,15 @@ export function createNotes(
       control.setAttribute('aria-disabled', String(blocked()));
     }
     const detail = conflict
-      ? 'A newer version of this note is already saved. Your draft has not been saved.'
-      : code ? 'The last saved version is unchanged.' : '';
-    setText(recoveryDetail, detail);
-    setText(storageDetail, code ? storageHelp[code] : '');
-    const failure = code ? [conflict ? '' : saveFailed, detail, storageHelp[code]].filter(Boolean).join(' ') : '';
-    if (failure && failure !== announcedFailure) feedback.alert(failure);
-    announcedFailure = failure;
+      ? 'notes.conflict'
+      : code ? 'notes.unchanged' : '';
+    ui.text(recoveryDetail, detail || (() => ''));
+    ui.text(storageDetail, code ? storageHelp[code] : () => '');
+    if (code && code !== announcedFailure) {
+      const parts = [conflict ? undefined : saveFailed, detail || undefined, storageHelp[code]];
+      feedback.alert(t => parts.filter((key): key is MessageKey => !!key).map(key => t(key)).join(' '));
+    }
+    announcedFailure = code ?? '';
   }
 
   async function copyDraft(): Promise<void> {
@@ -344,16 +348,17 @@ export function createNotes(
     clipboardDetail.hidden = true;
     try {
       await navigator.clipboard.writeText(`${draft.title}\n\n${draft.body}`);
-      feedback.announce('Draft copied.');
+      feedback.announce('notes.copied');
     } catch {
       if (session !== current) return;
-      const message = 'Could not copy the draft. Select and copy the text in the editor.';
-      setText(clipboardDetail, message);
+      const message = 'notes.clipboardFailed';
+      ui.text(clipboardDetail, message);
       clipboardDetail.hidden = false;
       feedback.alert(message);
     }
   }
 
+  ui.language.onChange(paintList);
   paintEditor();
   return {
     heading, panes, issue,
@@ -377,22 +382,21 @@ export function createNotes(
   };
 }
 
-const shortDate = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
-const timeOfDay = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
-
-function paintDate(node: HTMLTimeElement, updatedAt: number): void {
+function paintDate(ui: LocalizedUi, node: HTMLTimeElement, updatedAt: number): void {
   const date = new Date(updatedAt);
   if (!Number.isFinite(date.getTime())) {
     node.removeAttribute('datetime');
-    setText(node, 'Date unavailable');
+    setText(node, ui.language.t('notes.noDate'));
     return;
   }
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
   const day = date.toDateString();
-  const label = day === today.toDateString() ? 'Today' : day === yesterday.toDateString() ? 'Yesterday' : shortDate.format(date);
+  const label = day === today.toDateString() ? ui.language.t('notes.today')
+    : day === yesterday.toDateString() ? ui.language.t('notes.yesterday')
+    : ui.language.shortDate(date);
   const iso = date.toISOString();
   if (node.dateTime !== iso) node.dateTime = iso;
-  setText(node, `${label}, ${timeOfDay.format(date)}`);
+  setText(node, ui.language.t('notes.timestamp', { day: label, time: ui.language.time(date) }));
 }
