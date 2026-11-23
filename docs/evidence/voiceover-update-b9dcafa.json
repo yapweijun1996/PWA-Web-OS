@@ -1,0 +1,94 @@
+{
+  "os": "macOS 26.6.2 (25G83) in an isolated VM",
+  "reader": "VoiceOver Caption Panel",
+  "capture": "OCR of the native caption panel while operating headed Chrome",
+  "baseline": {
+    "startsAt": "2026-11-23T16:15:32.411Z",
+    "finishedAt": "2026-11-23T16:16:22.507Z",
+    "os": "25.6.0",
+    "browser": "158.0.8127.36",
+    "reader": "macOS VoiceOver, Caption Panel (OCR)",
+    "a": {
+      "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+      "buildId": "b-mwtfl4bdd620665",
+      "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130"
+    },
+    "b": {
+      "commit": "54e966254c0dab30ac3e28fb480e4f56eb33a0bd",
+      "buildId": "b-mwtdek2h54e9662",
+      "manifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05"
+    },
+    "checks": [
+      {
+        "id": "launcher-notes",
+        "phrase": "Notes"
+      },
+      {
+        "id": "update-available",
+        "phrase": "Update available"
+      },
+      {
+        "id": "note-failed",
+        "phrase": "Save failed. Your changes are not saved"
+      },
+      {
+        "id": "note-retried",
+        "phrase": "Saved on this device"
+      }
+    ],
+    "missing": [
+      "editor-body",
+      "editor-title",
+      "update-saving",
+      "note-saving",
+      "note-saved"
+    ],
+    "outcome": "FAIL"
+  },
+  "candidate": {
+    "startsAt": "2026-11-23T16:24:46.995Z",
+    "finishedAt": "2026-11-23T16:25:32.519Z",
+    "os": "25.6.0",
+    "browser": "158.0.8127.36",
+    "reader": "macOS VoiceOver, Caption Panel (OCR)",
+    "a": {
+      "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+      "buildId": "b-mwth4sjcb9dcafa",
+      "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+    },
+    "b": {
+      "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+      "buildId": "b-mwtfl4bdd620665",
+      "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130"
+    },
+    "checks": [
+      {
+        "id": "launcher-notes",
+        "phrase": "Notes"
+      },
+      {
+        "id": "update-available",
+        "phrase": "Update available"
+      },
+      {
+        "id": "update-saving",
+        "phrase": "Saving changes before update"
+      },
+      {
+        "id": "note-failed",
+        "phrase": "Save failed. Your changes are not saved"
+      },
+      {
+        "id": "note-retried",
+        "phrase": "Saved on this device"
+      }
+    ],
+    "missing": [
+      "editor-body",
+      "editor-title",
+      "note-saving",
+      "note-saved"
+    ],
+    "outcome": "FAIL"
+  }
+}

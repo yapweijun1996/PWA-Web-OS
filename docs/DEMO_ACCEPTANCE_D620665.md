@@ -29,10 +29,13 @@ The [case index](STANDARD_COVERAGE.md) links to individual test assertions and t
 | Outcome | Count | Cases |
 | --- | ---: | --- |
 | PASS | 37 | INS-01, INS-03, INS-07. SW-01–12. OFF-02, OFF-04–08. A11Y-01, A11Y-02, A11Y-04, A11Y-06, A11Y-07. QA-04–08. REL-01–05, REL-07. |
-| BLOCKED | 17 | INS-02, INS-04–06, OFF-01, MOB-01–08, A11Y-03, A11Y-05, A11Y-08, REL-06. |
+| FAIL | 1 | A11Y-08. A subsequent desktop reader check reproduced the missing update progress announcement. |
+| BLOCKED | 16 | INS-02, INS-04–06, OFF-01, MOB-01–08, A11Y-03, A11Y-05, REL-06. |
 | INSUFFICIENT_DATA | 3 | QA-01–03. Field metrics follow the [recorded policy](PERFORMANCE.md#field-policy). |
 | NOT_APPLICABLE | 3 | INS-08, OFF-03, REL-08. Notes exposes one entry URL and uses local writes and explicit backup import. |
 
 OFF-05 passed after the Firefox connection fix. At quota, the editor retained the draft and the previous revision. After the fixture released storage, **Retry** committed exactly one revision. A rejected fixture write alone left enough room for the real Notes save in Firefox. The regression now verifies the actual editor failure before checking recovery.
 
 REL-07 passed with the automatic live check on this deployment and the workflow's [verified failure path and owner notification](RECOVERY_RUNBOOK.md#check-the-live-release). The live check uses public release bytes and synthetic browser data supplies persistence evidence.
+
+On November 24 in Singapore, VoiceOver and headed Chrome reproduced A11Y-08 on this retained build. Focus returned to the document after Update was hidden, and the Notes save state replaced the update message in the shared live region. The Caption Panel showed focus moving to web content during the wait. The repaired candidate kept focus on the progress message, which VoiceOver spoke. [Paired VoiceOver observations](evidence/voiceover-update-b9dcafa.json)
