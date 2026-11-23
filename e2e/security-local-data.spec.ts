@@ -4,6 +4,8 @@ import { createServer, request as forward } from 'node:http';
 import { expect, test as baseTest, type Page, type Request } from '@playwright/test';
 import { BACKUP_FORMAT, BACKUP_VERSION, THEME_KEY, type Note } from '../src/contracts';
 
+import { listenOnLoopback } from '../scripts/pwa-test-server';
+
 type BackupNote = Omit<Note, 'revision'>;
 
 declare global {
@@ -27,12 +29,10 @@ const sensitiveMarkers = [imported.title, imported.body, draft.title, draft.body
 type ObservedRequest = { method: string; url: string; body: string | null; headers: Record<string, string | string[] | undefined> };
 
 const test = baseTest.extend<{ recordedPreview: { url: URL; requests: ObservedRequest[] } }>({
-  recordedPreview: async ({}, use) => {
-    const port = Number(process.env.PW_PORT);
-    expect(port, 'set PW_PORT to the configured preview port').toBeGreaterThan(0);
-    // Record actual origin traffic (including worker fetches not surfaced by Playwright in Firefox).
-    // Proxy bytes unchanged to the production Vite preview on the other IPv4 loopback address.
-    const url = new URL(`http://127.0.0.2:${port}${base}`);
+  recordedPreview: async ({ baseURL }, use) => {
+    if (!baseURL) throw new Error('Expected the production preview URL');
+    const preview = new URL(baseURL);
+    // Observe worker requests at the origin as well as page requests in Playwright.
     const requests: ObservedRequest[] = [];
     const server = createServer((incoming, outgoing) => {
       const entry: ObservedRequest = {
@@ -43,7 +43,7 @@ const test = baseTest.extend<{ recordedPreview: { url: URL; requests: ObservedRe
       incoming.on('data', (chunk: Buffer) => body.push(chunk));
       incoming.on('end', () => { if (body.length) entry.body = Buffer.concat(body).toString('utf8'); });
       const upstream = forward({
-        hostname: '127.0.0.1', port, path: incoming.url, method: incoming.method, headers: incoming.headers,
+        hostname: preview.hostname, port: preview.port, path: incoming.url, method: incoming.method, headers: incoming.headers,
       }, (response) => {
         outgoing.writeHead(response.statusCode ?? 502, response.headers);
         response.pipe(outgoing);
@@ -54,10 +54,7 @@ const test = baseTest.extend<{ recordedPreview: { url: URL; requests: ObservedRe
       });
       incoming.pipe(upstream);
     });
-    await new Promise<void>((resolve, reject) => {
-      server.once('error', reject);
-      server.listen(port, url.hostname, () => { server.removeListener('error', reject); resolve(); });
-    });
+    const url = await listenOnLoopback(server);
     try {
       await use({ url, requests });
     } finally {

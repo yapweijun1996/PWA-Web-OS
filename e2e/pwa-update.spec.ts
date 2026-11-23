@@ -22,12 +22,12 @@ const release = (page: Page) => page.evaluate(() => ({
 });
 
 test('keeps A assets while B waits, then coordinates two live tabs and reloads each once into B', async ({
-  page, context, browserName,
+  page, context,
 }, testInfo) => {
   const distA = testInfo.outputPath('dist-a');
   const distB = testInfo.outputPath('dist-b');
   await Promise.all([build(distA, 'pwa-e2e-a'), build(distB, 'pwa-e2e-b')]);
-  const server = await serveReleases(distA, Number(process.env.PW_PORT ?? 41730));
+  const server = await serveReleases(distA);
   try {
     await page.goto(server.url);
     await expect.poll(() => release(page)).toEqual({ buildId: 'pwa-e2e-a', status: 'idle', ready: true });
@@ -42,11 +42,8 @@ test('keeps A assets while B waits, then coordinates two live tabs and reloads e
     await expect.poll(() => release(page)).toEqual({ buildId: 'pwa-e2e-a', status: 'available', ready: true });
     expect((await page.request.get(oldEntry)).status()).toBe(404); // Not on the B server or in the HTTP cache.
     expect(await page.evaluate(async (url) => (await (await fetch(url)).text()).includes('pwa-e2e-a'), oldEntry)).toBe(true);
-    // Playwright Firefox denies window CacheStorage on the IPv6 loopback; the worker still uses it.
-    if (browserName === 'chromium') {
-      const before = await page.evaluate(() => caches.keys());
-      expect(before).toEqual(expect.arrayContaining(['pwa-web-os:release:pwa-e2e-a', 'pwa-web-os:release:pwa-e2e-b']));
-    }
+    const before = await page.evaluate(() => caches.keys());
+    expect(before).toEqual(expect.arrayContaining(['pwa-web-os:release:pwa-e2e-a', 'pwa-web-os:release:pwa-e2e-b']));
     expect(await page.locator('#app').evaluate((app: HTMLElement) => app.inert)).toBe(false);
 
     let primaryReloads = 0;
@@ -58,9 +55,7 @@ test('keeps A assets while B waits, then coordinates two live tabs and reloads e
     await Promise.all([page, peer].map((tab) => expect.poll(() => release(tab)).toEqual({
       buildId: 'pwa-e2e-b', status: 'idle', ready: true,
     })));
-    if (browserName === 'chromium') {
-      expect(await page.evaluate(() => caches.keys())).toEqual(['pwa-web-os:release:pwa-e2e-b']);
-    }
+    expect(await page.evaluate(() => caches.keys())).toEqual(['pwa-web-os:release:pwa-e2e-b']);
     expect(await page.evaluate(() => sessionStorage.getItem('pwa-web-os:reload-target'))).toBe('pwa-e2e-b');
     expect({ primaryReloads, peerReloads }).toEqual({ primaryReloads: 1, peerReloads: 1 });
   } finally {
@@ -69,7 +64,7 @@ test('keeps A assets while B waits, then coordinates two live tabs and reloads e
 });
 
 test('rejects a candidate served with a mismatched asset and keeps the old shell offline', async ({
-  page, context, browserName,
+  page, context,
 }, testInfo) => {
   const distA = testInfo.outputPath('dist-a');
   const distB = testInfo.outputPath('dist-b');
@@ -77,7 +72,7 @@ test('rejects a candidate served with a mismatched asset and keeps the old shell
   // A real mixed deployment: the manifest still returns 200 but its bytes do not match the worker.
   await writeFile(join(distB, 'manifest.webmanifest'), '{}');
   await writeFile(join(distA, 'unlisted.txt'), 'Synthetic network-only resource');
-  const server = await serveReleases(distA, Number(process.env.PW_PORT ?? 41730));
+  const server = await serveReleases(distA);
   try {
     await page.goto(server.url);
     await expect.poll(() => release(page)).toEqual({ buildId: 'pwa-e2e-good', status: 'idle', ready: true });
@@ -89,9 +84,7 @@ test('rejects a candidate served with a mismatched asset and keeps the old shell
     });
     expect(await release(page)).toEqual({ buildId: 'pwa-e2e-good', status: 'failed', ready: true });
     expect(await page.evaluate(async () => !!(await navigator.serviceWorker.getRegistration())?.waiting)).toBe(false);
-    if (browserName === 'chromium') {
-      expect(await page.evaluate(() => caches.keys())).toEqual(['pwa-web-os:release:pwa-e2e-good']);
-    }
+    expect(await page.evaluate(() => caches.keys())).toEqual(['pwa-web-os:release:pwa-e2e-good']);
 
     await context.setOffline(true);
     await page.reload();

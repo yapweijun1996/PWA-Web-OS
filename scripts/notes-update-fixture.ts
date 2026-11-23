@@ -18,15 +18,13 @@ export const updateTest = test.extend<{ releases: {
   deployB(): void;
 } }>({
   releases: async ({}, use, testInfo) => {
-    const port = Number(process.env.PW_PORT);
-    if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Set PW_PORT for the A/B server');
     const distA = testInfo.outputPath('dist-a');
     const distB = testInfo.outputPath('dist-b');
     const build = (outDir: string, id: string) => exec(process.execPath, [
       resolve('node_modules/vite/bin/vite.js'), 'build', '--outDir', outDir,
     ], { env: { ...process.env, BUILD_ID: id } });
     await Promise.all([build(distA, releaseA), build(distB, releaseB)]);
-    const server = await serveReleases(distA, port);
+    const server = await serveReleases(distA);
     try {
       await use({ url: server.url, a: releaseA, b: releaseB, distB, deployA: () => server.deploy(distA), deployB: () => server.deploy(distB) });
     } finally {
