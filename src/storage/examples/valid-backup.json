@@ -1,0 +1,12 @@
+{
+  "format": "pwa-web-os.notes",
+  "version": 1,
+  "notes": [
+    {
+      "id": "7b1ec150-0afe-4bad-95ac-000000000001",
+      "title": "Sample note",
+      "body": "Synthetic note body",
+      "updatedAt": 1700000000000
+    }
+  ]
+}
