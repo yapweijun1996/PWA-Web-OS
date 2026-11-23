@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { committedNotes, holdNoteWrites } from '../scripts/notes-update-fixture';
+import { THEME_KEY } from '../src/contracts';
 
 function launcher(page: Page): Locator {
   return page.getByRole('region', { name: 'Workspace launcher', exact: true });
@@ -103,6 +104,28 @@ test('keyboard-only creation moves focus to Title, then to Body by Tab', async (
   await page.keyboard.type('Local keyboard demo text');
   await expect(page.getByRole('button', { name: 'Synthetic keyboard note' })).toBeVisible();
 });
+
+for (const [theme, system] of [['dark', 'light'], ['light', 'dark']] as const) {
+  test(`saved ${theme} theme applies before the workspace script loads`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: system });
+    await page.addInitScript(({ key, value }) => localStorage.setItem(key, value), { key: THEME_KEY, value: theme });
+    let deliverScript = () => {};
+    const scriptHeld = new Promise<void>(resolve => { deliverScript = resolve; });
+    await page.route('**/assets/index-*.js', async route => {
+      await scriptHeld;
+      await route.continue();
+    }, { times: 1 });
+    try {
+      await page.goto('./', { waitUntil: 'commit' });
+      await expect(page.locator('#app')).toBeEmpty();
+      await expect(page.locator('html')).toHaveCSS('color-scheme', theme);
+    } finally {
+      deliverScript();
+    }
+    await expect(launcher(page)).toBeVisible();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+  });
+}
 
 test('System follows browser appearance and Dark theme persists through a real reload', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });

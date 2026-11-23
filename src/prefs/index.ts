@@ -1,10 +1,10 @@
-import { THEME_KEY, type PreferenceStore, type Theme } from '../contracts';
+import { THEMES, THEME_KEY, type PreferenceStore, type Theme } from '../contracts';
 
 export function createPreferenceStore(): PreferenceStore {
   let theme: Theme = 'system';
   try {
     const stored = window.localStorage.getItem(THEME_KEY);
-    if (stored === 'system' || stored === 'light' || stored === 'dark') theme = stored;
+    theme = THEMES.find(value => value === stored) ?? theme;
   } catch {
     // Storage access itself can be denied, even when the API exists.
   }

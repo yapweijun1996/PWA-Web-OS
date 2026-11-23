@@ -99,7 +99,8 @@ export interface Storage {
   backup: BackupService;
 }
 
-export type Theme = 'system' | 'light' | 'dark';
+export const THEMES = ['system', 'light', 'dark'] as const;
+export type Theme = typeof THEMES[number];
 export interface PreferenceStore {
   getTheme(): Theme;
   /** persisted=false when localStorage is unavailable; the choice still applies for the session. */

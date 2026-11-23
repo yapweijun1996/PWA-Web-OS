@@ -3,11 +3,20 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transformWithOxc, type Plugin, type ResolvedConfig } from 'vite';
+import { THEMES, THEME_KEY } from '../src/contracts.ts';
 
 const manifestPath = 'manifest.webmanifest';
 const publicAssets = ['THIRD-PARTY-NOTICES.txt', 'wallpapers/aurora-lake-desktop.webp', 'wallpapers/aurora-lake-phone.webp'];
 const runtimePath = fileURLToPath(new URL('./service-worker-runtime.ts', import.meta.url));
 const integrity = (bytes: string | Uint8Array) => `sha256-${createHash('sha256').update(bytes).digest('base64')}`;
+// Read the preference before the stylesheet can paint. The CSP hashes these exact bytes.
+const initialTheme = `
+try {
+  const theme = localStorage.getItem(${JSON.stringify(THEME_KEY)});
+  if (${JSON.stringify(THEMES)}.includes(theme)) document.documentElement.dataset.theme = theme;
+} catch {
+  // The stylesheet follows the system preference when storage is unavailable.
+}`.trim();
 
 export function pwaPlugins(buildId: string): Plugin[] {
   let config: ResolvedConfig;
@@ -19,6 +28,15 @@ export function pwaPlugins(buildId: string): Plugin[] {
     };
   }
   return [
+    {
+      name: 'pwa:initial-theme',
+      transformIndexHtml: {
+        order: 'pre',
+        handler: html => html
+          .replace('__PWA_THEME_HASH__', `'${integrity(initialTheme)}'`)
+          .replace('<!-- pwa:initial-theme -->', `<script id="initial-theme">${initialTheme}</script>`),
+      },
+    },
     {
       name: 'pwa:manifest',
       configResolved(resolved) { config = resolved; },

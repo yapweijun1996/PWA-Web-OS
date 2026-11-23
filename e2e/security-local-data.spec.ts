@@ -88,7 +88,11 @@ test('production CSP allows worker, manifest and Blob export; markup stays liter
   const appUrl = recordedPreview.url;
   await page.goto(appUrl.href);
   expect(page.url()).toBe(appUrl.href);
-  await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute('content', policy);
+  const initialTheme = await page.locator('script#initial-theme').innerHTML();
+  expect(initialTheme).not.toBe('');
+  const themeHash = createHash('sha256').update(initialTheme).digest('base64');
+  const expectedPolicy = policy.replace("script-src 'self';", `script-src 'self' 'sha256-${themeHash}';`);
+  await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute('content', expectedPolicy);
   await expect(page.locator('.connection').getByText('Available offline', { exact: true })).toBeVisible();
   expect(await page.evaluate(async () => ({
     scope: (await navigator.serviceWorker.getRegistration())?.scope,

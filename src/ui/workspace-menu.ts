@@ -1,7 +1,7 @@
 import type { LocalizedUi } from './localized';
 import type { MessageKey } from '../i18n';
 import { saveLocale } from '../prefs/locale';
-import type { PreferenceStore, Theme } from '../contracts';
+import { THEMES, type PreferenceStore, type Theme } from '../contracts';
 import { button, element, type Feedback } from './dom';
 import { icon } from './icons';
 
@@ -17,7 +17,7 @@ export function createWorkspaceMenu(ui: LocalizedUi, prefs: PreferenceStore, fee
   const theme = prefs.getTheme();
   document.documentElement.dataset.theme = theme;
   const choices: Record<Theme, MessageKey> = { system: 'settings.system', light: 'settings.light', dark: 'settings.dark' };
-  for (const mode of ['system', 'light', 'dark'] as const) {
+  for (const mode of THEMES) {
     const option = element('label');
     const radio = element('input');
     radio.type = 'radio';
