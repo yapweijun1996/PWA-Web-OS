@@ -10,11 +10,16 @@ const build = (outDir: string, id: string) => exec(process.execPath, [
   resolve('node_modules/vite/bin/vite.js'), 'build', '--outDir', outDir,
 ], { env: { ...process.env, BUILD_ID: id } });
 
+// Polled while a tab reloads: an evaluate that loses its execution context to the navigation
+// reports undefined so the poll retries, instead of failing the test. Real failures still time out.
 const release = (page: Page) => page.evaluate(() => ({
   buildId: window.__pwaUpdate?.buildId,
   status: window.__pwaUpdate?.getState().status,
   ready: window.__pwaUpdate?.isOfflineReady(),
-}));
+})).catch((error: unknown) => {
+  if (String(error).includes('Execution context was destroyed')) return undefined;
+  throw error;
+});
 
 test('keeps A assets while B waits, then coordinates two live tabs and reloads each once into B', async ({
   page, context, browserName,
