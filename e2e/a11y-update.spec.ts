@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { resolve } from 'node:path';
 import { promisify } from 'node:util';
 import AxeBuilder from '@axe-core/playwright';
+import { markKnownFirefoxAxeCrash } from './helpers/firefox-axe';
 import { expect, test as base, type Locator } from '@playwright/test';
 import { serveReleases } from '../scripts/pwa-test-server';
 
@@ -39,8 +40,8 @@ const test = base.extend<{ notice: Locator }>({
   },
 });
 
-test('axe scans a real waiting release notice at all three sizes and in both themes', async ({ page, notice, browserName }) => {
-  test.skip(browserName === "firefox", "Playwright Firefox crashes the page during axe evaluation on this Windows host (Page crashed). Firefox axe coverage is UNVERIFIED; Chromium runs the full matrix.");
+test('axe scans a real waiting release notice at all three sizes and in both themes', async ({ page, notice, browser }) => {
+  markKnownFirefoxAxeCrash(browser);
   test.setTimeout(60_000);
   const findings: { state: string; rules: { id: string; targets: unknown[] }[] }[] = [];
   for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 1024 }, { width: 1280, height: 800 }]) {
