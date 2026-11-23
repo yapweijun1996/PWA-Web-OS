@@ -15,9 +15,37 @@ declare const release: {
   const cacheName = prefix + release.buildId;
   const absolute = (path: string) => new URL(release.base + path, worker.location.origin).href;
   const index = absolute('index.html');
+  // Worker-only metadata, outside the routes served from CacheStorage.
+  const retentionKey = absolute('.pwa-previous-releases');
   const assets = new Map(release.files.map(([path, integrity]) => [absolute(path), integrity]));
   const inScope = (url: URL) => url.origin === worker.location.origin && url.pathname.startsWith(release.base);
   const cached = (url: string) => caches.match(url, { cacheName });
+  const currentClients = new Set<string>();
+  const isOtherRelease = (key: string) => key.startsWith(prefix) && key !== cacheName;
+
+  async function previousReleases(): Promise<string[]> {
+    const metadata = await cached(retentionKey);
+    return metadata ? (await metadata.json() as string[]).filter(isOtherRelease) : [];
+  }
+
+  async function retireOldReleases(windows: WindowClient[]): Promise<void> {
+    const live = new Set(windows.map(({ id }) => id));
+    for (const id of currentClients) if (!live.has(id)) currentClients.delete(id);
+    // If the worker restarts, unconfirmed clients keep the old caches until they identify themselves again.
+    if (windows.some(({ id }) => !currentClients.has(id))) return;
+    const old = await previousReleases();
+    if (worker.registration.installing || worker.registration.waiting) return;
+    await Promise.all(old.map((key) => caches.delete(key)));
+  }
+
+  async function versionedAsset(request: Request): Promise<Response> {
+    // Only Vite's hashed assets can fall back to another release. Never mix HTML, manifest or icons.
+    for (const cacheName of await previousReleases()) {
+      const response = await caches.match(request, { cacheName });
+      if (response) return response;
+    }
+    return fetch(request);
+  }
 
   async function complete(): Promise<boolean> {
     return (await Promise.all([...assets.keys()].map(cached))).every(Boolean);
@@ -26,12 +54,15 @@ declare const release: {
   async function install(): Promise<void> {
     // Never touch the active release's cache when preparing a distinct build.
     try {
+      // Snapshot only earlier releases. Later candidates must never become eligible for cleanup.
+      const old = (await caches.keys()).filter(isOtherRelease);
       const cache = await caches.open(cacheName);
       // addAll commits atomically, and integrity rejects stale deployment files and HTML fallbacks.
       await cache.addAll([...assets].map(([url, integrity]) =>
         new Request(url, { cache: 'reload', redirect: 'error', integrity }),
       ));
       if (!await complete()) throw new Error('Incomplete release');
+      await cache.put(retentionKey, new Response(JSON.stringify(old)));
     } catch (error) {
       await caches.delete(cacheName);
       throw error;
@@ -42,21 +73,19 @@ declare const release: {
   worker.addEventListener('activate', (event) => {
     event.waitUntil((async () => {
       if (!await complete()) throw new Error('Incomplete release');
-      const old = (await caches.keys()).filter((key) => key.startsWith(prefix) && key !== cacheName);
-      // Don't remove a candidate if another update has already started installing.
-      if (!worker.registration.installing && !worker.registration.waiting) {
-        await Promise.all(old.map((key) => caches.delete(key)));
-      }
+      // Claiming a client changes its controller, not the build already running in its document.
       await worker.clients.claim();
     })());
   });
 
   worker.addEventListener('fetch', (event) => {
     const request = event.request;
-    if (request.method !== 'GET' || !inScope(new URL(request.url))) return;
+    const url = new URL(request.url);
+    if (request.method !== 'GET' || !inScope(url)) return;
     // Pin navigations to the controlling build, even if the origin now serves a new release.
     const key = request.mode === 'navigate' ? index : request.url;
     if (assets.has(key)) event.respondWith(cached(key).then((response) => response ?? fetch(request)));
+    else if (url.pathname.startsWith(release.base + 'assets/')) event.respondWith(versionedAsset(request));
   });
 
   worker.addEventListener('message', (event) => {
@@ -67,10 +96,13 @@ declare const release: {
     const reply = (data: WorkerReply) => port.postMessage(data);
     event.waitUntil((async () => {
       const ready = await complete();
-      const windows = await worker.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      const peers = windows.filter((client) => client.id !== source.id && inScope(new URL(client.url)))
-        .map((client) => client.id);
+      const onCurrentBuild = message.type === 'inspect' && message.documentBuildId === release.buildId;
+      if (onCurrentBuild) currentClients.add(source.id);
+      const windows = (await worker.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+        .filter((client) => inScope(new URL(client.url)));
+      const peers = windows.filter((client) => client.id !== source.id).map((client) => client.id);
       if (message.type === 'inspect') {
+        if (ready && onCurrentBuild) await retireOldReleases(windows).catch(() => { /* Keep old caches on cleanup failure. */ });
         reply({ type: 'inspection', buildId: release.buildId, ready, clientId: source.id, peers });
       } else if (message.type === 'activate') {
         if (!ready || message.buildId !== release.buildId || !Array.isArray(message.readyClients)) {

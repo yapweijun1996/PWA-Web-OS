@@ -1,5 +1,7 @@
 import type { ActivationReply, PeerMessage, WorkerInspection, WorkerRequest } from './protocol';
 
+declare const __BUILD_ID__: string;
+
 export const stepTimeout = 8_000;
 
 // Abort also removes the timer and lets transports detach their listeners.
@@ -33,7 +35,8 @@ export async function requestWorker(worker: ServiceWorker, request: WorkerReques
 }
 
 export async function inspectWorker(worker: ServiceWorker, signal?: AbortSignal): Promise<WorkerInspection | undefined> {
-  const reply = await requestWorker(worker, { type: 'inspect' }, signal).catch(() => undefined);
+  const reply = await requestWorker(worker, { type: 'inspect', documentBuildId: __BUILD_ID__ }, signal)
+    .catch(() => undefined);
   return reply?.type === 'inspection' ? reply : undefined;
 }
 
