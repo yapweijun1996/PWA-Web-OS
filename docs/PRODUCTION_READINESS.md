@@ -69,7 +69,7 @@ The Pages build runs the complete Chromium and Firefox Playwright suite on its U
 
 ## G4: Evidence and recovery
 
-- [ ] Map applicable `pwa:product-standard` v1.1.0 `STATIC_OFFLINE` cases to tests. Record each test ID, candidate build, environment, timestamp, outcome, and evidence reference. Explain exceptions. Verify all applicable release-blocking checks passed.
+- [ ] Use the [60-case coverage index](STANDARD_COVERAGE.md) to reconcile applicable `pwa:product-standard` v1.1.0 `STATIC_OFFLINE` cases with candidate results. Record each test ID, candidate build, environment, timestamp, outcome, and evidence reference. Explain exceptions. Verify all applicable release-blocking checks passed.
 - [ ] Rehearse recovery on staging with retained artifacts and test notes. Verify older builds can read the retained schema before rollback. Document a forward fix path if they cannot.
 - [ ] Record the release decision as `GO` or `HOLD`, the release track, owner, evidence links, and unresolved items. Hold for required checks that fail, are blocked, or have no execution evidence. Record cross-device transfer as blocked if a second device is unavailable.
 - [ ] Obtain authorization for the intended rollout and publish the tested artifact for that track. Confirm the production URL resolves and serves the expected build, then smoke-test launch and offline readiness with synthetic notes.
