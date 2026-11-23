@@ -8,3 +8,13 @@ Supplementary manual check on 2026-11-23 in Singapore, against the deployed GitH
 | macOS, ordinary Firefox tab | NOT_RUN | Firefox was not installed on this host. An official download was obtained, but preparation of a temporary copy stalled and was stopped; no Firefox test result is claimed here. |
 
 The Chrome check used a test-only profile, not an existing personal browsing profile. The deployed worker identity was observed unchanged after the check; server-side identity observations do not by themselves prove every client asset. No accessibility, mobile, installed-app offline, or cross-device result is implied.
+
+## Retail Firefox in an isolated macOS VM
+
+On 2026-11-23 at approximately 21:10 Singapore time, a separate macOS 26.6.2 VM (25G83) ran Mozilla-signed retail Firefox 160.0.1 with geckodriver 0.37.1 in a unique test profile and a visible browser window. The deployed worker reported build `b-mwta2ilmff669f3` before and after the run, and the UI displayed that same ID on each launch.
+
+A synthetic note was created and saved online. The browser was exited and started again; before navigating, WebDriver set Firefox's `Services.io.offline` to `true` and verified that an uncached request to an external site failed. The app cold-opened from its offline cache, displayed the saved note, and saved an edit. After another browser exit and restart, offline mode was set again before navigation, the uncached request failed again, and the edited content was still present. Both restarts displayed the same build ID.
+
+This is a browser-level software simulation, not a physical network disconnection or installed-app test. Privileged WebDriver access was used only to set and read the browser offline state; it did not alter system networking. The disposable VM profile and test files were isolated from the owner's Chrome profile. These results do not establish compatibility on other OS/browser versions or a full production release.
+
+A separate standalone Chrome user-data directory and a browser-only loopback proxy may make an installed-app offline rehearsal feasible without changing system networking, provided an uncached request is confirmed blocked after each actual app launch. Whether Chrome's installed app shim retains that proxy configuration across a cold restart remains unverified; a headless browser or `--app` window is not sufficient evidence of installation.
