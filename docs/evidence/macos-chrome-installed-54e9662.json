@@ -1,0 +1,32 @@
+{
+  "outcome": "PASS",
+  "timestamp": "2026-11-23T14:58:43.203Z",
+  "build": "b-mwtdek2h54e9662",
+  "macOS": "26.6.2",
+  "url": "https://yapweijun1996.github.io/PWA-Web-OS/",
+  "installation": "Chrome native installation and persistent installed app ID",
+  "offlineMethod": "Browser-only local rejecting proxy",
+  "rejectedRequests": 21,
+  "sessions": [
+    {
+      "mode": "standalone",
+      "version": "158.0.8127.36",
+      "networkProbe": 404,
+      "action": "Created online"
+    },
+    {
+      "mode": "standalone",
+      "version": "158.0.8127.36",
+      "networkProbe": 0,
+      "action": "Edited and saved offline"
+    },
+    {
+      "mode": "standalone",
+      "version": "158.0.8127.36",
+      "networkProbe": 0,
+      "action": "Compared exact edit after second offline restart"
+    }
+  ],
+  "distinctBrowserProcesses": 3,
+  "releaseManifestSha256": "7b3c7e32e415b0ba4a3017b14a41804d5a8d154ea82a02cd47bfd7a7cce78e05"
+}
