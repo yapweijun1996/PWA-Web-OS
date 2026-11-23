@@ -31,6 +31,40 @@ jobs:
           cp -R dist recovery-artifact/dist
           node scripts/release-evidence.mjs create recovery-artifact/dist recovery-artifact/manifest.json "$GITHUB_SHA"
           node scripts/release-evidence.mjs verify recovery-artifact/dist recovery-artifact/manifest.json
+      - name: Install test browsers
+        run: npx playwright install --with-deps chromium firefox
+      - name: Run browser acceptance
+        id: browsers
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: browser-evidence/playwright.json
+        run: |
+          mkdir browser-evidence
+          cp recovery-artifact/manifest.json browser-evidence/manifest.json
+          node --input-type=module > browser-evidence/environment.json <<'JS'
+          import os from 'node:os';
+          import { chromium, firefox } from 'playwright';
+          const browsers = {};
+          for (const engine of [chromium, firefox]) {
+            const browser = await engine.launch();
+            browsers[engine.name()] = browser.version();
+            await browser.close();
+          }
+          console.log(JSON.stringify({
+            timestamp: new Date().toISOString(), node: process.version,
+            platform: os.platform(), kernel: os.release(), architecture: os.arch(),
+            runnerImage: process.env.ImageOS, imageVersion: process.env.ImageVersion, browsers,
+          }, null, 2));
+          JS
+          npm run e2e -- --reporter=list,json
+          node scripts/release-evidence.mjs verify dist browser-evidence/manifest.json
+      - name: Retain browser results
+        if: ${{ !cancelled() && steps.browsers.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: browser-evidence/
+          retention-days: 90
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: recovery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}

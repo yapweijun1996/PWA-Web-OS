@@ -59,6 +59,10 @@ Use the [platform matrix](PRODUCT_SPEC.md#platform-support) for authoritative la
 - [ ] Measure the production build on agreed devices and profiles. Check cold launch, offline reopen, and editor responsiveness against the recorded budgets.
 - [ ] Record lab results separately from field p75 metrics. When field samples are insufficient, record `INSUFFICIENT_DATA` and use the agreed launch policy.
 
+## Browser evidence on each Pages push
+
+The Pages build runs the complete Chromium and Firefox Playwright suite on its Ubuntu runner before deployment. Download the `browser-evidence-<sha>-<run>-<attempt>` artifact from the workflow run. It contains the Playwright JSON results, browser and runner versions, and the release manifest used to verify the tested files. An unsuccessful suite stops deployment and preserves available diagnostics. Record skips by test and platform. The Windows, macOS and physical mobile requirements above retain their own evidence.
+
 ## G4: Evidence and recovery
 
 - [ ] Map applicable `pwa:product-standard` v1.1.0 `STATIC_OFFLINE` cases to tests. Record each test ID, candidate build, environment, timestamp, outcome, and evidence reference. Explain exceptions. Verify all applicable release-blocking checks passed.
