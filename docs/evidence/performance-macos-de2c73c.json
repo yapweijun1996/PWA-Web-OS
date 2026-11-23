@@ -1,0 +1,104 @@
+{
+  "protocol": "notes-desktop-lab-v1",
+  "commit": "de2c73cf96e057ddc8ba0a4c0895e0ac9815d58f",
+  "trackedChanges": false,
+  "startedAt": "2026-11-23T12:39:18.319Z",
+  "attempts": 7,
+  "budgetsMs": {
+    "coldLaunch": 2500,
+    "offlineReopen": 2000,
+    "editFrame": 200
+  },
+  "environment": {
+    "platform": "darwin",
+    "osRelease": "27.2",
+    "cpu": "Apple M4",
+    "logicalCpus": 10,
+    "memoryGiB": 32,
+    "initialLoadAverage": [
+      232.48828125,
+      311.9765625,
+      301.5654296875
+    ],
+    "node": "v24.21.0",
+    "playwright": "1.65.1",
+    "browser": "Google Chrome (headless)",
+    "viewport": {
+      "width": 1280,
+      "height": 800
+    },
+    "browserVersion": "158.0.8127.37"
+  },
+  "samples": [
+    {
+      "run": 1,
+      "coldLaunch": 570,
+      "offlineReopen": 374,
+      "editFrame": 69
+    },
+    {
+      "run": 2,
+      "coldLaunch": 329,
+      "offlineReopen": 548,
+      "editFrame": 56
+    },
+    {
+      "run": 3,
+      "coldLaunch": 485,
+      "offlineReopen": 467,
+      "editFrame": 87
+    },
+    {
+      "run": 4,
+      "coldLaunch": 383,
+      "offlineReopen": 463,
+      "editFrame": 52
+    },
+    {
+      "run": 5,
+      "coldLaunch": 589,
+      "offlineReopen": 720,
+      "editFrame": 45
+    },
+    {
+      "run": 6,
+      "coldLaunch": 506,
+      "offlineReopen": 360,
+      "editFrame": 46
+    },
+    {
+      "run": 7,
+      "coldLaunch": 460,
+      "offlineReopen": 334,
+      "editFrame": 47
+    }
+  ],
+  "field": {
+    "status": "INSUFFICIENT_DATA",
+    "observedSamples": 0
+  },
+  "workerSha256": "fbb1eab20346b93eb1116daa1586a91f98078c7e26539be4a3548fa4766399b0",
+  "buildId": "b-mwt95yhsde2c73c",
+  "summaryMs": {
+    "coldLaunch": {
+      "min": 329,
+      "median": 485,
+      "p75": 570,
+      "max": 589
+    },
+    "offlineReopen": {
+      "min": 334,
+      "median": 463,
+      "p75": 548,
+      "max": 720
+    },
+    "editFrame": {
+      "min": 45,
+      "median": 52,
+      "p75": 69,
+      "max": 87
+    }
+  },
+  "status": "PASS",
+  "endedAt": "2026-11-23T12:40:18.843Z"
+}

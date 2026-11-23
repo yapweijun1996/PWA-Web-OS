@@ -23,3 +23,7 @@ Use a new output filename for each run. The report records the source SHA, build
 ## Field policy
 
 Record field LCP, INP and CLS at p75 separately when a representative dataset exists. No real-user timing collection is enabled in the app. With no such dataset, record INSUFFICIENT_DATA. As an initial launch policy, a passing lab run can support the Windows demo when the Windows baseline also passes. For full production, require candidate lab results on the declared desktop and mobile baselines, and record the release owner's decision about missing field samples. A lab result on macOS covers that profile only.
+
+## Recorded desktop run
+
+On November 23, 2026 the clean `de2c73c` build passed all seven journeys on an Apple M4, macOS 27.2 and Google Chrome 158.0.8127.37. The nearest-rank p75s were 570 ms for cold launch, 548 ms for offline reopen and 69 ms for editor response. The host ran concurrent workloads. These results cover the local desktop browser session only. Field metrics remain INSUFFICIENT_DATA. [Raw samples and build identity](evidence/performance-macos-de2c73c.json)
