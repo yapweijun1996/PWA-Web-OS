@@ -1,0 +1,202 @@
+{
+  "actionsRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45284449145",
+  "workflowCommit": "94a5325aa69eb84dd2ffb758dd33b20d61d16463",
+  "artifactId": 14870829282,
+  "artifactDigest": "sha256:3b45a4ccfb768587103f3d082b0f8585bb2c48c2bcf8c209b9d9b0d68a06d2ad",
+  "source": {
+    "pagesConclusion": "success",
+    "archive": "recovery-37ad1b41d4be8d96212ce60e59532470fd19f6c9-45249652707-1",
+    "pagesRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45249652707",
+    "archiveDigest": "sha256:df88ad6e628fe22e30f5767640cbe7f5114578e5ea947874a70a7535441e672f"
+  },
+  "environment": {
+    "version": "10.0.26200",
+    "updateBuildRevision": 9974,
+    "displayVersion": "25H2",
+    "edition": "Enterprise",
+    "installationType": "Client",
+    "architecture": "ARM 64-bit Processor",
+    "caption": "Microsoft Windows 11 Enterprise"
+  },
+  "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+  "buildId": "b-mwtnv4pp37ad1b4",
+  "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+  "startedAt": "2026-11-23T22:57:46.524638+00:00",
+  "finishedAt": "2026-11-23T22:59:00.095044+00:00",
+  "windows": {
+    "baseline": {
+      "active": false,
+      "flags": 126,
+      "palette": {
+        "window": [
+          255,
+          255,
+          255
+        ],
+        "windowText": [
+          0,
+          0,
+          0
+        ],
+        "buttonFace": [
+          240,
+          240,
+          240
+        ],
+        "buttonText": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "configuredScheme": "",
+    "forced": {
+      "active": true,
+      "flags": 63,
+      "palette": {
+        "window": [
+          32,
+          32,
+          32
+        ],
+        "windowText": [
+          255,
+          255,
+          255
+        ],
+        "buttonFace": [
+          32,
+          32,
+          32
+        ],
+        "buttonText": [
+          255,
+          255,
+          255
+        ]
+      }
+    },
+    "restored": {
+      "active": false,
+      "flags": 62,
+      "palette": {
+        "window": [
+          255,
+          255,
+          255
+        ],
+        "windowText": [
+          0,
+          0,
+          0
+        ],
+        "buttonFace": [
+          240,
+          240,
+          240
+        ],
+        "buttonText": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "checks": [
+    {
+      "browser": "chrome",
+      "browserVersion": "157.0.8103.79",
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "themes": [
+        {
+          "theme": "light",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "chrome-light-forced-colors.png"
+        },
+        {
+          "theme": "dark",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "chrome-dark-forced-colors.png"
+        }
+      ],
+      "outcome": "PASS"
+    },
+    {
+      "browser": "firefox",
+      "browserVersion": "160.0",
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "themes": [
+        {
+          "theme": "light",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "firefox-light-forced-colors.png"
+        },
+        {
+          "theme": "dark",
+          "forcedColors": true,
+          "editorFocus": {
+            "style": "solid",
+            "visible": true,
+            "width": 3
+          },
+          "savedAndReopenedExactNote": true,
+          "screenshot": "firefox-dark-forced-colors.png"
+        }
+      ],
+      "outcome": "PASS"
+    }
+  ],
+  "outcome": "FAIL",
+  "workflowOutcome": "PASS",
+  "appearance": {
+    "outcome": "FAIL",
+    "check": "Firefox hovered New note label in the native Windows contrast palette",
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "foregroundRgb": [
+      38,
+      59,
+      80
+    ],
+    "backgroundRgb": [
+      32,
+      32,
+      32
+    ],
+    "ratio": 1.42,
+    "normalTextMinimum": 4.5,
+    "labelSample": {
+      "left": 301,
+      "top": 174,
+      "rightExclusive": 378,
+      "bottomExclusive": 193
+    },
+    "observations": [
+      "All four screenshots showed the focused body outline, mixed English and Chinese body, and saved status.",
+      "Firefox rendered the hovered New note label in dark blue in both app themes.",
+      "Chrome preserved the dark wallpaper and partially clipped the long sample title in its single-row editor."
+    ]
+  }
+}

@@ -23,6 +23,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 - Chromium and Firefox preserved the note through `b9dcafa → 37ad1b4 → b9dcafa` on HTTPS staging after rejecting a mixed candidate. [Recovery evidence](docs/evidence/recovery-mixed-37ad1b4.json)
 - Windows 11 25H2 Arm64 Chrome and Firefox passed the two-tab stale-write and backup rejection checks. Both recovered the draft as a separate note and retained the exact saved records after rejecting a malformed file and a conflicting batch. [Data safety report](docs/evidence/windows-data-safety-37ad1b4.json)
 - Windows 11 25H2 Arm64 Chrome and Firefox passed the Notes keyboard journey at 100% and 200% browser page zoom. Both showed focus, fit the horizontal viewport, and reopened the exact title and body after saving. [Keyboard and zoom report](docs/evidence/windows-keyboard-zoom-37ad1b4.json)
+- Windows 11 25H2 Arm64 Chrome and Firefox detected the native contrast palette. Both passed editor focus, mixed English and Chinese text, saving and exact reopening in the app's Light and Dark themes. Firefox's hovered New note label measured 1.42:1 in both themes and needs a contrast fix. [Forced colors report](docs/evidence/windows-forced-colors-37ad1b4.json)
 
 ### Update focus demo evidence from 2026-11-24
 
