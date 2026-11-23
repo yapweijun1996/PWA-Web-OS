@@ -25,7 +25,7 @@ function fakeRepository() {
     async create(draft) {
       const id = `00000000-0000-4000-8000-${String(records.size + 1).padStart(12, '0')}`;
       await createGate;
-      const note: Note = { id, ...draft, revision: 1 };
+      const note: Note = { id, ...draft, revision: 1, updatedAt: 1 };
       records.set(id, note);
       return note;
     },
@@ -38,7 +38,7 @@ function fakeRepository() {
             pending.reject(new StorageError('conflict', 'Synthetic stale revision'));
             return;
           }
-          const note: Note = { id, ...draft, revision: expected + 1 };
+          const note: Note = { id, ...draft, revision: expected + 1, updatedAt: expected + 1 };
           records.set(id, note);
           pending.resolve(note);
         },
