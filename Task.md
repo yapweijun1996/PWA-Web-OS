@@ -24,11 +24,11 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 
 - [ ] Build a responsive workspace with a launcher that opens Notes on mobile and desktop.
 - [ ] Select the workspace and Notes SVG icons from [SVG-Icon-Studio](https://github.com/yapweijun1996/SVG-Icon-Studio). Record source revisions and applicable notices, bundle the selected icons locally, and verify accessible control names.
-- [ ] Implement note creation, editing, and reopening using IndexedDB. Confirm the saved state appears only after the write transaction completes.
+- [x] Implement note creation, editing, and reopening using IndexedDB. Confirm the saved state appears only after the write transaction completes.
 - [ ] Persist the theme in localStorage and verify it survives a reload. Verify invalid preferences or unavailable localStorage fall back to defaults while Notes remains usable.
-- [ ] Simulate an IndexedDB write failure. Verify the editor reports the failure, retains the draft for retry or copy, and preserves the last saved revision.
-- [ ] Edit the same note in two clients and verify a stale write cannot overwrite the newer revision.
-- [ ] Show saving, saved, and failed states. Keep failed edits available for retry while the editor remains open.
+- [x] Simulate an IndexedDB write failure. Verify the editor reports the failure, retains the draft for retry or copy, and preserves the last saved revision.
+- [x] Edit the same note in two clients and verify a stale write cannot overwrite the newer revision.
+- [x] Show saving, saved, and failed states. Keep failed edits available for retry while the editor remains open.
 - [ ] Verify iOS safe areas, desktop keyboard navigation, visible focus, and screen reader announcements.
 
 ## M2: Install and offline

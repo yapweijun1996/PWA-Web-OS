@@ -1,0 +1,56 @@
+# Windows Demo Release Evidence (candidate 1)
+
+Status: **Provisional.** This records what was run for the Windows demo track defined in [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). It does not clear the full production release, which needs every row of the [platform matrix](PRODUCT_SPEC.md#platform-support). The visual redesign decided in [M0_DECISIONS.md](M0_DECISIONS.md) (Aurora look) has not been implemented, so the current interface does not yet match the Aurora anchor images.
+
+## Candidate
+
+| Item | Value |
+| --- | --- |
+| Code tested | Working tree identical to commit `ae37122` on branch `m1-integration`. The build ID suffix `65fd063` is the parent commit that Git reported when the build ran, before `ae37122` was committed. |
+| Environment | Windows 11 (10.0.26200), Node 24.22.3, Vite 8.3.8, Vitest 5.1.1, Playwright 1.65.1, TypeScript 7.0.2 |
+| Browsers | Playwright Chromium 159.0.8154.6 and Firefox 159.0. These are Playwright builds, not branded Chrome or a normal Firefox profile. |
+| Release owner | Not assigned |
+
+## Commands run from a clean install
+
+| Command | Result | Evidence |
+| --- | --- | --- |
+| `npm ci` | PASS | 0 vulnerabilities reported |
+| `npm run typecheck` | PASS | strict TypeScript, no diagnostics |
+| `npm test` | PASS | 84 unit tests in 6 files, using fakes (jsdom, fake-indexeddb) |
+| `npm run build` | PASS | production bundle and service worker emitted |
+| `npm run e2e` | PASS | 97 passed, 7 skipped, 0 failed in Chromium and Firefox against `vite preview` of the production build |
+
+The 7 skipped tests are the Firefox axe scans, which crash the page under Playwright on this host (`Page crashed`). Firefox axe coverage is `NOT_RUN`. Chromium ran the full axe matrix.
+
+## Gates
+
+| Gate | Status | Basis |
+| --- | --- | --- |
+| G1 Data, offline and update safety | Partly evidenced | Real-browser tests cover persistence across reload, offline cold launch with edit and save, stale two-tab write, an injected IndexedDB abort with rollback and retry, text limits, backup export and restore in a fresh browser context, rejected backups, A to B update with a pending draft, flush failure, an unready second client and an A-only asset after deployment. Real quota exhaustion, a blocked or interrupted schema migration and a real older-schema upgrade were not exercised. |
+| G1 Security | Partly evidenced | Production CSP via meta tag allows the service worker, manifest and Blob download with no violations in the test flow. Imported markup stays literal text. Recorded requests were same-origin GETs for app assets only. The cache holds app assets plus one small retained-release metadata record. A meta CSP cannot provide `frame-ancestors` or other response headers. |
+| G2 Compatibility | `NOT_RUN` or `BLOCKED` | See the matrix below. |
+| G3 Performance | `NOT_RUN` | No budgets, lab measurements or field data recorded. |
+| G4 Evidence and recovery | `NOT_RUN` | No staging rehearsal of recovery with retained artifacts. No artifact digests bound to the candidate. |
+
+## Platform matrix
+
+| Platform | Combination | Status |
+| --- | --- | --- |
+| Windows | Chromium tab (Playwright) | PASS by automation |
+| Windows | Firefox tab (Playwright) | PASS by automation, except axe scans (`NOT_RUN`) |
+| Windows | Chrome installed app, Firefox web app window | `NOT_RUN` |
+| Windows | Branded Chrome and normal Firefox profiles | `NOT_RUN` |
+| macOS | all rows | `BLOCKED` (no device) |
+| iOS | all rows | `BLOCKED` (no device) |
+| Android | all rows | `BLOCKED` (no device) |
+| Cross-device backup transfer | second physical device | `BLOCKED` |
+
+## Not verified
+
+Screen reader announcements (manual), iPhone VoiceOver, physical safe areas and software keyboards, installed-app modes, GitHub Pages response headers, real quota exhaustion, performance budgets and field Core Web Vitals, and the Aurora visual match.
+
+## Decision
+
+- Windows demo: **HOLD** until the visual pass is done and its screenshots are reviewed. The functional workflow is tested, but the interface does not match the agreed anchor.
+- Full production release: **HOLD**. Required platform rows are `BLOCKED` or `NOT_RUN`.
