@@ -22,7 +22,7 @@ The top bar checks the hosting origin when visible. A real Chromium and Firefox 
 - Chrome 158.0.8127.36 on macOS 26.6.2 followed the live site's custom 404 link, prepared offline use and saved a synthetic note. It restarted offline, edited and saved, then restarted offline again and read the same edit. A controlled navigation opened that same unknown URL offline.
 - The retained release rehearsal passed in both engines on loopback. See the [recovery identities and results](docs/RECOVERY_RUNBOOK.md#rehearsal-with-the-november-23-demo).
 - The Windows Server 2025 lab passed all six Chrome and Firefox tab sessions and same-host backup transfer on the same artifact. [Windows browser results](docs/RELEASE_EVIDENCE_WINDOWS_DEMO.md#subsequent-hosted-windows-tab-run)
-- The same retained build exceeded the 200 ms editor response p75 ceiling in two macOS VM batches. [Performance evidence](docs/PERFORMANCE.md)
+- The same retained build passed all three budgets on a physical Apple M4 with macOS 27.2. Two macOS VM batches exceeded the editing ceiling. [Performance evidence](docs/PERFORMANCE.md)
 
 ### Earlier candidate evidence from 2026-11-23
 
