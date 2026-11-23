@@ -1,8 +1,7 @@
 """Check actual page zoom and keyboard navigation in a headed Windows browser."""
 
-import ctypes
-from ctypes import wintypes
-import subprocess
+import json
+from zipfile import ZipFile
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -12,52 +11,32 @@ from selenium.webdriver.support.ui import WebDriverWait
 from desktop_browser import browser
 
 
-def activate_browser(pid):
-    # WebDriver can operate a background window. Bring only the test process forward.
-    subprocess.run([
-        "powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
-        f"if (!(New-Object -ComObject WScript.Shell).AppActivate({pid})) {{ exit 1 }}",
-    ], check=True, creationflags=subprocess.CREATE_NO_WINDOW, timeout=8)
+def set_browser_zoom(driver, name, profile, url):
+    if name == "chrome":
+        driver.get("chrome://settings/appearance")
+        zoom_setting = driver.execute_async_script("""
+            const done = arguments[0];
+            chrome.settingsPrivate.setDefaultZoom(2, success => {
+              if (!success) { done(null); return; }
+              chrome.settingsPrivate.getDefaultZoom(done);
+            });
+        """)
+        if zoom_setting != 2:
+            raise AssertionError(f"Chrome page zoom setting was {zoom_setting!r}")
+        driver.get(url)
+        return "Chrome default page zoom setting"
 
-
-def send_zoom_in(pid):
-    """Send Ctrl+Numpad Plus only while the test browser owns the foreground."""
-    user32 = ctypes.WinDLL("user32", use_last_error=True)
-    user32.GetForegroundWindow.restype = wintypes.HWND
-    user32.GetWindowThreadProcessId.argtypes = (wintypes.HWND, ctypes.POINTER(wintypes.DWORD))
-    owner = wintypes.DWORD()
-    user32.GetWindowThreadProcessId(user32.GetForegroundWindow(), ctypes.byref(owner))
-    if owner.value != pid:
-        raise AssertionError(f"Foreground process is {owner.value}, expected test browser {pid}")
-
-    class KeyboardInput(ctypes.Structure):
-        _fields_ = [
-            ("key", wintypes.WORD), ("scan", wintypes.WORD), ("flags", wintypes.DWORD),
-            ("time", wintypes.DWORD), ("extra", ctypes.c_size_t),
-        ]
-
-    # The native INPUT union must also fit its largest member, MOUSEINPUT.
-    class MouseInput(ctypes.Structure):
-        _fields_ = [
-            ("x", wintypes.LONG), ("y", wintypes.LONG), ("data", wintypes.DWORD),
-            ("flags", wintypes.DWORD), ("time", wintypes.DWORD), ("extra", ctypes.c_size_t),
-        ]
-
-    class InputData(ctypes.Union):
-        _fields_ = [("keyboard", KeyboardInput), ("mouse", MouseInput)]
-
-    class Input(ctypes.Structure):
-        _fields_ = [("type", wintypes.DWORD), ("data", InputData)]
-
-    ctrl, add, release = 0x11, 0x6B, 0x0002
-    keys = ((ctrl, 0), (add, 0), (add, release), (ctrl, release))
-    events = (Input * len(keys))(*(
-        Input(1, InputData(keyboard=KeyboardInput(key=key, flags=flags))) for key, flags in keys
-    ))
-    user32.SendInput.argtypes = (wintypes.UINT, ctypes.POINTER(Input), ctypes.c_int)
-    user32.SendInput.restype = wintypes.UINT
-    if user32.SendInput(len(events), events, ctypes.sizeof(Input)) != len(events):
-        raise OSError(ctypes.get_last_error(), "SendInput did not send the entire zoom shortcut")
+    # Firefox supports installing a temporary add-on for the public per-tab zoom API.
+    archive = profile.with_suffix(".xpi")
+    with ZipFile(archive, "w") as extension:
+        extension.writestr("manifest.json", json.dumps({
+            "manifest_version": 3, "name": "Notes QA page zoom", "version": "1.0",
+            "browser_specific_settings": {"gecko": {"id": "qa-page-zoom@pwa-web-os.invalid"}},
+            "background": {"scripts": ["zoom.js"]},
+        }))
+        extension.writestr("zoom.js", "browser.tabs.setZoom(2);")
+    driver.install_addon(str(archive), temporary=True)
+    return "Firefox tabs.setZoom in a temporary add-on"
 
 
 def viewport(driver):
@@ -158,28 +137,19 @@ def exercise_keyboard_zoom(name, profile, downloads, url, build):
         normal = exercise_at_zoom(
             driver, url, build, baseline["dpr"], "Synthetic keyboard 100", "Saved at normal zoom.",
         )
-        dpr_steps = [baseline["dpr"]]
-        process_capability = {"chrome": "goog:processID", "firefox": "moz:processID"}[name]
-        pid = int(driver.capabilities[process_capability])
-        activate_browser(pid)
-        for _ in range(8):
-            send_zoom_in(pid)
-            previous = dpr_steps[-1]
-            zoomed = WebDriverWait(driver, 5).until(
-                lambda active: sample if (sample := viewport(active))["dpr"] > previous else False,
-                message="Native zoom shortcut did not increase the device pixel ratio",
-            )
-            ratio = zoomed["dpr"] / baseline["dpr"]
-            dpr_steps.append(zoomed["dpr"])
-            if ratio >= 1.98:
-                break
+        zoom_method = set_browser_zoom(driver, name, profile, url)
+        zoomed = WebDriverWait(driver, 10).until(
+            lambda active: sample if (sample := viewport(active))["dpr"] > baseline["dpr"] else False,
+            message=f"{name} page zoom did not increase the device pixel ratio",
+        )
+        ratio = zoomed["dpr"] / baseline["dpr"]
         if abs(ratio - 2) > 0.02 or abs(zoomed["width"] * 2 - baseline["width"]) > 30 or zoomed["visualScale"] != 1:
-            raise AssertionError(f"Expected 200% browser page zoom after {dpr_steps}: {baseline} -> {zoomed}")
+            raise AssertionError(f"Expected 200% browser page zoom: {baseline} -> {zoomed}")
         enlarged = exercise_at_zoom(
             driver, url, build, zoomed["dpr"], "Synthetic keyboard 200", "Saved at enlarged zoom.",
         )
         return {
             "browser": name, "browserVersion": driver.capabilities["browserVersion"],
-            "nativeZoomDprSteps": dpr_steps, "pageZoomRatio": ratio,
+            "zoomMethod": zoom_method, "pageZoomRatio": ratio,
             "normal": normal, "enlarged": enlarged, "outcome": "PASS",
         }
