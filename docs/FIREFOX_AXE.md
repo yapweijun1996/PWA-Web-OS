@@ -1,6 +1,6 @@
 # Firefox accessibility scan coverage
 
-The seven axe browser tests run on Chromium, on Linux Firefox, and on new Firefox versions by default. The pinned Playwright Firefox 159.0 on Windows and macOS has a known scanner crash. Record its skipped matrix as NOT_RUN. A diagnostic attempt that crashes or times out is a failed run. Passing keyboard or storage tests cannot establish the missing accessibility results.
+The seven axe browser tests run in the release suite on Chromium 156.0 and Firefox 157.0 with Playwright 1.64.0. Use the [Pages browser evidence](PRODUCTION_READINESS.md#browser-evidence-on-each-pages-push) for the tested artifact and versions. With Playwright 1.65.1, Firefox 159.0 on Windows and macOS requires the opt-in below. Record its default skips as NOT_RUN and diagnostic crashes or timeouts as FAIL. Screen reader announcements and manual contrast review have their own acceptance checks.
 
 | Environment | Evidence |
 | --- | --- |
@@ -16,9 +16,11 @@ A supplementary macOS 26.6.2 test of the bundled Firefox performed direct axe-co
 
 At `9599c6e`, the Ubuntu Pages suite recorded 134 passes, the same seven Firefox axe failures and one quota skip. On a separate Ubuntu 24.04 arm64 workstation, a clean `3f85d8b` checkout ran the unchanged Firefox 159.0 suite headed under Xvfb. All seven scans ended with `frame.evaluate: Page crashed`. The reduced-motion update test passed. The audit failure therefore also occurs in headed mode. [Pages run 45190418790](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45190418790)
 
+On the same Ubuntu workstation, Playwright 1.64.0 with Firefox 157.0 completed the seven headed axe tests and the reduced-motion update test against the same application source. Both runs used axe-core 4.14.1 and the same four tags and page states. The test toolchain pin aligns the axe peer and Playwright runtime on one version. With that pin applied to `95e8a40`, the full two-engine suite passed 145 tests, including all 14 browser axe cases. The Firefox quota fixture was the sole skip. Before upgrading either tool, verify the complete axe matrix in both engines against the new pin. [Playwright 1.64.0 browser versions](https://github.com/microsoft/playwright/releases/tag/v1.64.0#browser-versions)
+
 ## Retest the exception
 
-Use a clean install, build the production assets and install the project Firefox browser as in the README. Choose a free port and run the original scan with the override enabled, then run the remaining matrix if that succeeds.
+To retest Firefox 159.0, use a disposable checkout with Playwright 1.65.1 and its bundled Firefox. Build the production assets as in the README. Choose a free port and run the original scan with the override enabled, then run the remaining matrix if that succeeds.
 
 ```sh
 PW_PORT=41973 PW_RETRY_FIREFOX_AXE=1 npx playwright test e2e/a11y-axe.spec.ts --project=firefox --grep='390x844, Light'

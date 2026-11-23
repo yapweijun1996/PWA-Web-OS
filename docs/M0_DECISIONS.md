@@ -61,7 +61,7 @@ The numeric limits below were approved as drafted but are not measured against b
 ## Open questions
 
 1. Minimum Windows, Chrome and Firefox versions for the demo, and the minimums for the blocked rows.
-2. Exact tool versions. Candidates read from the npm registry on 2026-11-23 (not yet verified by a clean build): Vite 8.3.8, Vitest 5.1.1, Playwright 1.65.1, TypeScript 7.0.2. Vitest 5.1.1 requires Node `^22.12 || ^24 || >=26`. The development machine runs Node 25.2.1, which that range excludes, so pin Node 24 (to be confirmed as LTS) in `.nvmrc` and in the GitHub Actions workflow. Verify TypeScript 7 with Vite and Vitest before adopting it.
+2. Resolved: development and release checks use Node 24 from `.nvmrc` and the exact versions in `package-lock.json`. See [Local development](../README.md#local-development) and the [Firefox test toolchain evidence](FIREFOX_AXE.md).
 3. Resolved: the owner confirmed the **Windows demo** track from [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md) as the target (2026-11-23). A Windows demo result does not clear the full release gate. Still open: the exact wording the app and release notes use to label the demo. Backup transfer to a second device is recorded as `BLOCKED` while only one machine is available.
 4. Approval of the "Other" proposals (draft lifetime, standard profile, performance budgets, ownership).
 
