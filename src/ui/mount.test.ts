@@ -307,6 +307,28 @@ test('connection, offline readiness and fake update states do not change editor 
   await tick();
 });
 
+test('a focused update command transfers focus to progress and keeps the update announcement during a note flush', async () => {
+  const app = fixture();
+  await createNote();
+  edit('#note-body', 'Pending synthetic edit');
+  app.setUpdate({ status: 'available' });
+  const [update, retry] = document.querySelectorAll<HTMLButtonElement>('.update-notice button');
+  update.focus();
+  app.setUpdate({ status: 'saving' });
+  const progress = node('.update-notice p');
+  expect(document.activeElement).toBe(progress);
+  const flush = app.flush();
+  await tick();
+  expect(saveStatus()).toBe('Saving…');
+  expect(lastStatus()).toBe('Saving changes before update…');
+  app.writes[0].commit();
+  await flush;
+  expect(saveStatus()).toBe('Saved on this device');
+  expect(lastStatus()).toBe('Saving changes before update…');
+  app.setUpdate({ status: 'paused', detail: 'other_client' });
+  expect(document.activeElement).toBe(retry);
+});
+
 test('an oversized backup is rejected before reading bytes or calling the injected service', () => {
   const previewImport = vi.fn<BackupService['previewImport']>();
   fixture({ previewImport });

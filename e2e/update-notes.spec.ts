@@ -210,11 +210,14 @@ test('reloads only once into B after rapid repeated Update clicks during a pendi
     await body(page).fill('Pending edit at the moment of acceptance');
     await expect(saveStatus(page)).toHaveText(/^(Unsaved changes|Saving…)$/);
     await update(page).evaluate((button: HTMLButtonElement) => {
+      button.focus();
       button.click();
       button.click();
     });
     const progress = page.locator('.update-notice').getByText('Saving changes before update…', { exact: true });
     await expect(progress).toBeVisible();
+    await expect(progress).toBeFocused();
+    await expect(page.getByRole('status')).toHaveText('Saving changes before update…');
     await expect(update(page)).toBeHidden();
     await expect(page.locator('#app')).toHaveAttribute('inert', '');
     await expectStillWaiting(page, releases.a);

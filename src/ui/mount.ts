@@ -12,6 +12,10 @@ import { createWorkspaceMenu } from './workspace-menu';
 
 type Surface = 'launcher' | 'notes' | 'desktop';
 
+function updateInProgress(status?: UpdateState['status']): boolean {
+  return status === 'saving' || status === 'activating' || status === 'reloading';
+}
+
 export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const language = createLanguage(readLocale());
   const ui = localizedUi(language);
@@ -22,6 +26,8 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   setDocumentLanguage();
   language.onChange(setDocumentLanguage);
   const { polite, assertive, feedback } = createFeedback(ui);
+  let current: UpdateState | undefined;
+  let requesting = false;
   const app = element('div', undefined, 'workspace');
   const banner = element('header', undefined, 'top-bar');
   const brand = element('div', undefined, 'brand');
@@ -50,6 +56,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   updateHeading.id = 'update-heading';
   update.setAttribute('aria-labelledby', updateHeading.id);
   const updateText = element('p');
+  updateText.tabIndex = -1;
   const updateProgress = element('span', undefined, 'progress-mark');
   updateProgress.setAttribute('aria-hidden', 'true');
   const updateButton = ui.action('update.action', () => { void requestUpdate(false); });
@@ -67,7 +74,13 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   launcher.append(ui.label('p', 'shell.tools', 'eyebrow'), launcherHeading,
     ui.label('p', 'shell.intro', 'muted'), tile);
 
-  const notes = createNotes(ui, deps.storage.repository, feedback, openLauncher);
+  const notes = createNotes(ui, deps.storage.repository, {
+    announce(message) {
+      // An update can flush a note while the progress message is being announced.
+      if (!requesting && !updateInProgress(current?.status)) feedback.announce(message);
+    },
+    alert: feedback.alert,
+  }, openLauncher);
   const backup = createBackupMenu(ui, deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback, menu.show);
   menu.panel.append(backup.menu, createInstallGuide(ui), ui.label('p', 'shell.demo', 'menu-disclosure'));
 
@@ -107,8 +120,6 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   if (root.parentNode) root.after(live);
   else app.append(live);
 
-  let current: UpdateState | undefined;
-  let requesting = false;
   let wasDisconnected = false;
   deps.updates.setFlush(async () => {
     await backup.settle();
@@ -206,8 +217,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   }
 
   function lockControls(): void {
-    const status = current?.status;
-    const progress = status === 'saving' || status === 'activating' || status === 'reloading';
+    const progress = updateInProgress(current?.status);
     updateProgress.hidden = !progress;
     updateButton.setAttribute('aria-disabled', String(requesting));
     retryUpdate.setAttribute('aria-disabled', String(requesting));
@@ -225,10 +235,17 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     update.hidden = state.status === 'idle';
     ui.text(updateHeading, heading);
     ui.text(updateText, message);
+    const focused = document.activeElement;
+    // Keep focus in the notice when its command is replaced by progress.
+    if (updateInProgress(state.status) && (focused === updateButton || focused === retryUpdate)) {
+      updateText.focus();
+    }
     updateButton.hidden = state.status !== 'available';
-    retryUpdate.hidden = state.status !== 'paused' && state.status !== 'failed';
+    const canRetry = state.status === 'paused' || state.status === 'failed';
+    retryUpdate.hidden = !canRetry;
+    if (canRetry && (focused === updateText || focused === updateButton)) retryUpdate.focus();
     lockControls();
-    if (state.status === 'paused' || state.status === 'failed') {
+    if (canRetry) {
       feedback.alert(t => t('update.alert', { heading: language.resolve(heading), message: language.resolve(message) }));
     } else if (state.status !== 'idle') feedback.announce(state.status === 'available' ? heading : message);
   }
