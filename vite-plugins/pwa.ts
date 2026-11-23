@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { transformWithOxc, type Plugin, type ResolvedConfig } from 'vite';
 
 const manifestPath = 'manifest.webmanifest';
-const wallpapers = ['wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
+const publicAssets = ['THIRD-PARTY-NOTICES.txt', 'wallpapers/wallpaper-desktop.webp', 'wallpapers/wallpaper-phone.webp'];
 const runtimePath = fileURLToPath(new URL('./service-worker-runtime.ts', import.meta.url));
 const integrity = (bytes: string | Uint8Array) => `sha256-${createHash('sha256').update(bytes).digest('base64')}`;
 
@@ -38,7 +38,7 @@ export function pwaPlugins(buildId: string): Plugin[] {
           if (!bundle['index.html']) throw new Error('Offline release requires index.html');
           const files: [string, string][] = Object.values(bundle).filter((file) => !file.fileName.endsWith('.map'))
             .map((file) => [file.fileName, integrity(file.type === 'asset' ? file.source : file.code)]);
-          for (const path of [manifestPath, ...(await manifest()).icons.map((icon) => icon.src), ...wallpapers]) {
+          for (const path of [manifestPath, ...(await manifest()).icons.map((icon) => icon.src), ...publicAssets]) {
             files.push([path, integrity(await readPublic(path))]);
           }
           files.sort(([a], [b]) => a.localeCompare(b));

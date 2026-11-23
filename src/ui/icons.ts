@@ -1,17 +1,18 @@
 // Decorative icons: the adjoining text or control supplies the accessible name.
+// Catalog paths and upstream revisions are listed in docs/UPSTREAM_REUSE.md.
 const paths = {
   brand: 'M1 7 12 2l11 5-11 5z',
-  cube: 'm12 2 9 5v10l-9 5-9-5V7z m-9 5 9 5 9-5 M12 12v10',
-  document: 'M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h8',
-  lines: 'M5 6h14 M5 12h14 M5 18h9',
-  chevron: 'm6 9 6 6 6-6',
+  cube: 'm3 7 9-4 9 4-9 4z M3 7v10l9 4 9-4V7M12 11v10',
+  document: 'M14 2.75H7a2 2 0 0 0-2 2v14.5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7.75L14 2.75Z M14 2.75v3a2 2 0 0 0 2 2h3M8.5 12h7M8.5 15h7M8.5 18h5',
+  lines: 'M3 5h.01 M3 12h.01 M3 19h.01 M8 5h13 M8 12h13 M8 19h13',
+  chevron: 'm5 9 7 7 7-7',
   minimize: 'M5 16h14',
   maximize: 'M5 5h14v14H5z',
   restore: 'M8 5h11v11 M5 8h11v11H5z',
   close: 'm6 6 12 12 M18 6 6 18',
-  back: 'M20 12H4 m7-7-7 7 7 7',
-  plus: 'M12 4v16 M4 12h16',
-  check: 'm6 12 4 4 8-8',
+  back: 'M19 12H5M11 6l-6 6 6 6',
+  plus: 'M12 5v14M5 12h14',
+  check: 'm4 12 5 5L20 6',
 } as const;
 
 export function icon(name: keyof typeof paths): SVGSVGElement {
@@ -36,7 +37,7 @@ export function icon(name: keyof typeof paths): SVGSVGElement {
   path.setAttribute('d', paths[name]);
   path.setAttribute('fill', 'none');
   path.setAttribute('stroke', 'currentColor');
-  path.setAttribute('stroke-width', '1.6');
+  path.setAttribute('stroke-width', '1.5');
   path.setAttribute('stroke-linecap', 'round');
   path.setAttribute('stroke-linejoin', 'round');
   svg.append(path);
