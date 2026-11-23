@@ -26,6 +26,10 @@ on:
         description: Exercise keyboard navigation and native page zoom in browser tabs
         type: boolean
         default: false
+      client_forced_colors:
+        description: Exercise Notes under the Windows system contrast palette
+        type: boolean
+        default: false
       native_apps:
         description: Install and verify both web app windows against the live release
         type: boolean
@@ -98,6 +102,7 @@ jobs:
           CLIENT_PREFERENCES: ${{ inputs.client_preferences }}
           CLIENT_DATA_SAFETY: ${{ inputs.client_data_safety }}
           CLIENT_KEYBOARD_ZOOM: ${{ inputs.client_keyboard_zoom }}
+          CLIENT_FORCED_COLORS: ${{ inputs.client_forced_colors }}
         run: |
           $env:CHROMEDRIVER_PATH = Join-Path $env:CHROMEWEBDRIVER chromedriver.exe
           $env:GECKODRIVER_PATH = Join-Path $env:GECKOWEBDRIVER geckodriver.exe
@@ -105,6 +110,7 @@ jobs:
           if ($env:CLIENT_PREFERENCES -eq 'true') { $checks += '--client-preferences' }
           if ($env:CLIENT_DATA_SAFETY -eq 'true') { $checks += '--client-data-safety' }
           if ($env:CLIENT_KEYBOARD_ZOOM -eq 'true') { $checks += '--client-keyboard-zoom' }
+          if ($env:CLIENT_FORCED_COLORS -eq 'true') { $checks += '--client-forced-colors' }
           python scripts/check-desktop-tabs.py retained desktop-evidence/windows-tabs.json @checks
       - name: Measure the retained release in desktop Chrome
         run: |

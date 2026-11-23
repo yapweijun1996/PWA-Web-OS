@@ -126,6 +126,7 @@ def main():
     parser.add_argument("--client-preferences", action="store_true")
     parser.add_argument("--client-data-safety", action="store_true")
     parser.add_argument("--client-keyboard-zoom", action="store_true")
+    parser.add_argument("--client-forced-colors", action="store_true")
     args = parser.parse_args()
     manifest_bytes = (args.artifact / "manifest.json").read_bytes()
     manifest = json.loads(manifest_bytes)
@@ -177,6 +178,18 @@ def main():
                             report["keyboardZoom"].append(exercise_keyboard_zoom(
                                 name, profile, downloads, url, manifest["buildId"],
                             ))
+                    if args.client_forced_colors:
+                        from windows_client_forced_colors import exercise_forced_colors, windows_contrast
+                        report["forcedColors"] = {"browsers": []}
+                        with windows_contrast() as observations:
+                            report["forcedColors"]["windows"] = observations
+                            for name in ("chrome", "firefox"):
+                                profile = root / f"{name}-forced-colors"
+                                profile.mkdir()
+                                report["forcedColors"]["browsers"].append(exercise_forced_colors(
+                                    name, profile, downloads, url, manifest["buildId"],
+                                    args.report.parent.resolve(),
+                                ))
                 finally:
                     server.shutdown()
                     thread.join()
