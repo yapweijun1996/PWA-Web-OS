@@ -36,6 +36,8 @@ Record exact minimum OS and browser versions at M0. Verify the installed modes u
 
 ## Local data
 
+The first release supports English and Simplified Chinese interface text and System, Light, and Dark appearance. The [UI foundation](UI_FOUNDATION.md) defines localization, theme, and CSS token behavior.
+
 Use IndexedDB as the authoritative store for notes and saved drafts. Use localStorage for small, non-sensitive interface preferences, such as theme. If preference storage is unavailable, continue with defaults. If IndexedDB cannot save a draft, show the failure and offer a way to copy the draft or retry while the editor remains open.
 
 ## Acceptance criteria

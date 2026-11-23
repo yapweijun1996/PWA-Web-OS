@@ -10,11 +10,17 @@ The repository is at the specification stage. There is no runnable PWA, build co
 
 The first release targets Windows, macOS, iOS, and Android. Chrome and Firefox are required for browser use on all four platforms. See the [platform matrix](docs/PRODUCT_SPEC.md#platform-support) for install modes.
 
+The first development milestone is a reliable Notes workflow in [Windows Chrome and Firefox tabs](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs).
+
 ## Development
 
 Use the [feature map](docs/FEATURE_MAP.md) to see first-release scope, feature dependencies, and a suggested implementation order.
 
 Track implementation and verification in the [development task checklist](Task.md).
+
+Use the [production readiness checklist](docs/PRODUCTION_READINESS.md) to verify a Windows demo or full release candidate.
+
+Use the [UI foundation](docs/UI_FOUNDATION.md) for internationalization, Light and Dark themes, CSS tokens, and parallel module ownership.
 
 See the [modular development plan](docs/MODULAR_WEB_OS_PLAN.md) for module boundaries, failure handling, and milestone gates.
 

@@ -10,11 +10,17 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 
 ## M0: Development baseline
 
+- [ ] Assign [UI foundation workstream owners](docs/UI_FOUNDATION.md#module-ownership-and-parallel-delivery) and agree on message, token, preference, and app-entry contracts before parallel implementation.
+
 - [ ] Record minimum Windows, macOS, iOS, and Android versions and required browser versions using the [platform matrix](docs/PRODUCT_SPEC.md#platform-support).
 - [ ] Define the IndexedDB schema and migrations, the localStorage preference keys and defaults, and the versioned JSON backup format and conflict policy.
 - [ ] Set up the application and record verified local start, build, and test commands.
 
 ## M1: Local Notes
+
+- [ ] Integrate English and Simplified Chinese catalogs, System/Light/Dark, and semantic CSS tokens on the first Notes screen. Verify both Windows browsers before expanding coverage.
+
+- [ ] Start integrated verification in regular Windows Chrome and Firefox tabs. Complete the [Windows browser milestone](docs/PRODUCTION_READINESS.md#first-milestone-windows-browser-tabs) across M1–M4 before extending runtime verification to installed modes and other platforms.
 
 - [ ] Build a responsive workspace with a launcher that opens Notes on mobile and desktop.
 - [ ] Select the workspace and Notes SVG icons from [SVG-Icon-Studio](https://github.com/yapweijun1996/SVG-Icon-Studio). Record source revisions and applicable notices, bundle the selected icons locally, and verify accessible control names.
@@ -31,6 +37,8 @@ Follow the [upstream reuse plan](docs/UPSTREAM_REUSE.md) when selecting or verif
 - [ ] Use a Service Worker to make the workspace and Notes available offline after initial setup.
 
 For each item below, launch Notes online once to complete setup. Then disconnect, edit and save a note, close the workspace, reopen it offline in the same mode, and confirm the saved content. Use physical devices for mobile checks. The [platform matrix](docs/PRODUCT_SPEC.md#platform-support) defines the required modes.
+
+Run the Windows tab checks first. Run installed-mode and other platform checks after the Windows browser milestone and before M5, or record why a required check is blocked.
 
 - [ ] Windows: Chrome tab and installed app, Firefox tab and web app window.
 - [ ] macOS: Chrome tab and installed app, Firefox tab.
@@ -54,6 +62,7 @@ For each item below, launch Notes online once to complete setup. Then disconnect
 
 ## M5: Release readiness
 
+- [ ] Complete the [production readiness checklist](docs/PRODUCTION_READINESS.md) for the intended release track and record the go/hold decision.
 - [ ] Run the complete Notes workflow against the supported device and browser matrix.
 - [ ] Record the tested build, devices, results, and any exceptions to `pwa:product-standard` v1.1.0.
 - [ ] Confirm that README and development commands match the tested implementation.

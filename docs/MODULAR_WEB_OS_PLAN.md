@@ -10,6 +10,8 @@ Use the `STATIC_OFFLINE` profile of KB-MCP `pwa:product-standard` v1.1.0. Use In
 
 ## Module boundaries
 
+Follow the [UI foundation](UI_FOUNDATION.md#module-ownership-and-parallel-delivery) for shared localization, tokens, and preference interfaces. Bootstrap wires these services without coupling Notes to their storage or presentation details.
+
 | Module | Owns | Public boundary |
 | --- | --- | --- |
 | Bootstrap | Composition and configuration | Creates adapters and registers built-in apps. Owns wiring and startup error routing. |
