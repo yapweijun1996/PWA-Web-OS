@@ -80,4 +80,6 @@ After M0, workspace and repository can progress in parallel against the agreed a
 
 ## Evolution after the first release
 
+Use the [Aurora workspace plan](AURORA_WORKSPACE_PLAN.md) to prototype Dock switching and window focus before introducing a workspace file store. Keep the Notes data contract separate from the desktop layout and future file app.
+
 Use a second built-in app to validate the entry contract before introducing a public extension API. Add multiple windows only after designing focus, navigation, and state restoration across mobile and desktop. Add sync after defining identity, conflict resolution, and retry semantics. Treat third-party apps and AI as separate capabilities with revocable permissions and explicit approval for consequential actions. Preserve versioned exports throughout.

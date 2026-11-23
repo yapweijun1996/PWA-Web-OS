@@ -1,8 +1,6 @@
 # PWA Web OS UI/UX Anchor
 
-Status: Proposed v1 for owner review. This image illustrates the first-release Notes workspace. The [product specification](PRODUCT_SPEC.md) defines release requirements.
-
-![Desktop, tablet, and mobile Notes mockups showing the same open note and separate offline and local-save labels](assets/ui-ux-anchor-v1.png)
+Status: First-release Notes interaction reference. The [product specification](PRODUCT_SPEC.md) defines release requirements. [Aurora](AURORA_WORKSPACE_PLAN.md) is the selected long-term desktop direction, with its own image and layout exploration.
 
 ## Layout and navigation
 
@@ -33,7 +31,7 @@ Verify touch targets, text zoom, light and dark themes, focus order, mobile safe
 
 ## Visual review
 
-Self-review using the KB-MCP `ui:visual-design-lifecycle` rubric scored the design proposal **86/100**, eligible for owner review. The score covers the image and the written interaction design.
+Historical self-review of the original Notes proposal using the KB-MCP `ui:visual-design-lifecycle` rubric scored **86/100**. This score applies to that proposal and its written interaction design.
 
 | Category | Score | Evidence |
 | --- | --- | --- |
@@ -48,4 +46,4 @@ Self-review using the KB-MCP `ui:visual-design-lifecycle` rubric scored the desi
 | Trust and state | 4/5 | The image is labeled as a proposal and distinguishes offline from saved. Failure states are specified separately. |
 | Craft | 5/5 | Shared palette, labels, and panel hierarchy keep the views coherent. |
 
-Owner approval is pending. Review empty and failure states, update progress, backup, and dark mode in the prototype or implementation.
+Review empty and failure states, update progress, backup, and dark mode in the prototype or implementation. The Aurora selection concerns the long-term desktop design.

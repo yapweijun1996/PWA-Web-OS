@@ -32,7 +32,7 @@ Apply accessibility during every step. Before implementation, record supported b
 
 | Candidate | What it would add |
 | --- | --- |
-| Multiple windows | Keep several tools visible in one workspace. |
+| Aurora desktop workspace | Keep several tools visible in floating or tiled windows and switch through the Dock. See the [layout and app exploration](AURORA_WORKSPACE_PLAN.md). |
 | Accounts and cloud sync | Resume work across devices without manually exchanging backups. |
 | Third-party apps | Add tools with explicit, revocable permissions. |
 | AI automation | Assist with tasks while keeping consequential actions under user control. |

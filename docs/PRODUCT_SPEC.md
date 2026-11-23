@@ -19,6 +19,8 @@ The first release targets an individual user who wants to open a note, keep edit
 
 Cloud sync, accounts, third-party apps, multiple floating windows, AI automation, and online tools from Public-API are outside the first release.
 
+The [Aurora workspace plan](AURORA_WORKSPACE_PLAN.md) describes the selected long-term desktop direction, including a Dock, window management, and a workspace file explorer.
+
 ## Platform support
 
 All four operating systems are required for release. Each listed mode must pass the applicable acceptance criteria using normal browser profiles.
