@@ -1,33 +1,43 @@
+import { createLanguage, type MessageKey } from '../i18n';
+import { readLocale } from '../prefs/locale';
+import { localizedUi, type LocalizedUi } from './localized';
 import type { AppDeps, UpdateState } from '../contracts';
 import { createBackupMenu } from './backup';
-import { button, createFeedback, element, setText } from './dom';
+import { button, createFeedback, element } from './dom';
 import { icon } from './icons';
 import { updateCopy } from './messages';
 import { createNotes } from './notes';
 import { createWorkspaceMenu } from './workspace-menu';
 
-const demoText = 'Demo build. Notes are stored only on this device and are never uploaded.';
 type Surface = 'launcher' | 'notes' | 'desktop';
 
 export function mountApp(root: HTMLElement, deps: AppDeps): void {
-  const { polite, assertive, feedback } = createFeedback();
+  const language = createLanguage(readLocale());
+  const ui = localizedUi(language);
+  const setDocumentLanguage = () => {
+    document.documentElement.lang = language.locale;
+    document.title = language.t('shell.title');
+  };
+  setDocumentLanguage();
+  language.onChange(setDocumentLanguage);
+  const { polite, assertive, feedback } = createFeedback(ui);
   const app = element('div', undefined, 'workspace');
   const banner = element('header', undefined, 'top-bar');
   const brand = element('div', undefined, 'brand');
   brand.append(icon('brand'), element('h1', 'PWA Web OS'));
-  const menu = createWorkspaceMenu(deps.prefs, feedback);
+  const menu = createWorkspaceMenu(ui, deps.prefs, feedback);
 
   const demo = element('footer', undefined, 'demo-notice');
-  const build = element('small', `Build ID: ${deps.buildId}`);
+  const build = ui.label('small', t => t('shell.build', { build: deps.buildId }));
   build.id = 'build-id';
-  demo.append(element('p', demoText), build);
+  demo.append(ui.label('p', 'shell.demo'), build);
 
   const systemStatus = element('div', undefined, 'system-status');
   systemStatus.setAttribute('role', 'region');
-  systemStatus.setAttribute('aria-label', 'Connection status');
+  ui.attr(systemStatus, 'aria-label', 'shell.connection');
   const connection = element('div', undefined, 'connection');
   const network = element('span', undefined, 'network-status');
-  const ready = element('span', 'Available offline', 'offline-ready');
+  const ready = ui.label('span', 'shell.ready', 'offline-ready');
   ready.hidden = true;
   connection.append(network, ready);
   const clock = element('time', undefined, 'clock');
@@ -41,41 +51,41 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   const updateText = element('p');
   const updateProgress = element('span', undefined, 'progress-mark');
   updateProgress.setAttribute('aria-hidden', 'true');
-  const updateButton = button('Update', () => { void requestUpdate(false); });
-  const retryUpdate = button('Retry update', () => { void requestUpdate(true); });
+  const updateButton = ui.action('update.action', () => { void requestUpdate(false); });
+  const retryUpdate = ui.action('update.retry', () => { void requestUpdate(true); });
   update.append(updateProgress, updateHeading, updateText, updateButton, retryUpdate);
 
   const stage = element('main', undefined, 'workspace-stage');
   const launcher = element('section', undefined, 'launcher');
-  const launcherHeading = element('h2', 'Workspace launcher');
+  const launcherHeading = ui.label('h2', 'shell.launcher');
   launcherHeading.id = 'launcher-heading';
   launcherHeading.tabIndex = -1;
   launcher.setAttribute('aria-labelledby', launcherHeading.id);
-  const tile = button('Notes', openNotes, 'launcher-tile');
+  const tile = ui.action('notes.name', openNotes, 'launcher-tile');
   tile.prepend(icon('lines'));
-  launcher.append(element('p', 'Built-in tools', 'eyebrow'), launcherHeading,
-    element('p', 'Open Notes to write and keep your work on this device.', 'muted'), tile);
+  launcher.append(ui.label('p', 'shell.tools', 'eyebrow'), launcherHeading,
+    ui.label('p', 'shell.intro', 'muted'), tile);
 
-  const notes = createNotes(deps.storage.repository, feedback, openLauncher);
-  const backup = createBackupMenu(deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback, menu.show);
-  menu.panel.append(backup.menu, element('p', demoText, 'menu-disclosure'));
+  const notes = createNotes(ui, deps.storage.repository, feedback, openLauncher);
+  const backup = createBackupMenu(ui, deps.storage.backup, notes.hasUnsaved, notes.refresh, feedback, menu.show);
+  menu.panel.append(backup.menu, ui.label('p', 'shell.demo', 'menu-disclosure'));
 
   const notesWindow = element('div', undefined, 'notes-window');
   notesWindow.id = 'notes-window';
   const windowBar = element('div', undefined, 'window-bar');
   const windowControls = element('div', undefined, 'window-controls');
-  const minimize = windowButton('Minimize', 'minimize', () => hideNotes(true));
-  const maximize = windowButton('Maximize', 'maximize', toggleMaximized);
-  const close = windowButton('Close', 'close', () => { void closeNotes(); });
+  const minimize = windowButton(ui, 'shell.minimize', 'minimize', () => hideNotes(true));
+  const maximize = windowButton(ui, 'shell.maximize', 'maximize', toggleMaximized);
+  const close = windowButton(ui, 'shell.close', 'close', () => { void closeNotes(); });
   windowControls.append(minimize, maximize, close);
   windowBar.append(icon('document'), notes.heading, windowControls);
   notesWindow.append(windowBar, notes.issue, notes.panes);
   stage.append(launcher, notesWindow);
 
   const dock = element('nav', undefined, 'dock');
-  dock.setAttribute('aria-label', 'Dock');
-  const workspaceDock = dockButton('Workspace', 'cube', openLauncher);
-  const notesDock = dockButton('Notes', 'lines', openNotes);
+  ui.attr(dock, 'aria-label', 'shell.dock');
+  const workspaceDock = dockButton(ui, 'shell.workspace', 'cube', openLauncher);
+  const notesDock = dockButton(ui, 'notes.name', 'lines', openNotes);
   notesDock.setAttribute('aria-controls', notesWindow.id);
   dock.append(workspaceDock, notesDock);
   app.append(banner, stage, demo, dock, backup.dialog);
@@ -83,6 +93,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   let running = false;
   let maximized = false;
   let closing = false;
+  language.onChange(paintMaximizeLabel);
   renderSurface();
   root.replaceChildren(app);
   // Both the notice and its announcements must survive #app becoming inert.
@@ -109,7 +120,7 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   window.addEventListener('online', renderConnection);
   window.addEventListener('offline', renderConnection);
   renderConnection();
-  startClock(clock);
+  startClock(clock, ui);
 
   function renderSurface(): void {
     launcher.hidden = surface !== 'launcher';
@@ -143,12 +154,17 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     notesDock.focus();
   }
 
+  function paintMaximizeLabel(): void {
+    const label = language.t(maximized ? 'shell.restore' : 'shell.maximize');
+    maximize.setAttribute('aria-label', label);
+    maximize.title = label;
+  }
+
   function toggleMaximized(): void {
     if (closing) return;
     maximized = !maximized;
     notesWindow.toggleAttribute('data-maximized', maximized);
-    maximize.setAttribute('aria-label', maximized ? 'Restore' : 'Maximize');
-    maximize.title = maximized ? 'Restore' : 'Maximize';
+    paintMaximizeLabel();
     maximize.replaceChildren(icon(maximized ? 'restore' : 'maximize'));
   }
 
@@ -173,15 +189,15 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   function renderConnection(): void {
     const online = navigator.onLine;
     if (online === lastOnline) return;
-    setText(network, online ? 'Online' : 'Offline');
+    ui.text(network, online ? 'shell.online' : 'shell.offline');
     network.toggleAttribute('data-offline', !online);
-    if (!online || lastOnline !== undefined) feedback.announce(online ? 'Back online.' : 'Offline');
+    if (!online || lastOnline !== undefined) feedback.announce(online ? 'shell.reconnected' : 'shell.offline');
     lastOnline = online;
   }
 
   function renderReadiness(): void {
     const isReady = deps.updates.isOfflineReady();
-    if (isReady && ready.hidden) feedback.announce('Available offline');
+    if (isReady && ready.hidden) feedback.announce('shell.ready');
     ready.hidden = !isReady;
   }
 
@@ -203,13 +219,14 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
     current = { ...state };
     const { heading, message } = updateCopy(state);
     update.hidden = state.status === 'idle';
-    setText(updateHeading, heading);
-    setText(updateText, message);
+    ui.text(updateHeading, heading);
+    ui.text(updateText, message);
     updateButton.hidden = state.status !== 'available';
     retryUpdate.hidden = state.status !== 'paused' && state.status !== 'failed';
     lockControls();
-    if (state.status === 'paused' || state.status === 'failed') feedback.alert(`${heading}. ${message}`);
-    else if (state.status !== 'idle') feedback.announce(state.status === 'available' ? heading : message);
+    if (state.status === 'paused' || state.status === 'failed') {
+      feedback.alert(t => t('update.alert', { heading: language.resolve(heading), message: language.resolve(message) }));
+    } else if (state.status !== 'idle') feedback.announce(state.status === 'available' ? heading : message);
   }
 
   async function requestUpdate(retry: boolean): Promise<void> {
@@ -228,32 +245,31 @@ export function mountApp(root: HTMLElement, deps: AppDeps): void {
   }
 }
 
-function windowButton(label: string, glyph: Parameters<typeof icon>[0], action: () => void): HTMLButtonElement {
+function windowButton(ui: LocalizedUi, label: MessageKey, glyph: Parameters<typeof icon>[0], action: () => void): HTMLButtonElement {
   const control = button('', action);
-  control.setAttribute('aria-label', label);
-  control.title = label;
+  ui.attr(control, 'aria-label', label);
+  ui.attr(control, 'title', label);
   control.append(icon(glyph));
   return control;
 }
 
-function dockButton(label: string, glyph: 'cube' | 'lines', action: () => void): HTMLButtonElement {
+function dockButton(ui: LocalizedUi, label: MessageKey, glyph: 'cube' | 'lines', action: () => void): HTMLButtonElement {
   const control = button('', action, `dock-item dock-${glyph}`);
-  control.setAttribute('aria-label', label);
+  ui.attr(control, 'aria-label', label);
   const face = element('span', undefined, 'dock-face');
   face.append(icon(glyph));
-  const tooltip = element('span', label, 'dock-tooltip');
+  const tooltip = ui.label('span', label, 'dock-tooltip');
   tooltip.setAttribute('aria-hidden', 'true');
   control.append(face, tooltip);
   return control;
 }
 
-function startClock(clock: HTMLTimeElement): void {
-  const format = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' });
+function startClock(clock: HTMLTimeElement, ui: LocalizedUi): void {
   function tick(): void {
     if (!clock.isConnected) return;
     const now = new Date();
     clock.dateTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    setText(clock, format.format(now));
+    ui.text(clock, () => ui.language.time(now));
     setTimeout(tick, 60_000 - now.getTime() % 60_000);
   }
   tick();

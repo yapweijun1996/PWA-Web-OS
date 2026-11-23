@@ -22,8 +22,8 @@ body {
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.2; }
 h2 { font-size: 1.25rem; }
-button, input, textarea { font: inherit; }
-button, textarea {
+button, input, select, textarea { font: inherit; }
+button, select, textarea {
   color: var(--text-primary);
   background: var(--surface-panel);
   border: 1px solid var(--border-control);
@@ -143,6 +143,15 @@ svg { flex: none; vertical-align: middle; }
 .theme-control label:has(:checked) { background: var(--surface-selected); }
 .theme-control label:focus-within { outline: 2px solid var(--focus-ring); }
 .theme-control input { margin: 0; accent-color: var(--action-primary); }
+.locale-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-block-start: 0.6rem;
+  font-weight: 650;
+}
+.locale-control select { min-block-size: 44px; padding-inline: 0.6rem; }
 .backup-menu, .menu-disclosure { margin-block-start: 0.6rem; border-block-start: 1px solid var(--border-subtle); }
 .backup-menu summary { min-block-size: 44px; padding: 0.6rem; }
 .menu-disclosure { padding: 0.65rem 0.55rem 0; color: var(--text-muted); font-size: var(--type-small); }

@@ -69,6 +69,7 @@ async function openWorkspaceWithKeyboard(page: Page) {
   await page.keyboard.press('Enter');
   await expect(workspace).toHaveAttribute('aria-expanded', 'true');
   await tabTo(page, page.getByRole('radio', { name: 'System' }));
+  await tabTo(page, page.getByRole('combobox', { name: 'Language' }));
   return workspace;
 }
 

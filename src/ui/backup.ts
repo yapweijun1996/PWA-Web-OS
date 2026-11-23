@@ -1,8 +1,10 @@
+import type { Copy } from '../i18n';
+import type { LocalizedUi } from './localized';
 import { LIMITS, type BackupService, type ImportPreview } from '../contracts';
-import { button, element, openDialog, setText, type Feedback } from './dom';
+import { element, openDialog, type Feedback } from './dom';
 import { backupMessage } from './messages';
 
-const exportWarning = 'Unsaved changes are not included in this backup.';
+const exportWarning = 'backup.warning';
 
 function downloadBackup(json: string): void {
   const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
@@ -21,6 +23,7 @@ function downloadBackup(json: string): void {
 }
 
 export function createBackupMenu(
+  ui: LocalizedUi,
   service: BackupService,
   hasUnsaved: () => boolean,
   refresh: () => Promise<void>,
@@ -35,8 +38,8 @@ export function createBackupMenu(
 
   const menu = element('details', undefined, 'backup-menu');
   const actions = element('div', undefined, 'actions');
-  const exportButton = button('Export backup', () => { void exportFile(); });
-  const restoreButton = button('Restore backup', () => { if (!locked && !reading && !writing) file.click(); });
+  const exportButton = ui.action('backup.export', () => { void exportFile(); });
+  const restoreButton = ui.action('backup.restore', () => { if (!locked && !reading && !writing) file.click(); });
   const file = element('input');
   file.type = 'file';
   file.accept = '.json,application/json';
@@ -44,7 +47,7 @@ export function createBackupMenu(
   const message = element('p', undefined, 'feedback');
   message.hidden = true;
   actions.append(exportButton, restoreButton, file);
-  const summary = element('summary', 'Backup and restore');
+  const summary = ui.label('summary', 'backup.menu');
   menu.append(summary, actions, message);
   // Escape closes the open disclosure and returns focus to its summary. The restore
   // dialog keeps its own native Escape handling.
@@ -56,17 +59,17 @@ export function createBackupMenu(
   });
 
   const dialog = element('dialog');
-  const heading = element('h2', 'Restore preview');
+  const heading = ui.label('h2', 'backup.preview');
   heading.id = 'restore-heading';
   dialog.setAttribute('aria-labelledby', heading.id);
   const newCount = element('p');
   const unchangedCount = element('p');
   const titleList = element('ul', undefined, 'preview-titles');
-  titleList.setAttribute('aria-label', 'Note titles in this backup');
-  const progress = element('p', 'Restoring notes…');
+  ui.attr(titleList, 'aria-label', 'backup.titles');
+  const progress = ui.label('p', 'backup.restoring');
   progress.hidden = true;
-  const cancel = button('Cancel', () => { if (!writing) dialog.close(); });
-  const confirm = button('Restore notes', confirmRestore, 'primary');
+  const cancel = ui.action('common.cancel', () => { if (!writing) dialog.close(); });
+  const confirm = ui.action('backup.confirm', confirmRestore, 'primary');
   const dialogActions = element('div', undefined, 'actions');
   dialogActions.append(cancel, confirm);
   dialog.append(heading, newCount, unchangedCount, titleList, progress, dialogActions);
@@ -79,8 +82,8 @@ export function createBackupMenu(
     if (selected && !locked && !reading && !writing) void readPreview(selected);
   });
 
-  function showMessage(text: string, error = false): void {
-    setText(message, text);
+  function showMessage(text: Copy, error = false): void {
+    ui.text(message, text);
     message.hidden = false;
     message.classList.toggle('error', error);
     if (error) feedback.alert(text);
@@ -107,7 +110,7 @@ export function createBackupMenu(
       if (!warned && hasUnsaved()) showMessage(exportWarning);
       downloadBackup(json);
     } catch {
-      showMessage('Could not export the backup. Check browser storage and try again.', true);
+      showMessage('backup.exportFailed', true);
     } finally {
       exporting = false;
       paint();
@@ -117,7 +120,7 @@ export function createBackupMenu(
   async function readPreview(selected: File): Promise<void> {
     message.hidden = true;
     if (selected.size > LIMITS.backupFileBytes) {
-      showMessage('This backup is larger than 10 MiB. Choose a smaller Notes backup file.', true);
+      showMessage('backup.too_large', true);
       return;
     }
     reading = true;
@@ -126,9 +129,10 @@ export function createBackupMenu(
       const result = await service.previewImport(new Uint8Array(await selected.arrayBuffer()));
       if (locked) return;
       preview = result;
-      setText(newCount, `New notes: ${result.newCount}`);
-      setText(unchangedCount, `Already in Notes: ${result.unchangedCount}`);
-      titleList.replaceChildren(...result.titles.map((title) => element('li', title.trim() ? title : 'Untitled note')));
+      const { newCount: fresh, unchangedCount: unchanged } = result;
+      ui.text(newCount, t => t('backup.newCount', { count: fresh }));
+      ui.text(unchangedCount, t => t('backup.unchangedCount', { count: unchanged }));
+      paintTitles();
       revealWorkspace();
       menu.open = true;
       openDialog(dialog, cancel, restoreButton);
@@ -139,6 +143,12 @@ export function createBackupMenu(
       paint();
     }
   }
+
+  function paintTitles(): void {
+    if (!preview) return;
+    titleList.replaceChildren(...preview.titles.map(title => element('li', title.trim() ? title : ui.language.t('notes.untitled'))));
+  }
+  ui.language.onChange(paintTitles);
 
   function confirmRestore(): void {
     const accepted = preview;
@@ -153,7 +163,7 @@ export function createBackupMenu(
         return;
       }
       dialog.close();
-      showMessage(`Notes restored: ${result.inserted}. Already in Notes: ${result.unchanged}.`);
+      showMessage(t => t('backup.result', result));
       await refresh();
     }).finally(() => {
       writing = undefined;
