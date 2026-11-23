@@ -3,9 +3,15 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_run:
+        description: Successful Pages run ID to compare with the live site
+        required: true
+        type: string
 
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'push' && 'pages' || format('pages-verification-{0}', github.run_id) }}
   cancel-in-progress: false
 
 permissions:
@@ -15,6 +21,7 @@ permissions:
 
 jobs:
   build:
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -86,9 +93,69 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  verify-live:
+    needs: deploy
+    if: ${{ !cancelled() && (needs.deploy.result == 'success' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Select and download retained release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MANUAL_RUN: ${{ inputs.release_run }}
+          DEPLOYED_URL: ${{ needs.deploy.outputs.url }}
+        run: |
+          set -euo pipefail
+          release_run="$GITHUB_RUN_ID"
+          release_sha="$GITHUB_SHA"
+          site_url="$DEPLOYED_URL"
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            [[ "$MANUAL_RUN" =~ ^[1-9][0-9]*$ ]] || { echo "Provide a numeric Pages run ID"; exit 1; }
+            release_run="$MANUAL_RUN"
+            release_sha=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$release_run" --jq '
+              select(.path == ".github/workflows/pages.yml" and .event == "push" and
+                     .head_branch == "main" and .conclusion == "success") | .head_sha')
+            site_url=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .html_url)
+          fi
+          [[ "$release_sha" =~ ^[a-f0-9]{40}$ ]] && [ -n "$site_url" ] ||
+            { echo "The selected run must be a successful main Pages deployment"; exit 1; }
+          prefix="recovery-$release_sha-$release_run-"
+          artifact=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$release_run/artifacts?per_page=100" --jq \
+            ".artifacts | map(select(.expired == false and (.name | startswith(\"$prefix\")))) | max_by(.id) | .name // empty")
+          [ -n "$artifact" ] || { echo "The retained artifact is unavailable for run $release_run"; exit 1; }
+          gh run download "$release_run" --repo "$GITHUB_REPOSITORY" --name "$artifact" --dir live-release
+          echo "RELEASE_SHA=$release_sha" >> "$GITHUB_ENV"
+          echo "SITE_URL=${site_url%/}/" >> "$GITHUB_ENV"
+          printf 'Retained source: run %s, artifact %s.\n' "$release_run" "$artifact" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify live release bytes
+        run: |
+          set -euo pipefail
+          node scripts/release-evidence.mjs verify live-release/dist live-release/manifest.json
+          for attempt in 1 2 3 4 5 6; do
+            if node scripts/release-evidence.mjs verify-hosted "$SITE_URL" live-release/manifest.json "$RELEASE_SHA" > live-check.log 2>&1; then
+              cat live-check.log | tee -a "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            cat live-check.log
+            if [ "$attempt" -lt 6 ]; then sleep 10; fi
+          done
+          echo "::error::The live site did not match the retained release. Review the failed path in this job."
+          printf 'Live verification failed for %s. See the failed step for the first mismatched or unavailable path.\n' "$RELEASE_SHA" >> "$GITHUB_STEP_SUMMARY"
+          exit 1

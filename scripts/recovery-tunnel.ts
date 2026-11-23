@@ -1,5 +1,4 @@
 import { spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 
 export async function startRecoveryTunnel(loopback: string, configPath: string) {
@@ -40,18 +39,4 @@ export async function startRecoveryTunnel(loopback: string, configPath: string) 
   } finally {
     clearTimeout(deadline);
   }
-}
-
-export async function verifyHostedRelease(url: string, files: Record<string, string>) {
-  await Promise.all(Object.entries(files).map(async ([path, expected]) => {
-    const response = await fetch(new URL(path, url), {
-      cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(7_000),
-    }).catch((error: unknown) => {
-      const cause = error instanceof Error && error.cause instanceof Error ? error.cause.message : String(error);
-      throw new Error(`Cannot read staging ${path}: ${cause}`, { cause: error });
-    });
-    if (!response.ok) throw new Error(`Staging returned HTTP ${response.status} for ${path}`);
-    const sha = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
-    if (sha !== expected) throw new Error(`Staging served unexpected bytes for ${path}`);
-  }));
 }

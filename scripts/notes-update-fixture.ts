@@ -6,7 +6,8 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { DB_NAME, type Note } from '../src/contracts';
 import { prepareRecoveryPair } from './recovery-artifacts';
 import { serveReleases } from './pwa-test-server';
-import { startRecoveryTunnel, verifyHostedRelease } from './recovery-tunnel';
+import { startRecoveryTunnel } from './recovery-tunnel';
+import { verifyHostedRelease } from './verify-hosted-release';
 
 const exec = promisify(execFile);
 const releaseA = 'notes-update-a';

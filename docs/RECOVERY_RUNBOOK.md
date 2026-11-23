@@ -36,6 +36,16 @@ RECOVERY_HTTPS=1 PLAYWRIGHT_HTML_OPEN=never npx playwright test --config=playwri
 
 `staging-byte-checks` records the time and file count for each verified phase. The HTTPS rehearsal includes a mixed B with one JavaScript response from A. It checks that A stays usable and can commit an edit before verified B is served. Tunnel DNS provisioning can take over a minute, so the rehearsal allows up to three minutes for the initial HTTPS file check. If that check fails, review the transport diagnostics in the local report. A rollback on GitHub Pages uses its own hosting procedure.
 
+## Check the live release
+
+After a Pages deployment, the `verify-live` job downloads that run's retained artifact and verifies its local files. It then compares the public launch URL and every listed file against the same manifest. The job allows a bounded window for the CDN to converge. A mismatch fails the workflow and identifies a mismatched or unavailable path in the log.
+
+For an existing release, open [Deploy to GitHub Pages](https://github.com/yapweijun1996/PWA-Web-OS/actions/workflows/pages.yml) and use **Run workflow** on `main`. Supply the successful push run ID as **release_run**. This runs the live check without deploying. A historical run that no longer matches the live site should fail. Review the job summary for the retained run and artifact and the log for the failing path.
+
+Repository owner `yapweijun1996` is the release contact. Review Actions for failed build, deploy, and live verification jobs. GitHub's personal Actions notification settings govern delivery to the account that triggered the run. Receipt in an owner's notification channel requires separate verification. [GitHub Actions notification delivery](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs)
+
+Use the live byte check alongside the synthetic browser launch and offline persistence check. The byte check fetches public release assets and uses no note content.
+
 ## During an incident
 
 Stop rollout and preserve current release artifacts and evidence. Verify the retained artifact against its manifest and establish schema compatibility before any rollback. Publish the exact retained artifact only under the approved incident and deployment procedure; do not rebuild it. Wait for the previous worker to be discovered and users to accept the update. Confirm build ID, launch, and synthetic-note persistence in the target environment. Existing tabs can continue to run the current build until updated; a server-side file replacement alone does not move every client. Record deployment identity, decisions and results. If old code cannot read the schema, prepare a forward fix instead; never delete or reset IndexedDB to force recovery.

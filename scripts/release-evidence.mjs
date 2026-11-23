@@ -1,10 +1,13 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { open, readFile, readdir, rename, rm, lstat } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { verifyHostedRelease } from './verify-hosted-release.ts';
 
 const [mode, directory, manifestPath, commit] = process.argv.slice(2);
-if (!['create', 'verify'].includes(mode) || !directory || !manifestPath || (mode === 'create' && !/^[a-f0-9]{40}$/.test(commit ?? ''))) {
-  throw new Error('Usage: node scripts/release-evidence.mjs create <dist> <manifest> <full-commit-sha> | verify <dist> <manifest>');
+const validCommit = sha => typeof sha === 'string' && /^[a-f0-9]{40}$/.test(sha);
+if (!['create', 'verify', 'verify-hosted'].includes(mode) || !directory || !manifestPath ||
+    (mode !== 'verify' && !validCommit(commit))) {
+  throw new Error('Usage: node scripts/release-evidence.mjs create <dist> <manifest> <full-commit-sha> | verify <dist> <manifest> | verify-hosted <url/> <manifest> <full-commit-sha>');
 }
 const root = resolve(directory);
 async function inventory(dir = root) {
@@ -31,14 +34,23 @@ async function buildId() {
   if (typeof release.buildId !== 'string' || !release.buildId) throw new Error('Missing build ID');
   return release.buildId;
 }
-const actual = { buildId: await buildId(), files: await hashes() };
-if (mode === 'verify') {
+if (mode === 'verify-hosted') {
   const expected = JSON.parse(await readFile(manifestPath, 'utf8'));
-  if (expected.version !== 1 || !/^[a-f0-9]{40}$/.test(expected.commit) || expected.buildId !== actual.buildId || JSON.stringify(expected.files) !== JSON.stringify(actual.files)) {
+  if (expected.version !== 1 || expected.commit !== commit || !expected.buildId ||
+      !expected.files?.['index.html'] || !expected.files?.['sw.js']) {
+    throw new Error('Manifest is missing the expected release identity or required files');
+  }
+  await verifyHostedRelease(directory, expected.files);
+  console.log(`Verified hosted build ${expected.buildId} from commit ${commit}; launch URL and ${Object.keys(expected.files).length} files`);
+} else if (mode === 'verify') {
+  const actual = { buildId: await buildId(), files: await hashes() };
+  const expected = JSON.parse(await readFile(manifestPath, 'utf8'));
+  if (expected.version !== 1 || !validCommit(expected.commit) || expected.buildId !== actual.buildId || JSON.stringify(expected.files) !== JSON.stringify(actual.files)) {
     throw new Error('Release identity or file digests do not match');
   }
   console.log(`Verified build ${actual.buildId} from commit ${expected.commit}; ${Object.keys(actual.files).length} files`);
 } else {
+  const actual = { buildId: await buildId(), files: await hashes() };
   const target = resolve(manifestPath);
   const fromRoot = relative(root, target);
   if (!fromRoot || (!isAbsolute(fromRoot) && fromRoot !== '..' && !fromRoot.startsWith('..' + sep))) {
