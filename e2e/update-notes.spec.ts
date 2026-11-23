@@ -71,6 +71,37 @@ async function reopenOnB(page: Page, id: string, title: string, content: string)
   await expect(body(page)).toBeEditable();
 }
 
+test('rehearses A to B to retained A with compatible schema and synthetic notes', async ({ page, releases }) => {
+  await start(page, releases.url, releases.a);
+  await createNote(page, 'Recovery rehearsal', 'Created on A');
+  const schema = () => page.evaluate(() => new Promise<number>((resolve, reject) => {
+    const request = indexedDB.open('pwa-web-os-notes');
+    request.onupgradeneeded = () => request.transaction?.abort();
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => { const version = request.result.version; request.result.close(); resolve(version); };
+  }));
+  expect(await schema()).toBe(1);
+  releases.deployB();
+  await checkForUpdate(page);
+  await expect(available(page)).toBeVisible();
+  await update(page).click();
+  await reopenOnB(page, releases.b, 'Recovery rehearsal', 'Created on A');
+  await body(page).fill('Committed on B before rollback');
+  await saved(page);
+  const onB = await committedNotes(page);
+  expect(await schema()).toBe(1);
+  releases.deployA();
+  await checkForUpdate(page);
+  await expect(available(page)).toBeVisible();
+  await update(page).click();
+  await reopenOnB(page, releases.a, 'Recovery rehearsal', 'Committed on B before rollback');
+  expect(await schema()).toBe(1);
+  expect(await committedNotes(page)).toEqual(onB);
+  await body(page).fill('Saved on retained A');
+  await saved(page);
+  expect(await committedNotes(page)).toMatchObject([{ id: onB[0].id, body: 'Saved on retained A' }]);
+});
+
 test('defers B while Notes stays editable and commits another edit on A', async ({ page, releases }) => {
   await start(page, releases.url, releases.a);
   await createNote(page, 'Deferral note', 'Saved before deployment');

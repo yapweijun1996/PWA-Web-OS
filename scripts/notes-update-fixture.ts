@@ -14,6 +14,7 @@ export const updateTest = test.extend<{ releases: {
   a: string;
   b: string;
   distB: string;
+  deployA(): void;
   deployB(): void;
 } }>({
   releases: async ({}, use, testInfo) => {
@@ -27,7 +28,7 @@ export const updateTest = test.extend<{ releases: {
     await Promise.all([build(distA, releaseA), build(distB, releaseB)]);
     const server = await serveReleases(distA, port);
     try {
-      await use({ url: server.url, a: releaseA, b: releaseB, distB, deployB: () => server.deploy(distB) });
+      await use({ url: server.url, a: releaseA, b: releaseB, distB, deployA: () => server.deploy(distA), deployB: () => server.deploy(distB) });
     } finally {
       await server.close();
     }
