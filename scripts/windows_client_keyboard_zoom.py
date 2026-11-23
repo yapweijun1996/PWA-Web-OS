@@ -2,6 +2,7 @@
 
 import ctypes
 from ctypes import wintypes
+import subprocess
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -9,6 +10,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
 from desktop_browser import browser
+
+
+def activate_browser(pid):
+    # WebDriver can operate a background window. Bring only the test process forward.
+    subprocess.run([
+        "powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
+        f"if (!(New-Object -ComObject WScript.Shell).AppActivate({pid})) {{ exit 1 }}",
+    ], check=True, creationflags=subprocess.CREATE_NO_WINDOW, timeout=8)
 
 
 def send_zoom_in(pid):
@@ -151,8 +160,10 @@ def exercise_keyboard_zoom(name, profile, downloads, url, build):
         )
         dpr_steps = [baseline["dpr"]]
         process_capability = {"chrome": "goog:processID", "firefox": "moz:processID"}[name]
+        pid = int(driver.capabilities[process_capability])
+        activate_browser(pid)
         for _ in range(8):
-            send_zoom_in(driver.capabilities[process_capability])
+            send_zoom_in(pid)
             previous = dpr_steps[-1]
             zoomed = WebDriverWait(driver, 5).until(
                 lambda active: sample if (sample := viewport(active))["dpr"] > previous else False,
