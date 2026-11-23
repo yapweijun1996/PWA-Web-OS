@@ -1,0 +1,317 @@
+{
+  "runId": 45251244507,
+  "platform": {
+    "installationType": "Client",
+    "updateBuildRevision": 9974,
+    "caption": "Microsoft Windows 11 Enterprise",
+    "edition": "Enterprise",
+    "version": "10.0.26200",
+    "architecture": "ARM 64-bit Processor",
+    "displayVersion": "25H2"
+  },
+  "source": {
+    "archiveDigest": "sha256:df88ad6e628fe22e30f5767640cbe7f5114578e5ea947874a70a7535441e672f",
+    "archive": "recovery-37ad1b41d4be8d96212ce60e59532470fd19f6c9-45249652707-1",
+    "pagesRun": "https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45249652707",
+    "pagesConclusion": "success"
+  },
+  "tabs": {
+    "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+    "buildId": "b-mwtnv4pp37ad1b4",
+    "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+    "startedAt": "2026-11-23T19:40:29.057036+00:00",
+    "os": "Windows-11-10.0.26200-SP0",
+    "mode": "Headed desktop browser tabs in isolated profiles on one host",
+    "sessions": [
+      {
+        "browser": "chrome",
+        "browserVersion": "157.0.8103.79",
+        "phase": 1,
+        "browserOffline": false,
+        "networkControlHttpStatus": 404,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "chrome",
+        "browserVersion": "157.0.8103.79",
+        "phase": 2,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS",
+        "preferences": {
+          "localesAndExplicitThemes": [
+            {
+              "locale": "zh-Hans",
+              "theme": "dark"
+            },
+            {
+              "locale": "zh-Hans",
+              "theme": "light"
+            },
+            {
+              "locale": "en",
+              "theme": "dark"
+            },
+            {
+              "locale": "en",
+              "theme": "light"
+            }
+          ],
+          "systemAppearance": {
+            "from": "light",
+            "to": "dark"
+          },
+          "offlineDraftAndSelection": "PASS",
+          "retry": "PASS"
+        }
+      },
+      {
+        "browser": "chrome",
+        "browserVersion": "157.0.8103.79",
+        "phase": 3,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0",
+        "phase": 1,
+        "browserOffline": false,
+        "networkControlHttpStatus": 404,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0",
+        "phase": 2,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS",
+        "preferences": {
+          "localesAndExplicitThemes": [
+            {
+              "locale": "zh-Hans",
+              "theme": "dark"
+            },
+            {
+              "locale": "zh-Hans",
+              "theme": "light"
+            },
+            {
+              "locale": "en",
+              "theme": "dark"
+            },
+            {
+              "locale": "en",
+              "theme": "light"
+            }
+          ],
+          "systemAppearance": {
+            "from": "light",
+            "to": "dark"
+          },
+          "offlineDraftAndSelection": "PASS",
+          "retry": "PASS"
+        }
+      },
+      {
+        "browser": "firefox",
+        "browserVersion": "160.0",
+        "phase": 3,
+        "browserOffline": true,
+        "networkControlHttpStatus": 0,
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "outcome": "PASS"
+      }
+    ],
+    "outcome": "PASS",
+    "transferSha256": "fe1152de4e1c363ba942bd674b1adec912cd3c82e5c695ebca200cc676b561e8",
+    "finishedAt": "2026-11-23T19:41:28.803788+00:00"
+  },
+  "appLaunches": {
+    "chrome": {
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+      "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+      "os": "Windows-11-10.0.26200-SP0",
+      "startedAt": "2026-11-23T19:42:32.105487+00:00",
+      "sessions": [
+        {
+          "browser": "chrome",
+          "version": "157.0.8103.79",
+          "phase": 1,
+          "networkControlHttpStatus": 404,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        },
+        {
+          "browser": "chrome",
+          "version": "157.0.8103.79",
+          "phase": 2,
+          "networkControlHttpStatus": 0,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        },
+        {
+          "browser": "chrome",
+          "version": "157.0.8103.79",
+          "phase": 3,
+          "networkControlHttpStatus": 0,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        }
+      ],
+      "outcome": "PASS",
+      "registration": {
+        "shortcut": "PWA Web OS.lnk",
+        "launcher": "chrome_proxy.exe"
+      },
+      "finishedAt": "2026-11-23T19:43:02.940534+00:00"
+    },
+    "firefox": {
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+      "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265",
+      "os": "Windows-11-10.0.26200-SP0",
+      "startedAt": "2026-11-23T19:43:03.765522+00:00",
+      "sessions": [
+        {
+          "browser": "firefox",
+          "version": "160.0",
+          "phase": 1,
+          "networkControlHttpStatus": 404,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        },
+        {
+          "browser": "firefox",
+          "version": "160.0",
+          "phase": 2,
+          "networkControlHttpStatus": 0,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        },
+        {
+          "browser": "firefox",
+          "version": "160.0",
+          "phase": 3,
+          "networkControlHttpStatus": 0,
+          "buildId": "b-mwtnv4pp37ad1b4",
+          "outcome": "PASS"
+        }
+      ],
+      "outcome": "PASS",
+      "registration": {
+        "shortcut": "PWA Web OS.lnk",
+        "launcher": "firefox.exe"
+      },
+      "finishedAt": "2026-11-23T19:43:31.018306+00:00"
+    }
+  },
+  "tabUpdates": {
+    "a": {
+      "buildId": "b-mwtnv4pp37ad1b4",
+      "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+      "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+    },
+    "b": {
+      "buildId": "b-mwth4sjcb9dcafa",
+      "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+      "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+    },
+    "os": "Windows-11-10.0.26200-SP0",
+    "sessions": [
+      {
+        "browser": "chrome",
+        "version": "157.0.8103.79",
+        "outcome": "PASS",
+        "deferredSave": "PASS",
+        "updatePause": "PASS",
+        "preservedDraftAndCommit": "PASS",
+        "retryIntoB": "PASS"
+      },
+      {
+        "browser": "firefox",
+        "version": "160.0",
+        "outcome": "PASS",
+        "deferredSave": "PASS",
+        "updatePause": "PASS",
+        "preservedDraftAndCommit": "PASS",
+        "retryIntoB": "PASS"
+      }
+    ],
+    "startedAt": "2026-11-23T19:43:34.895059+00:00",
+    "outcome": "PASS",
+    "finishedAt": "2026-11-23T19:43:56.265737+00:00"
+  },
+  "originalShortcutUpdates": {
+    "chrome": {
+      "a": {
+        "buildId": "b-mwth4sjcb9dcafa",
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+      },
+      "b": {
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "browser": "chrome",
+      "os": "Windows-11-10.0.26200-SP0",
+      "manifestIdentity": {
+        "id": "/PWA-Web-OS/",
+        "start_url": "/PWA-Web-OS/",
+        "scope": "/PWA-Web-OS/",
+        "display": "standalone"
+      },
+      "startedAt": "2026-11-23T19:43:57.100417+00:00",
+      "outcome": "PASS",
+      "version": "157.0.8103.79",
+      "updatedInApp": "PASS",
+      "originalShortcut": {
+        "name": "PWA Web OS.lnk",
+        "launcher": "chrome_proxy.exe",
+        "reopenedBuild": "b-mwtnv4pp37ad1b4"
+      },
+      "savedEditAfterShortcutLaunch": "PASS",
+      "finishedAt": "2026-11-23T19:44:23.428457+00:00"
+    },
+    "firefox": {
+      "a": {
+        "buildId": "b-mwth4sjcb9dcafa",
+        "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+        "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+      },
+      "b": {
+        "buildId": "b-mwtnv4pp37ad1b4",
+        "commit": "37ad1b41d4be8d96212ce60e59532470fd19f6c9",
+        "manifestSha256": "3f9e7d0864046dba370f2a70196d21c23ab6b8e9c8ed28ee2c3ff3b16e1e1265"
+      },
+      "browser": "firefox",
+      "os": "Windows-11-10.0.26200-SP0",
+      "manifestIdentity": {
+        "id": "/PWA-Web-OS/",
+        "start_url": "/PWA-Web-OS/",
+        "scope": "/PWA-Web-OS/",
+        "display": "standalone"
+      },
+      "startedAt": "2026-11-23T19:44:24.249931+00:00",
+      "outcome": "PASS",
+      "version": "160.0",
+      "updatedInApp": "PASS",
+      "originalShortcut": {
+        "name": "PWA Web OS.lnk",
+        "launcher": "firefox.exe",
+        "reopenedBuild": "b-mwtnv4pp37ad1b4"
+      },
+      "savedEditAfterShortcutLaunch": "PASS",
+      "finishedAt": "2026-11-23T19:44:55.997022+00:00"
+    }
+  }
+}

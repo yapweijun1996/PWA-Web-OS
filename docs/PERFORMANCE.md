@@ -28,12 +28,12 @@ Use a new output filename for each run. The report records the source SHA, build
 
 ## Release lab baselines
 
-Use these desktop profiles for the Notes lab. The measured candidate is `b-mwth4sjcb9dcafa`. Both passing reports identify the same retained manifest and worker. The full [platform matrix](PRODUCT_SPEC.md#platform-support) still applies to compatibility qualification.
+Use these desktop profiles for the Notes lab. Each passing observation identifies its retained manifest and worker. The full [platform matrix](PRODUCT_SPEC.md#platform-support) still applies to compatibility qualification.
 
-| Desktop profile | CPU and RAM | Candidate p75 in ms (cold launch / offline reopen / editor response) |
-| --- | --- | --- |
-| Physical macOS 27.2 with Chrome 158.0.8127.37 | Apple M4, 10 logical CPUs, 32 GiB | 172 / 281 / 53. [Passing batch](evidence/performance-macos-b9dcafa-repeat.json) · [Earlier batch with 259 ms editor p75](evidence/performance-macos-b9dcafa-first.json) |
-| Hosted Windows 11 Enterprise 25H2 Arm64 with Chrome 157.0.8103.79 | Cobalt 200, 4 logical CPUs, 16 GiB | 122 / 208 / 38. [Passing batch](evidence/performance-windows11-b9dcafa.json) |
+| Desktop profile | CPU and RAM | Measured candidate | Candidate p75 in ms (cold launch / offline reopen / editor response) |
+| --- | --- | --- | --- |
+| Physical macOS 27.2 with Chrome 158.0.8127.37 | Apple M4, 10 logical CPUs, 32 GiB | `b9dcafa` | 172 / 281 / 53. [Passing batch](evidence/performance-macos-b9dcafa-repeat.json) · [Earlier batch with 259 ms editor p75](evidence/performance-macos-b9dcafa-first.json) |
+| Hosted Windows 11 Enterprise 25H2 Arm64 with Chrome 157.0.8103.79 | Cobalt 200, 4 logical CPUs, 16 GiB | `37ad1b4` | 184 / 268 / 53. [Passing batch](evidence/performance-windows11-37ad1b4.json) |
 
 Keep the Chrome viewport, seven-attempt requirement and p75 ceilings above when rechecking these profiles. Record the actual OS and browser patch for each run. Run the baseline batches without other release workloads on the same host, and keep any failed batch with its conditions.
 
