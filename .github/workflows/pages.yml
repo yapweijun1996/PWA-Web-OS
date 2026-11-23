@@ -21,8 +21,6 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-        env:
-          BUILD_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Record and verify retained release
         run: |
           mkdir recovery-artifact

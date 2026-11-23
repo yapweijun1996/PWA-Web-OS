@@ -1,6 +1,6 @@
 # Release retention and recovery
 
-The Pages workflow assigns the build ID `<full commit SHA>-<run ID>-<attempt>`, then saves the exact `dist` served by the deploy job and `manifest.json` as the `recovery-*` workflow artifact. The manifest records the commit, build ID extracted from the worker, and SHA-256 for every file. The artifact is retained for 90 days, subject to repository settings; export approved candidates to an authorized durable store before expiry. A checksum detects changes, but does not establish provenance by itself: verify the workflow run, commit and artifact source separately. Do not add Notes data to release artifacts.
+The Pages workflow uses the existing short build ID and saves the exact `dist` served by the deploy job and `manifest.json` as `recovery-<full commit SHA>-<run ID>-<attempt>`. The manifest records the full commit, build ID extracted from the worker, and SHA-256 for every file; the artifact name binds these contents to the workflow run and attempt. The artifact is retained for 90 days, subject to repository settings; export approved candidates to an authorized durable store before expiry. A checksum detects changes, but does not establish provenance by itself: verify the workflow run, commit and artifact source separately. Do not add Notes data to release artifacts.
 
 ## Before release
 
