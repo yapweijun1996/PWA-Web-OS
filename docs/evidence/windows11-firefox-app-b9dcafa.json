@@ -3,7 +3,7 @@
   "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
   "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314",
   "os": "Windows-11-10.0.26200-SP0",
-  "startedAt": "2026-11-23T17:02:50.374058+00:00",
+  "startedAt": "2026-11-23T17:09:02.750611+00:00",
   "sessions": [
     {
       "browser": "firefox",
@@ -35,5 +35,5 @@
     "shortcut": "PWA Web OS.lnk",
     "launcher": "firefox.exe"
   },
-  "finishedAt": "2026-11-23T17:03:16.360526+00:00"
+  "finishedAt": "2026-11-23T17:09:30.280498+00:00"
 }

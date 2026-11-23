@@ -27,7 +27,7 @@ Enable **client_preferences** to exercise both catalogs in Light and Dark during
 
 Enable **native_apps** to verify the selected release's live bytes, install through each browser's native control, and check the generated application shortcut. The test reuses the registered app ID and its isolated profile for separate process launches. In both installed modes it records an uncached 404 while online, a blocked uncached request during two offline launches, and the exact note read after saving offline.
 
-Set **next_pages_run** to rehearse an update to a distinct compatible retained release on a loopback staging origin. Chrome and Firefox each save while the update waits, pause after an injected IndexedDB abort, and preserve both the open draft and the previous commit. The test then retries into the staged build and reads the exact committed edit. [Windows 11 qualification](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45222834638)
+Set **next_pages_run** to rehearse an update to a distinct compatible retained release on a loopback staging origin. Chrome and Firefox each save while the update waits, pause after an injected IndexedDB abort, and preserve both the open draft and the previous commit. The test then retries into the staged build and reads the exact committed edit. The default Windows Server workflow also passed its original tab, transfer, and lab checks on the same current release. [Windows 11 qualification](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45223847143) · [Default Windows Server run](https://github.com/yapweijun1996/PWA-Web-OS/actions/runs/45223921874)
 
 ### Desktop screen reader
 
