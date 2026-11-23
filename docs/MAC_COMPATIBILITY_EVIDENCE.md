@@ -52,3 +52,9 @@ The test copied VoiceOver's last spoken phrase after each action. Wait for the a
 ## Update focus demo launches
 
 On November 24 in Singapore, macOS 26.6.2 repeated the three required launch modes for the deployed `b9dcafa` release. Chrome 158.0.8127.36 and Firefox 160.0.1 passed headed tab sessions. Chrome also installed the app through its native Install control and launched the actual app shortcut across three browser processes. Each reported standalone mode. The online request returned 404 and a fresh uncached request failed in both offline installed sessions. Each mode saved a synthetic note online, saved an offline edit and read it after another offline restart. The disposable profiles and shortcut were removed. [Release identity and evidence](DEMO_ACCEPTANCE_B9DCAFA.md)
+
+## Updating the installed Chrome app
+
+On November 24 in Singapore, Chrome 158.0.8127.36 on macOS 26.6.2 installed `d620665` through the address bar on a disposable loopback origin. The verified `b9dcafa` release had the same manifest ID, start URL, scope and display mode. The standalone app saved a synthetic note while the update waited, accepted the update and reopened the saved edit in `b9dcafa`.
+
+After Chrome exited, Launch Services reopened the original `PWA Web OS.app` bundle. Its `Info.plist` digest matched the value recorded at installation. The build footer displayed `b-mwth4sjcb9dcafa` and text copied from the reopened editor matched the entire synthetic body. The test profile's first-run marker was initialized after Chrome presented its welcome dialog on the first shortcut launch. [Installed update report](evidence/macos-installed-update-b9dcafa.json)

@@ -9,7 +9,7 @@ Use the test title and project name in the candidate's retained Playwright JSON 
 | ID | Check for this workspace | Automated evidence and outstanding observations |
 | --- | --- | --- |
 | INS-01 | HTTPS project site exposes the manifest | [Manifest discovery](../e2e/pwa.spec.ts) on preview. Verify the deployed HTTPS response and build identity. |
-| INS-02 | Updates keep the same installed app identity | Compare the retained A and B manifests' `id`, origin and scope. On each installed target verify the existing icon launches the updated workspace. |
+| INS-02 | Updates keep the same installed app identity | Compare the retained A and B manifests' `id`, origin and scope. The [macOS Chrome loopback rehearsal](MAC_COMPATIBILITY_EVIDENCE.md#updating-the-installed-chrome-app) reopened the updated workspace from its original app bundle. Repeat on the other installed targets. |
 | INS-03 | Scope and launch URL resolve to the project path | [Manifest fields and registration](../e2e/pwa.spec.ts), [project-path launch](../e2e/scaffold.spec.ts). |
 | INS-04 | Declared icons decode at intended sizes | [Manifest and icon assertions](../e2e/pwa.spec.ts). Inspect mask cropping on installed platforms. |
 | INS-05 | Launch in a standalone app window | [macOS observations](MAC_COMPATIBILITY_EVIDENCE.md). Verify all declared installed modes on the selected release. |

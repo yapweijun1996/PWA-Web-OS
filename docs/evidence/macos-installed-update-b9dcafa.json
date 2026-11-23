@@ -1,0 +1,36 @@
+{
+  "a": {
+    "commit": "d6206655e522a55e65f703b1795219a4853b9ac9",
+    "buildId": "b-mwtfl4bdd620665",
+    "manifestSha256": "7ae9fabd97b1d0f23e88e2bfb2312da9a7836a53c4965a45a35bc8997edf2130"
+  },
+  "b": {
+    "commit": "b9dcafae40c5389f69fc4eeed35c95a38158b1f6",
+    "buildId": "b-mwth4sjcb9dcafa",
+    "manifestSha256": "7433ff5f3e3fc0836426f2f98619532da9821a67b506fbcc4b5e576016268314"
+  },
+  "macOS": "26.6.2",
+  "macOSBuild": "25G83",
+  "startedAt": "2026-11-23T17:42:48.389Z",
+  "outcome": "PASS",
+  "manifestIdentity": {
+    "id": "/PWA-Web-OS/",
+    "scope": "/PWA-Web-OS/",
+    "start_url": "/PWA-Web-OS/",
+    "display": "standalone"
+  },
+  "originalApplication": "PWA Web OS.app",
+  "originalShortcutId": "fkoihpncbplmlljkpnimcdjoaekibkmk",
+  "browser": "158.0.0.0",
+  "updatedInApp": "PASS",
+  "openedOriginalApplication": true,
+  "shortcutObservation": {
+    "build": "b-mwth4sjcb9dcafa",
+    "editedBodyMatched": true,
+    "windowTitle": "PWA Web OS",
+    "capture": "Original macOS app bundle opened through Launch Services, visible build footer, exact editor body selected and compared",
+    "firstRun": "Primed disposable Chrome profile before reopening the original app bundle"
+  },
+  "finishedAt": "2026-11-23T17:47:14.082Z",
+  "chromeBinaryVersion": "158.0.8127.36"
+}
